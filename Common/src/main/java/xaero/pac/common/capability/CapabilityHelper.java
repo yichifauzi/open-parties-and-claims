@@ -34,7 +34,7 @@ public class CapabilityHelper implements ICapabilityHelperAPI {
 			return null;
 		ICapabilityProvider provider = capableObject.getXaero_OPAC_CapabilityProvider();
 		if(provider == null)
-			capableObject.setXaero_OPAC_CapabilityProvider(provider = ((ICapabilityType<?>)capability).createProvider());
+			capableObject.setXaero_OPAC_CapabilityProvider(provider = ((ICapabilityType<?>)capability).createProvider(capableObject));
 		return provider.getCapability(capability);
 	}
 
