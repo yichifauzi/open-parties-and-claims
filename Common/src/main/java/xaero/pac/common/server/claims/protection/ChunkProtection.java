@@ -466,8 +466,12 @@ public class ChunkProtection
 					return true;
 			} else
 				return false;
-		} else if(accessorId == null)
-			return false;
+		} else {
+			if (accessorId == null)
+				return false;
+			if (accessorId.equals(claimConfig.getPlayerId()))
+				return true;
+		}
 		if (claimConfig.getPlayerId() == null)
 			return false;
 		if (claimConfig.getEffective(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_FROM_PARTY) && claimConfig.getEffective(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_FROM_ALLY_PARTIES))
