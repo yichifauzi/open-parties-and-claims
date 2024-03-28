@@ -479,7 +479,7 @@ public class PlayerConfigOptions {
 				.setList(PlayerConfig.PROTECTION_LEVELS)
 				.setDefaultValue(1)
 				.setComment(
-						"When enabled, claimed chunk protection includes protection against non-living entities, who don't have access to the chunks, breaking/placing blocks. Should work for vanilla entity behavior, unless another mod breaks it. Modded entity behavior is likely not to be included. Keep in mind that explosions are also affected by the explosion-related options.\n\n"
+						"When enabled, claimed chunk protection includes protection against non-living entities, who don't have access to the chunks, breaking/placing blocks. Should work for vanilla entity behavior, unless another mod breaks it. Modded entity behavior is likely not to be included. Keep in mind that explosions use separate explosion-related options.\n\n"
 						+ PlayerConfig.PROTECTION_LEVELS_TOOLTIP_OWNED
 				)
 				.setCategory(PlayerConfigOptionCategory.BLOCK_PROTECTION)
