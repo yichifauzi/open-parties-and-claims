@@ -20,6 +20,6 @@ package xaero.pac.common.capability;
 
 public interface ICapabilityType<T> extends ICapability<T> {
 
-	ICapabilityProvider createProvider();
+	ICapabilityProvider createProvider(ICapableObject capableObject);
 
 }
