@@ -153,7 +153,7 @@ public class ServerConfig {
 			.comment("For how long a party (members) can stay completely inactive on the server until it is deleted (in hours). This improves performance for servers running for years.")
 			.translation("gui.xaero_pac_config_party_expiration_time")
 			.worldRestart()
-			.defineInRange("partyExpirationTime", 168, 1, Integer.MAX_VALUE);
+			.defineInRange("partyExpirationTime", 720, 1, Integer.MAX_VALUE);
 		
 		partyExpirationCheckInterval = builder
 			.comment("How often to check for expired parties in order to remove them (in minutes). The interval is effectively rounded up to a multiple of 10 minutes.")
