@@ -39,16 +39,16 @@ public abstract class LazyPacket<P extends LazyPacket<P>> {
 	public int getPreparedSize() {
 		if(!prepared)
 			throw new IllegalStateException("Lazy packet has not been prepared!");
-		return data.readableBytes();
+		return data.writerIndex();
 	}
 	
 	public int prepare() {
 		if(prepared)
-			return data.readableBytes();
+			return data.writerIndex();
 		data.clear();
 		writeOnPrepare(data);
 		prepared = true;
-		return data.readableBytes();
+		return data.writerIndex();
 	}
 	
 	protected abstract void writeOnPrepare(FriendlyByteBuf dest);
@@ -60,8 +60,7 @@ public abstract class LazyPacket<P extends LazyPacket<P>> {
 			LazyPacket<P> lazyPacket = t;
 			if(!lazyPacket.prepared)
 				throw new IllegalStateException("Lazy packet has not been prepared!");
-			lazyPacket.data.readerIndex(0);//may have been read before (when reusing packet objects)
-			u.writeBytes(lazyPacket.data, 0, lazyPacket.data.readableBytes());
+			u.writeBytes(lazyPacket.data, 0, lazyPacket.data.writerIndex());
 		}
 		
 	}
