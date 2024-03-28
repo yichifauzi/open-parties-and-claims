@@ -29,7 +29,11 @@ public class ClientWorldCapabilityProvider implements ICapabilityProvider {
 
 	protected final ClientWorldMainCapability mainCapability;
 
-	public ClientWorldCapabilityProvider() {
+	public ClientWorldCapabilityProvider(ICapableObject capableObject) {
+		if(!(capableObject instanceof ClientLevel)) {
+			this.mainCapability = null;
+			return;
+		}
 		this.mainCapability = new ClientWorldMainCapability(ClientWorldData.Builder.begin().build());
 	}
 
@@ -38,13 +42,6 @@ public class ClientWorldCapabilityProvider implements ICapabilityProvider {
 		if(cap == ClientWorldCapabilityTypes.MAIN_CAP)
 			return (T) mainCapability;
 		return null;
-	}
-
-	public static ClientWorldCapabilityProvider get(ClientLevel level){
-		ICapabilityProvider provider = ((ICapableObject)level).getXaero_OPAC_CapabilityProvider();
-		if(provider == null)
-			((ICapableObject)level).setXaero_OPAC_CapabilityProvider(new ClientWorldCapabilityProvider());
-		return (ClientWorldCapabilityProvider) provider;
 	}
 
 }
