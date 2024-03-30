@@ -981,6 +981,66 @@ function initializeCoreMod() {
                 return methodNode
             }
         },
+        'xaero_pac_create_openendedpipe_providefluidtospace': {
+            'target' : {
+                'type': 'METHOD',
+                'class': 'com.simibubi.create.content.fluids.OpenEndedPipe',
+                'methodName': 'provideFluidToSpace',
+                'methodDesc' : '(Lnet/minecraftforge/fluids/FluidStack;Z)Z'
+            },
+            'transformer' : function(methodNode){
+                var insnToInsertGetter = function() {
+                    var insnToInsert = new InsnList()
+                    var MY_LABEL = new LabelNode(new Label())
+                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
+                    insnToInsert.add(new FieldInsnNode(Opcodes.GETFIELD, 'com/simibubi/create/content/fluids/OpenEndedPipe', 'world', 'Lnet/minecraft/world/level/Level;'))
+                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
+                    insnToInsert.add(new FieldInsnNode(Opcodes.GETFIELD, 'com/simibubi/create/content/fluids/OpenEndedPipe', 'pos', 'Lnet/minecraft/core/BlockPos;'))
+                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
+                    insnToInsert.add(new FieldInsnNode(Opcodes.GETFIELD, 'com/simibubi/create/content/fluids/OpenEndedPipe', 'outputPos', 'Lnet/minecraft/core/BlockPos;'))
+                    insnToInsert.add(new VarInsnNode(Opcodes.ILOAD, 2))
+                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'canCreatePipeAffectBlock', '(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;Z)Z'))
+                    insnToInsert.add(new InsnNode(Opcodes.DUP))
+                    insnToInsert.add(new JumpInsnNode(Opcodes.IFNE, MY_LABEL))
+                    insnToInsert.add(new InsnNode(Opcodes.IRETURN))
+                    insnToInsert.add(MY_LABEL)
+                    insnToInsert.add(new InsnNode(Opcodes.POP))
+                    return insnToInsert
+                }
+                insertOnInvoke2(methodNode, insnToInsertGetter, true/*before*/, levelClass, getBlockStateName, getBlockStateNameObf, getBlockStateDesc, true)
+                return methodNode
+            }
+        },
+        'xaero_pac_create_openendedpipe_removefluidfromspace': {
+            'target' : {
+                'type': 'METHOD',
+                'class': 'com.simibubi.create.content.fluids.OpenEndedPipe',
+                'methodName': 'removeFluidFromSpace',
+                'methodDesc' : '(Z)Lnet/minecraftforge/fluids/FluidStack;'
+            },
+            'transformer' : function(methodNode){
+                var insnToInsertGetter = function() {
+                    var insnToInsert = new InsnList()
+                    var MY_LABEL = new LabelNode(new Label())
+                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
+                    insnToInsert.add(new FieldInsnNode(Opcodes.GETFIELD, 'com/simibubi/create/content/fluids/OpenEndedPipe', 'world', 'Lnet/minecraft/world/level/Level;'))
+                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
+                    insnToInsert.add(new FieldInsnNode(Opcodes.GETFIELD, 'com/simibubi/create/content/fluids/OpenEndedPipe', 'pos', 'Lnet/minecraft/core/BlockPos;'))
+                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
+                    insnToInsert.add(new FieldInsnNode(Opcodes.GETFIELD, 'com/simibubi/create/content/fluids/OpenEndedPipe', 'outputPos', 'Lnet/minecraft/core/BlockPos;'))
+                    insnToInsert.add(new VarInsnNode(Opcodes.ILOAD, 1))
+                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCoreForge', 'onCreatePipeCollectBlock', '(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;Z)Lnet/minecraftforge/fluids/FluidStack;'))
+                    insnToInsert.add(new InsnNode(Opcodes.DUP))
+                    insnToInsert.add(new JumpInsnNode(Opcodes.IFNULL, MY_LABEL))
+                    insnToInsert.add(new InsnNode(Opcodes.ARETURN))
+                    insnToInsert.add(MY_LABEL)
+                    insnToInsert.add(new InsnNode(Opcodes.POP))
+                    return insnToInsert
+                }
+                insertOnInvoke2(methodNode, insnToInsertGetter, true/*before*/, levelClass, getBlockStateName, getBlockStateNameObf, getBlockStateDesc, true)
+                return methodNode
+            }
+        },
         'xaero_pac_servergamepacketlistenerimpl_handleinteract': {
             'target' : {
                 'type': 'METHOD',

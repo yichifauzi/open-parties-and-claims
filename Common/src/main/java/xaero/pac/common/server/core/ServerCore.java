@@ -376,6 +376,14 @@ public class ServerCore {
 		return null;
 	}
 
+	public static boolean canCreatePipeAffectBlock(Level level, BlockPos from, BlockPos to, boolean simulate){
+		if(level == null || simulate)
+			return true;
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(level.getServer());
+		return isCreateModAllowed(serverData, level, to.getX() >> 4, to.getZ() >> 4, from, false, true, true);
+	}
+
 	private static InteractionHand ENTITY_INTERACTION_HAND;
 
 	public static boolean canInteract(ServerGamePacketListenerImpl packetListener, ServerboundInteractPacket packet){
