@@ -1041,6 +1041,38 @@ function initializeCoreMod() {
                 return methodNode
             }
         },
+        'xaero_pac_create_ploughmovementbehaviour_visitnewposition': {
+            'target' : {
+                'type': 'METHOD',
+                'class': 'com.simibubi.create.content.contraptions.actors.plough.PloughMovementBehaviour',
+                'methodName': 'visitNewPosition',
+                'methodDesc' : '(Lcom/simibubi/create/content/contraptions/behaviour/MovementContext;Lnet/minecraft/core/BlockPos;)V'
+            },
+            'transformer' : function(methodNode){
+                var itemStackClass = "net/minecraft/world/item/ItemStack"
+                var useOnName = "useOn"
+                var useOnNameObf = "m_41661_"
+                var useOnDesc = "(Lnet/minecraft/world/item/context/UseOnContext;)Lnet/minecraft/world/InteractionResult;"
+                var insnToInsertGetter = function() {
+                    var insnToInsert = new InsnList()
+                    var MY_LABEL = new LabelNode(new Label())
+                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))//movement context
+                    insnToInsert.add(new FieldInsnNode(Opcodes.GETFIELD, 'com/simibubi/create/content/contraptions/behaviour/MovementContext', 'world', 'Lnet/minecraft/world/level/Level;'))
+                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
+                    insnToInsert.add(new FieldInsnNode(Opcodes.GETFIELD, 'com/simibubi/create/content/contraptions/behaviour/MovementContext', 'contraption', 'Lcom/simibubi/create/content/contraptions/Contraption;'))
+                    insnToInsert.add(new FieldInsnNode(Opcodes.GETFIELD, 'com/simibubi/create/content/contraptions/Contraption', 'anchor', 'Lnet/minecraft/core/BlockPos;'))
+                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 2))
+                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'canCreatePloughPos', '(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;)Z'))
+                    insnToInsert.add(new JumpInsnNode(Opcodes.IFNE, MY_LABEL))
+                    insnToInsert.add(new InsnNode(Opcodes.POP))//removing the useOn argument
+                    insnToInsert.add(new InsnNode(Opcodes.RETURN))
+                    insnToInsert.add(MY_LABEL)
+                    return insnToInsert
+                }
+                insertOnInvoke2(methodNode, insnToInsertGetter, true/*before*/, itemStackClass, useOnName, useOnNameObf, useOnDesc, true)
+                return methodNode
+            }
+        },
         'xaero_pac_servergamepacketlistenerimpl_handleinteract': {
             'target' : {
                 'type': 'METHOD',

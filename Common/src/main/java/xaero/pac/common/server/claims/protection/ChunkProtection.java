@@ -93,6 +93,7 @@ public class ChunkProtection
 > implements IChunkProtectionAPI {
 
 	public static final UUID CREATE_DEPLOYER_UUID = UUID.fromString("9e2faded-cafe-4ec2-c314-dad129ae971d");
+	public static final UUID CREATE_PLOUGH_UUID = UUID.fromString("9e2faded-eeee-4ec2-c314-dad129ae971d");
 	public static final String TAG_PREFIX = "#";
 	public static final String BREAK_PREFIX = "break$";
 	public static final String HAND_PREFIX = "hand$";
@@ -243,8 +244,10 @@ public class ChunkProtection
 			return false;
 		if(entity instanceof Player){
 			if(
-				CREATE_DEPLOYER_UUID.equals(entity.getUUID())
-				&& !isStaticFakePlayerExceptionClass(entity)
+				(
+					CREATE_DEPLOYER_UUID.equals(entity.getUUID()) ||
+					CREATE_PLOUGH_UUID.equals(entity.getUUID())
+				) && !isStaticFakePlayerExceptionClass(entity)
 			)
 				return true;
 		}

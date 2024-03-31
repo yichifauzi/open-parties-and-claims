@@ -384,6 +384,14 @@ public class ServerCore {
 		return isCreateModAllowed(serverData, level, to.getX() >> 4, to.getZ() >> 4, from, false, true, true);
 	}
 
+	public static boolean canCreatePloughPos(Level level, BlockPos anchor, BlockPos pos){
+		if(level == null)
+			return true;
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(level.getServer());
+		return isCreateModAllowed(serverData, level, pos.getX() >> 4, pos.getZ() >> 4, anchor, true, true, false);
+	}
+
 	private static InteractionHand ENTITY_INTERACTION_HAND;
 
 	public static boolean canInteract(ServerGamePacketListenerImpl packetListener, ServerboundInteractPacket packet){
