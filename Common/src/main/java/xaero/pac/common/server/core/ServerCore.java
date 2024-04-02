@@ -22,11 +22,14 @@ import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,6 +44,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.raid.Raid;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
@@ -443,6 +447,29 @@ public class ServerCore {
 		if(contraption.getXaero_OPAC_placementPos() == null)
 			return contraption.getXaero_OPAC_anchor();
 		return contraption.getXaero_OPAC_placementPos();
+	}
+
+	private static final ResourceKey<Item> CREATE_COUPLING = ResourceKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("create", "minecart_coupling"));
+
+	public static boolean canCreateAddCoupling(Player player, Level world, int cartId1, int cartId2){
+		if(player == null)
+			return true;
+		MinecraftServer server = player.getServer();
+		if(server == null)
+			return true;
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(server);
+		if(serverData == null)
+			return true;
+		Item couplingItem = Registry.ITEM.get(CREATE_COUPLING);
+		if(couplingItem == null)
+			return true;
+		Entity cart1 = world.getEntity(cartId1);
+		ItemStack heldItem = new ItemStack(couplingItem);
+		if(cart1 != null && serverData.getChunkProtection().onEntityInteraction(serverData, null, player, cart1, heldItem, null, false, false))
+			return false;
+		Entity cart2 = world.getEntity(cartId2);
+		return cart2 == null || !serverData.getChunkProtection().onEntityInteraction(serverData, null, player, cart2, heldItem, null, false, false);
 	}
 
 	private static InteractionHand ENTITY_INTERACTION_HAND;

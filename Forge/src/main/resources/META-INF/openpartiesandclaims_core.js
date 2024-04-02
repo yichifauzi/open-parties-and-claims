@@ -1128,6 +1128,30 @@ function initializeCoreMod() {
                 return classNode
             }
         },
+        'xaero_pac_create_couplinghandler_trytocouplecarts': {
+            'target' : {
+                'type': 'METHOD',
+                'class': 'com.simibubi.create.content.contraptions.minecart.CouplingHandler',
+                'methodName': 'tryToCoupleCarts',
+                'methodDesc' : '(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/Level;II)Z'
+            },
+            'transformer' : function(methodNode){
+                var MY_LABEL = new LabelNode(new Label())
+                var insnToInsert = new InsnList()
+                insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
+                insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
+                insnToInsert.add(new VarInsnNode(Opcodes.ILOAD, 2))
+                insnToInsert.add(new VarInsnNode(Opcodes.ILOAD, 3))
+                insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'canCreateAddCoupling', '(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/Level;II)Z'))
+                insnToInsert.add(new InsnNode(Opcodes.DUP))
+                insnToInsert.add(new JumpInsnNode(Opcodes.IFNE, MY_LABEL))
+                insnToInsert.add(new InsnNode(Opcodes.IRETURN))
+                insnToInsert.add(MY_LABEL)
+                insnToInsert.add(new InsnNode(Opcodes.POP))
+                methodNode.instructions.insert(methodNode.instructions.get(0), insnToInsert)
+                return methodNode
+            }
+        },
         'xaero_pac_servergamepacketlistenerimpl_handleinteract': {
             'target' : {
                 'type': 'METHOD',
