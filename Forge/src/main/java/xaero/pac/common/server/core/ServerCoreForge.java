@@ -22,7 +22,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
@@ -53,6 +55,12 @@ public class ServerCoreForge {
 
 	public static boolean isCreateTrainControlsPacketAllowed(int contraptionId, CustomPayloadEvent.Context ctx){
 		return ServerCore.isCreateTrainControlsPacketAllowed(contraptionId, ctx.getSender());
+	}
+
+	public static FluidStack onCreatePipeCollectBlock(Level level, BlockPos from, BlockPos to, boolean simulate){
+		if(ServerCore.canCreatePipeAffectBlock(level, from, to, simulate))
+			return null;
+		return FluidStack.EMPTY;
 	}
 
 	public static List<? extends Entity> onPressurePlateEntityCount(List<? extends Entity> entities) {

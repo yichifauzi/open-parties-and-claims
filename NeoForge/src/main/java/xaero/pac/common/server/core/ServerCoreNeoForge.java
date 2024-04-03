@@ -22,6 +22,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import java.util.List;
@@ -63,6 +65,12 @@ public class ServerCoreNeoForge {
 		if(ctx.player().isEmpty())
 			return true;
 		return ServerCore.isCreateTrainControlsPacketAllowed(contraptionId, (ServerPlayer) ctx.player().get());
+	}
+
+	public static FluidStack onCreatePipeCollectBlock(Level level, BlockPos from, BlockPos to, boolean simulate){
+		if(ServerCore.canCreatePipeAffectBlock(level, from, to, simulate))
+			return null;
+		return FluidStack.EMPTY;
 	}
 
 	public static List<? extends Entity> onPressurePlateEntityCount(List<? extends Entity> entities) {
