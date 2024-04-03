@@ -22,10 +22,13 @@ import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,7 +43,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.raid.Raid;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -75,6 +80,7 @@ import xaero.pac.common.server.claims.IServerRegionClaims;
 import xaero.pac.common.server.claims.player.IServerPlayerClaimInfo;
 import xaero.pac.common.server.config.ServerConfig;
 import xaero.pac.common.server.core.accessor.ICreateArmInteractionPoint;
+import xaero.pac.common.server.core.accessor.ICreateContraption;
 import xaero.pac.common.server.parties.party.IServerParty;
 import xaero.pac.common.server.world.ServerLevelHelper;
 
@@ -190,7 +196,7 @@ public class ServerCore {
 		return isCreateModAllowed(serverData, level, pos.getX() >> 4, pos.getZ() >> 4, sourceOrAnchor, true, affectsBlocks, affectsEntities);
 	}
 
-	public static boolean isCreateModAllowed(Level level, BlockPos pos, BlockPos sourceOrAnchor){
+	public static boolean isCreateModAllowed(Level level, BlockPos pos, ICreateContraption contraption){
 		//cant rename
 		//called when a contraption tries to move a block
 		if(level.getServer() == null)
@@ -198,7 +204,7 @@ public class ServerCore {
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(level.getServer());
 		if(serverData == null)
 			return true;
-		return isCreateModAllowed(serverData, level, pos.getX() >> 4, pos.getZ() >> 4, sourceOrAnchor, true, true, false);
+		return isCreateModAllowed(serverData, level, pos.getX() >> 4, pos.getZ() >> 4, getEffectiveAnchor(contraption), true, true, false);
 	}
 
 	public static BlockPos CAPTURED_TARGET_POS;
@@ -206,6 +212,10 @@ public class ServerCore {
 		if(!isCreateModAllowed(level, CAPTURED_TARGET_POS, sourceOrAnchor, true, false))
 			return Blocks.BEDROCK.defaultBlockState();//fake bedrock won't be broken by create
 		return actual;
+	}
+
+	public static BlockState replaceBlockFetchOnCreateModBreak(BlockState actual, Level level, ICreateContraption contraption){
+		return replaceBlockFetchOnCreateModBreak(actual, level, getEffectiveAnchor(contraption));
 	}
 
 	public static Map<BlockPos, BlockState> CAPTURED_POS_STATE_MAP;
@@ -236,15 +246,15 @@ public class ServerCore {
 		return isCreateModAllowed(serverData, level, pos.getX() >> 4, pos.getZ() >> 4, placer.getBlockPos(), false, true, false);
 	}
 
-	public static void onCreateCollideEntities(List<Entity> entities, Entity contraption, BlockPos contraptionAnchor){
-		Level level = contraption.getLevel();
+	public static void onCreateCollideEntities(List<Entity> entities, Entity contraptionEntity, ICreateContraption contraption){
+		Level level = contraptionEntity.getLevel();
 		if(level == null || level.getServer() == null)
 			return;
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(level.getServer());
 		if(serverData == null)
 			return;
 		ServerLevel serverLevel = ServerLevelHelper.getServerLevel(level);
-		serverData.getChunkProtection().onCreateModAffectPositionedObjects(serverData, serverLevel, entities, Entity::chunkPosition, contraptionAnchor, true, true, false, true);
+		serverData.getChunkProtection().onCreateModAffectPositionedObjects(serverData, serverLevel, entities, Entity::chunkPosition, getEffectiveAnchor(contraption), true, true, false, true);
 	}
 
 	public static boolean isCreateMechanicalArmValid(BlockEntity arm, List<ICreateArmInteractionPoint> points){
@@ -319,8 +329,12 @@ public class ServerCore {
 		return !shouldProtect;
 	}
 
-	public static boolean isCreateDeployerBlockInteractionAllowed(Level level, BlockPos anchor, BlockPos pos){
+	private static boolean isCreateDeployerBlockInteractionAllowed(Level level, BlockPos anchor, BlockPos pos){
 		return isCreateModAllowed(level, pos, anchor, true, true);
+	}
+
+	public static boolean isCreateDeployerBlockInteractionAllowed(Level level, ICreateContraption contraption, BlockPos pos){
+		return isCreateDeployerBlockInteractionAllowed(level, getEffectiveAnchor(contraption), pos);
 	}
 
 	public static boolean isCreateTileDeployerBlockInteractionAllowed(BlockEntity tileEntity){
@@ -359,7 +373,8 @@ public class ServerCore {
 	private static Level CREATE_DISASSEMBLE_SUPER_GLUE_LEVEL;
 	private static BlockPos CREATE_DISASSEMBLE_SUPER_GLUE_ANCHOR;
 
-	public static void preCreateDisassembleSuperGlue(Level level, BlockPos anchor){
+	public static void preCreateDisassembleSuperGlue(Level level, ICreateContraption contraption){
+		BlockPos anchor = getEffectiveAnchor(contraption);
 		CREATE_DISASSEMBLE_SUPER_GLUE_LEVEL = level;
 		CREATE_DISASSEMBLE_SUPER_GLUE_ANCHOR = anchor;
 	}
@@ -373,6 +388,87 @@ public class ServerCore {
 		if(level != null && level == CREATE_DISASSEMBLE_SUPER_GLUE_LEVEL)
 			return CREATE_DISASSEMBLE_SUPER_GLUE_ANCHOR;
 		return null;
+	}
+
+	public static boolean canCreatePipeAffectBlock(Level level, BlockPos from, BlockPos to, boolean simulate){
+		if(level == null || simulate)
+			return true;
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(level.getServer());
+		return isCreateModAllowed(serverData, level, to.getX() >> 4, to.getZ() >> 4, from, false, true, true);
+	}
+
+	public static boolean canCreatePloughPos(Level level, ICreateContraption contraption, BlockPos pos){
+		if(level == null)
+			return true;
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(level.getServer());
+		BlockPos anchor = getEffectiveAnchor(contraption);
+		return isCreateModAllowed(serverData, level, pos.getX() >> 4, pos.getZ() >> 4, anchor, true, true, false);
+	}
+
+	private static boolean CREATE_PLACING_CONTRAPTION;
+	private static int CREATE_PLACING_CONTRAPTION_TICK;
+	private static boolean CREATE_PLACING_CONTRAPTION_USABLE = true;
+
+	private static boolean checkCreatePlacingContraptionUsable(MinecraftServer server){
+		if(CREATE_PLACING_CONTRAPTION && (server == null || server.getTickCount() != CREATE_PLACING_CONTRAPTION_TICK)){
+			CREATE_PLACING_CONTRAPTION = false;
+			CREATE_PLACING_CONTRAPTION_USABLE = false;
+			OpenPartiesAndClaims.LOGGER.warn("Create mod's minecart contraption placement capture isn't working properly. Turning it off...");
+		}
+		return CREATE_PLACING_CONTRAPTION_USABLE;
+	}
+
+	public static void preMinecartContraptionPlaced(UseOnContext context){
+		MinecraftServer server = context.getLevel().getServer();
+		if(server == null)
+			return;
+		//if this is called twice before calling post, then it's already suspicious without a tick count check
+		//using null server argument below
+		if(!checkCreatePlacingContraptionUsable(null))
+			return;
+		CREATE_PLACING_CONTRAPTION_TICK = server.getTickCount();
+		CREATE_PLACING_CONTRAPTION = true;
+	}
+
+	public static void postMinecartContraptionPlaced(){
+		CREATE_PLACING_CONTRAPTION = false;
+	}
+
+	public static boolean isPlacingCreateContraption(MinecraftServer server){
+		if(!checkCreatePlacingContraptionUsable(server))//tick check matters here
+			return false;
+		return CREATE_PLACING_CONTRAPTION;
+	}
+
+	public static BlockPos getEffectiveAnchor(ICreateContraption contraption){
+		if(contraption.getXaero_OPAC_placementPos() == null)
+			return contraption.getXaero_OPAC_anchor();
+		return contraption.getXaero_OPAC_placementPos();
+	}
+
+	private static final ResourceKey<Item> CREATE_COUPLING = ResourceKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("create", "minecart_coupling"));
+
+	public static boolean canCreateAddCoupling(Player player, Level world, int cartId1, int cartId2){
+		if(player == null)
+			return true;
+		MinecraftServer server = player.getServer();
+		if(server == null)
+			return true;
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(server);
+		if(serverData == null)
+			return true;
+		Item couplingItem = Registry.ITEM.get(CREATE_COUPLING);
+		if(couplingItem == null)
+			return true;
+		Entity cart1 = world.getEntity(cartId1);
+		ItemStack heldItem = new ItemStack(couplingItem);
+		if(cart1 != null && serverData.getChunkProtection().onEntityInteraction(serverData, null, player, cart1, heldItem, null, false, false))
+			return false;
+		Entity cart2 = world.getEntity(cartId2);
+		return cart2 == null || !serverData.getChunkProtection().onEntityInteraction(serverData, null, player, cart2, heldItem, null, false, false);
 	}
 
 	private static InteractionHand ENTITY_INTERACTION_HAND;
