@@ -54,6 +54,7 @@ import xaero.pac.common.claims.player.IPlayerClaimPosList;
 import xaero.pac.common.claims.player.IPlayerDimensionClaims;
 import xaero.pac.common.claims.tracker.api.IClaimsManagerTrackerRegisterAPI;
 import xaero.pac.common.entity.IEntity;
+import xaero.pac.common.mods.create.CreateContraptionHelper;
 import xaero.pac.common.parties.party.IPartyPlayerInfo;
 import xaero.pac.common.parties.party.ally.IPartyAlly;
 import xaero.pac.common.parties.party.member.IPartyMember;
@@ -68,6 +69,7 @@ import xaero.pac.common.server.claims.command.ClaimsCommandRegister;
 import xaero.pac.common.server.claims.player.IServerPlayerClaimInfo;
 import xaero.pac.common.server.command.CommonCommandRegister;
 import xaero.pac.common.server.core.ServerCore;
+import xaero.pac.common.server.core.accessor.ICreateContraptionEntity;
 import xaero.pac.common.server.parties.command.PartyCommandRegister;
 import xaero.pac.common.server.parties.party.IServerParty;
 import xaero.pac.common.server.parties.system.api.IPlayerPartySystemRegisterAPI;
@@ -379,7 +381,8 @@ public abstract class CommonEvents {
 					ServerCore.postCreateDisassembleSuperGlue();
 					return serverData.getChunkProtection().onCreateGlueEntityFromAnchor(serverData, entity, contraptionAnchor);
 				}
-			}
+			} else if(entity instanceof ICreateContraptionEntity contraptionEntity)
+				CreateContraptionHelper.handleCreateContraptionAdded(entity, contraptionEntity);
 		} finally {
 			if(((IEntity)entity).getXaero_OPAC_lastChunkEntryDimension() == null)
 				((IEntity)entity).setXaero_OPAC_lastChunkEntryDimension(entity.level().dimension());
