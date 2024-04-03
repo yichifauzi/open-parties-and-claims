@@ -24,6 +24,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
@@ -448,7 +450,7 @@ public class ServerCore {
 		return contraption.getXaero_OPAC_placementPos();
 	}
 
-	private static final ResourceKey<Item> CREATE_COUPLING = ResourceKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("create", "minecart_coupling"));
+	private static final ResourceKey<Item> CREATE_COUPLING = ResourceKey.create(Registries.ITEM, new ResourceLocation("create", "minecart_coupling"));
 
 	public static boolean canCreateAddCoupling(Player player, Level world, int cartId1, int cartId2){
 		if(player == null)
@@ -460,7 +462,7 @@ public class ServerCore {
 				serverData = ServerData.from(server);
 		if(serverData == null)
 			return true;
-		Item couplingItem = Registry.ITEM.get(CREATE_COUPLING);
+		Item couplingItem = BuiltInRegistries.ITEM.get(CREATE_COUPLING);
 		if(couplingItem == null)
 			return true;
 		Entity cart1 = world.getEntity(cartId1);
