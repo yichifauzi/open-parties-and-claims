@@ -1,6 +1,6 @@
 /*
  * Open Parties and Claims - adds chunk claims and player parties to Minecraft
- * Copyright (C) 2022-2023, Xaero <xaero1996@gmail.com> and contributors
+ * Copyright (C) 2022-2024, Xaero <xaero1996@gmail.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of version 3 of the GNU Lesser General Public License
@@ -18,22 +18,13 @@
 
 package xaero.pac.common.packet;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import xaero.pac.common.packet.type.PacketType;
 
-public class ServerPacketReceiver extends PacketReceiver<ServerPlayer> implements ServerPlayNetworking.PlayChannelHandler {
+public class ServerPacketReceiver extends PacketReceiver<ServerPlayer> {
 
-	public ServerPacketReceiver(PacketHandlerFabric packetHandlerFabric) {
-		super(packetHandlerFabric);
-	}
-
-	@Override
-	public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
-		receive(server, buf, player);
+	public ServerPacketReceiver(PacketHandlerFull packetHandlerFull) {
+		super(packetHandlerFull);
 	}
 
 	@Override
