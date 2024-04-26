@@ -36,10 +36,6 @@ public class PacketHandlerNeoForge implements IPacketHandler {
 	public static final SimpleChannel NETWORK = NetworkRegistry.ChannelBuilder.named(OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION).networkProtocolVersion(() -> ""+PROTOCOL_VERSION).clientAcceptedVersions(s->true).serverAcceptedVersions(s->true).simpleChannel();
 
 	@Override
-	public void onServerAboutToStart() {
-	}
-
-	@Override
 	public <P> void register(int index, Class<P> type,
 							 BiConsumer<P, FriendlyByteBuf> encoder,
 							 Function<FriendlyByteBuf, P> decoder,
