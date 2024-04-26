@@ -1,6 +1,6 @@
 /*
  * Open Parties and Claims - adds chunk claims and player parties to Minecraft
- * Copyright (C) 2022-2023, Xaero <xaero1996@gmail.com> and contributors
+ * Copyright (C) 2022-2024, Xaero <xaero1996@gmail.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of version 3 of the GNU Lesser General Public License
@@ -20,20 +20,21 @@ package xaero.pac.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.thread.ReentrantBlockableEventLoop;
+import xaero.pac.common.packet.type.PacketType;
 
 public abstract class PacketReceiver<C> {
-	private final PacketHandlerFabric packetHandlerFabric;
 
-	public PacketReceiver(PacketHandlerFabric packetHandlerFabric) {
-		this.packetHandlerFabric = packetHandlerFabric;
+	private final PacketHandlerFull packetHandlerFull;
+
+	public PacketReceiver(PacketHandlerFull packetHandlerFull) {
+		this.packetHandlerFull = packetHandlerFull;
 	}
 
 	private PacketType<?> getPacketType(FriendlyByteBuf buf) {
-		if(buf.readableBytes() > 0) {
-			int index = buf.readByte();
-			return packetHandlerFabric.getPacketTypeByIndex(index);
-		}
-		return null;
+		if(buf.readableBytes() <= 0)
+			return null;
+		int index = buf.readByte();
+		return packetHandlerFull.getPacketTypeByIndex(index);
 	}
 
 	protected void receive(ReentrantBlockableEventLoop<?> executor, FriendlyByteBuf buf, C context){
@@ -41,11 +42,12 @@ public abstract class PacketReceiver<C> {
 	}
 
 	private <T> void receive(ReentrantBlockableEventLoop<?> executor, PacketType<T> packetType, FriendlyByteBuf buf, C context){
-		if(packetType != null){
-			T packet = packetType.getDecoder().apply(buf);
-			if(isCorrectSide(packetType))
-				executor.execute(getTask(packetType, packet, context));
-		}
+		if(packetType == null)
+			return;
+		if(!isCorrectSide(packetType))
+			return;
+		T packet = packetType.getDecoder().apply(buf);
+		executor.execute(getTask(packetType, packet, context));
 	}
 
 	protected abstract <T> boolean isCorrectSide(PacketType<T> packetType);

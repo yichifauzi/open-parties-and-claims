@@ -1,6 +1,6 @@
 /*
  * Open Parties and Claims - adds chunk claims and player parties to Minecraft
- * Copyright (C) 2022-2023, Xaero <xaero1996@gmail.com> and contributors
+ * Copyright (C) 2022-2024, Xaero <xaero1996@gmail.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of version 3 of the GNU Lesser General Public License
@@ -18,23 +18,22 @@
 
 package xaero.pac.common.packet;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import xaero.pac.common.packet.type.PacketType;
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
+public abstract class ClientPacketReceiver extends PacketReceiver<Object> {
 
-public interface IPacketHandler {
+	public ClientPacketReceiver(PacketHandlerFull packetHandlerFull) {
+		super(packetHandlerFull);
+	}
 
-	public <P> void register(int index, Class<P> type,
-							 BiConsumer<P, FriendlyByteBuf> encoder,
-							 Function<FriendlyByteBuf, P> decoder,
-							 BiConsumer<P, ServerPlayer> serverHandler,
-							 Consumer<P> clientHandler);
+	@Override
+	protected <T> boolean isCorrectSide(PacketType<T> packetType) {
+		return packetType.getClientHandler() != null;
+	}
 
-	public <T> void sendToServer(T packet);
-
-	public <T> void sendToPlayer(ServerPlayer player, T packet);
+	@Override
+	protected <T> Runnable getTask(PacketType<T> packetType, T packet, Object context) {
+		return () -> packetType.getClientHandler().accept(packet);
+	}
 
 }

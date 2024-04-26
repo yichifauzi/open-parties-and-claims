@@ -30,7 +30,7 @@ public class ClientPacketHandlerFabric {
 	}
 
 	public void registerOnClient(){
-		ClientPlayNetworking.registerGlobalReceiver(OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION, new ClientPacketReceiver(packetHandlerFabric));
+		ClientPlayNetworking.registerGlobalReceiver(OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION, new ClientPacketReceiverFabric(packetHandlerFabric));
 	}
 
 	public <T> void sendToServer(T packet) {
