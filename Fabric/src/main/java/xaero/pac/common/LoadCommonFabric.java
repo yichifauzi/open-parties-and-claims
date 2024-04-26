@@ -34,6 +34,7 @@ public class LoadCommonFabric<L extends LoadCommon> {
 
 	public void loadCommon() {
 		loader.loadCommon();
+		modMain.getPacketHandler().registerCommon();
 		modMain.getCommonEvents().registerFabricAPIEvents();
 	}
 

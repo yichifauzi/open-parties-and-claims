@@ -1,6 +1,6 @@
 /*
  * Open Parties and Claims - adds chunk claims and player parties to Minecraft
- * Copyright (C) 2022-2023, Xaero <xaero1996@gmail.com> and contributors
+ * Copyright (C) 2024, Xaero <xaero1996@gmail.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of version 3 of the GNU Lesser General Public License
@@ -18,31 +18,22 @@
 
 package xaero.pac.common.packet;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
-public class ClientPacketReceiver extends PacketReceiver<Object> implements ClientPlayNetworking.PlayChannelHandler {
+public class ServerPacketReceiverFabric extends ServerPacketReceiver implements ServerPlayNetworking.PlayChannelHandler {
 
-	public ClientPacketReceiver(PacketHandlerFabric packetHandlerFabric) {
+	public ServerPacketReceiverFabric(PacketHandlerFabric packetHandlerFabric) {
 		super(packetHandlerFabric);
 	}
 
 	@Override
-	public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
-		receive(client, buf, null);
-	}
-
-	@Override
-	protected <T> boolean isCorrectSide(PacketType<T> packetType) {
-		return packetType.getClientHandler() != null;
-	}
-
-	@Override
-	protected <T> Runnable getTask(PacketType<T> packetType, T packet, Object context) {
-		return () -> packetType.getClientHandler().accept(packet);
+	public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
+		receive(server, buf, player);
 	}
 
 }

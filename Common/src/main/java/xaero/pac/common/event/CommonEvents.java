@@ -110,7 +110,6 @@ public abstract class CommonEvents {
 
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(server);
 		if(serverData != null) {
-			modMain.getPacketHandler().onServerAboutToStart();
 			try {
 				serverData.getPlayerPermissionSystemManager().preRegister();
 				serverData.getPlayerPartySystemManager().preRegister();

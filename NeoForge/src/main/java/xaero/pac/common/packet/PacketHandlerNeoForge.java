@@ -51,10 +51,6 @@ public class PacketHandlerNeoForge implements IPacketHandler {
 	}
 
 	@Override
-	public void onServerAboutToStart() {
-	}
-
-	@Override
 	public <P> void register(int index, Class<P> type,
 							 BiConsumer<P, FriendlyByteBuf> encoder,
 							 Function<FriendlyByteBuf, P> decoder,

@@ -18,31 +18,19 @@
 
 package xaero.pac.common.packet;
 
-import io.netty.buffer.Unpooled;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import xaero.pac.OpenPartiesAndClaims;
+import xaero.pac.common.packet.type.PacketTypeManager;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-public class PacketHandlerFabric implements IPacketHandler {
-
-	private final Int2ObjectOpenHashMap<PacketType<?>> int2PacketType;
-	private final Map<Class<?>, PacketType<?>> class2PacketType;
+public class PacketHandlerFabric extends PacketHandlerFull {
 
 	private ClientPacketHandlerFabric clientPacketHandlerFabric;
 
-	private PacketHandlerFabric(Int2ObjectOpenHashMap<PacketType<?>> int2PacketType, Map<Class<?>, PacketType<?>> class2PacketType){
-		this.int2PacketType = int2PacketType;
-		this.class2PacketType = class2PacketType;
+	private PacketHandlerFabric(PacketTypeManager packetTypeManager){
+		super(packetTypeManager);
 	}
 
 	private void setClientPacketHandlerFabric(ClientPacketHandlerFabric clientPacketHandlerFabric) {
@@ -53,20 +41,8 @@ public class PacketHandlerFabric implements IPacketHandler {
 		clientPacketHandlerFabric.registerOnClient();
 	}
 
-	@Override
-	public void onServerAboutToStart() {
-		ServerPlayNetworking.registerGlobalReceiver(OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION, new ServerPacketReceiver(this));
-	}
-
-	@Override
-	public <P> void register(int index, Class<P> type, BiConsumer<P, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, ServerPlayer> serverHandler, Consumer<P> clientHandler) {
-		PacketType<P> packetType = new PacketType<>(index, type, encoder, decoder, serverHandler, clientHandler);
-		if(int2PacketType.containsKey(index))
-			throw new IllegalArgumentException("duplicate index!");
-		if(class2PacketType.containsKey(type))
-			throw new IllegalArgumentException("duplicate packet class!");
-		int2PacketType.put(index, packetType);
-		class2PacketType.put(type, packetType);
+	public void registerCommon() {
+		ServerPlayNetworking.registerGlobalReceiver(OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION, new ServerPacketReceiverFabric(this));
 	}
 
 	@Override
@@ -79,32 +55,23 @@ public class PacketHandlerFabric implements IPacketHandler {
 		ServerPlayNetworking.send(player, OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION, getPacketBuffer(packet));
 	}
 
-	<T> FriendlyByteBuf getPacketBuffer(T packet){
-		PacketType<?> packetTypePreCast = class2PacketType.get(packet.getClass());
-		if(packetTypePreCast == null)
-			throw new IllegalArgumentException("unregistered packet class!");
-		@SuppressWarnings("unchecked")
-		PacketType<T> packetType = (PacketType<T>) packetTypePreCast;
-		FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-		buffer.writeByte(packetType.getIndex());
-		packetType.getEncoder().accept(packet, buffer);
-		return buffer;
-	}
+	public static class Builder extends PacketHandlerFull.Builder {
 
-	public PacketType<?> getPacketTypeByIndex(int index){
-		return int2PacketType.get(index);
-	}
-
-	public static class Builder {
-
-		private Builder(){}
+		private Builder(){
+			super();
+		}
 
 		public Builder setDefault(){
 			return this;
 		}
 
 		public PacketHandlerFabric build(){
-			PacketHandlerFabric result = new PacketHandlerFabric(new Int2ObjectOpenHashMap<>(), new HashMap<>());
+			return (PacketHandlerFabric) super.build();
+		}
+
+		@Override
+		protected PacketHandlerFull buildInternal(PacketTypeManager packetTypeManager) {
+			PacketHandlerFabric result = new PacketHandlerFabric(packetTypeManager);
 			if(FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
 				result.setClientPacketHandlerFabric(new ClientPacketHandlerFabric(result));
 			return result;
