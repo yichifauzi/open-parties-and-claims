@@ -37,10 +37,6 @@ public class PacketHandlerForge implements IPacketHandler {
 	public static final SimpleChannel NETWORK = NetworkRegistry.newSimpleChannel(OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION, () -> PROTOCOL_VERSION, NetworkRegistry.acceptMissingOr(PROTOCOL_VERSION), NetworkRegistry.acceptMissingOr(PROTOCOL_VERSION));
 
 	@Override
-	public void onServerAboutToStart() {
-	}
-
-	@Override
 	public <P> void register(int index, Class<P> type,
 							 BiConsumer<P, FriendlyByteBuf> encoder,
 							 Function<FriendlyByteBuf, P> decoder,

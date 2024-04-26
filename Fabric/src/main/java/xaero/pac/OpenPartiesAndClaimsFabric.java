@@ -84,4 +84,9 @@ public class OpenPartiesAndClaimsFabric extends OpenPartiesAndClaims implements 
 		this.commonEvents = commonEvents;
 	}
 
+	@Override
+	public PacketHandlerFabric getPacketHandler(){
+		return (PacketHandlerFabric) super.getPacketHandler();
+	}
+
 }
