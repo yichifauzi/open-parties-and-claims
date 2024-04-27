@@ -45,8 +45,7 @@ public abstract class PacketHandlerFull implements IPacketHandler {
 		packetTypeManager.register(index, type, encoder, decoder, serverHandler, clientHandler);
 	}
 
-	public <T> void encodePacket(T packet, FriendlyByteBuf buffer) {
-		PacketType<T> packetType = packetTypeManager.getType(packet);
+	public static <T> void encodePacket(PacketType<T> packetType, T packet, FriendlyByteBuf buffer) {
 		if(packetType == null)
 			throw new IllegalArgumentException("unregistered packet class!");
 		buffer.writeByte(packetType.getIndex());
@@ -55,7 +54,7 @@ public abstract class PacketHandlerFull implements IPacketHandler {
 
 	<T> FriendlyByteBuf getPacketBuffer(T packet){
 		FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-		encodePacket(packet, buffer);
+		encodePacket(packetTypeManager.getType(packet), packet, buffer);
 		return buffer;
 	}
 
