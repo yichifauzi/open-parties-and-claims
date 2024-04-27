@@ -22,6 +22,8 @@ import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPlayPayloadHandler;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import xaero.pac.common.packet.payload.PacketPayload;
+import xaero.pac.common.packet.type.PacketType;
 
 public class PacketPayloadHandler implements IPlayPayloadHandler<PacketPayload<?>> {
 

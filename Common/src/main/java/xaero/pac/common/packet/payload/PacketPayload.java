@@ -16,12 +16,14 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xaero.pac.common.packet;
+package xaero.pac.common.packet.payload;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import xaero.pac.OpenPartiesAndClaims;
+import xaero.pac.common.packet.PacketHandlerFull;
+import xaero.pac.common.packet.type.PacketType;
 
 public class PacketPayload<P> implements CustomPacketPayload {
 
@@ -35,7 +37,7 @@ public class PacketPayload<P> implements CustomPacketPayload {
 
 	@Override
 	public void write(FriendlyByteBuf buf) {
-		PacketHandlerNeoForge.write(packetType, packet, buf);
+		PacketHandlerFull.encodePacket(packetType, packet, buf);
 	}
 
 	@Override

@@ -19,28 +19,22 @@
 package xaero.pac.common.packet;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import xaero.pac.OpenPartiesAndClaims;
+import xaero.pac.common.packet.payload.PacketPayload;
+import xaero.pac.common.packet.payload.PacketPayloadReader;
+import xaero.pac.common.packet.type.PacketTypeManager;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
-public class PacketHandlerNeoForge implements IPacketHandler {
+public class PacketHandlerNeoForge extends PacketHandlerFull {
 
 	private static final String PROTOCOL_VERSION = "1.4.0";
 
-	private final Int2ObjectOpenHashMap<PacketType<?>> int2PacketType;
-	private final Map<Class<?>, PacketType<?>> class2PacketType;
-
 	public PacketHandlerNeoForge() {
-		this.int2PacketType = new Int2ObjectOpenHashMap<>();
-		this.class2PacketType = new HashMap<>();
+		super(PacketTypeManager.Builder.begin(Int2ObjectOpenHashMap::new, HashMap::new).build());
 	}
 
 	public static void registerPayloadHandler(RegisterPayloadHandlerEvent event) {
@@ -51,43 +45,13 @@ public class PacketHandlerNeoForge implements IPacketHandler {
 	}
 
 	@Override
-	public <P> void register(int index, Class<P> type,
-							 BiConsumer<P, FriendlyByteBuf> encoder,
-							 Function<FriendlyByteBuf, P> decoder,
-							 BiConsumer<P, ServerPlayer> serverHandler,
-							 Consumer<P> clientHandler) {
-		PacketType<P> packetType = new PacketType<>(index, type, encoder, decoder, serverHandler, clientHandler);
-		int2PacketType.put(index, packetType);
-		class2PacketType.put(type, packetType);
-	}
-
-	public PacketType<?> getByIndex(int index){
-		return int2PacketType.get(index);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <P> PacketType<P> getByClass(Class<P> clazz){
-		return (PacketType<P>) class2PacketType.get(clazz);
-	}
-
-	@SuppressWarnings("unchecked")
-	private <P> PacketType<P> getType(P packet){
-		return (PacketType<P>) getByClass(packet.getClass());
-	}
-
-	public static <P> void write(PacketType<P> type, P packet, FriendlyByteBuf buf){
-		buf.writeByte(type.getIndex());
-		type.getEncoder().accept(packet, buf);
-	}
-
-	@Override
 	public <P> void sendToServer(P packet) {
-		PacketDistributor.SERVER.noArg().send(new PacketPayload<>(getType(packet), packet));
+		PacketDistributor.SERVER.noArg().send(new PacketPayload<>(packetTypeManager.getType(packet), packet));
 	}
 
 	@Override
 	public <P> void sendToPlayer(ServerPlayer player, P packet) {
-		PacketDistributor.PLAYER.with(player).send(new PacketPayload<>(getType(packet), packet));
+		PacketDistributor.PLAYER.with(player).send(new PacketPayload<>(packetTypeManager.getType(packet), packet));
 	}
 
 }

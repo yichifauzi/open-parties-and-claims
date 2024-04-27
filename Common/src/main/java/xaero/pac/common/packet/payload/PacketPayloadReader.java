@@ -16,10 +16,12 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xaero.pac.common.packet;
+package xaero.pac.common.packet.payload;
 
 import net.minecraft.network.FriendlyByteBuf;
 import xaero.pac.OpenPartiesAndClaims;
+import xaero.pac.common.packet.PacketHandlerFull;
+import xaero.pac.common.packet.type.PacketType;
 
 public class PacketPayloadReader implements FriendlyByteBuf.Reader<PacketPayload<?>> {
 
@@ -28,7 +30,7 @@ public class PacketPayloadReader implements FriendlyByteBuf.Reader<PacketPayload
 		if(friendlyByteBuf.readableBytes() <= 0)
 			return null;
 		int index = friendlyByteBuf.readByte();
-		PacketType<?> packetType = ((PacketHandlerNeoForge)OpenPartiesAndClaims.INSTANCE.getPacketHandler()).getByIndex(index);
+		PacketType<?> packetType = ((PacketHandlerFull)OpenPartiesAndClaims.INSTANCE.getPacketHandler()).getByIndex(index);
 		return readPacketPayloadTyped(packetType, friendlyByteBuf);
 	}
 

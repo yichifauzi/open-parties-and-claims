@@ -62,6 +62,10 @@ public abstract class PacketHandlerFull implements IPacketHandler {
 		return packetTypeManager.getByIndex(index);
 	}
 
+	public PacketType<?> getByIndex(int index) {
+		return packetTypeManager.getByIndex(index);
+	}
+
 	public static abstract class Builder {
 
 		protected Builder(){}
