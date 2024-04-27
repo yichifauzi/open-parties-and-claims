@@ -23,12 +23,15 @@ import xaero.pac.OpenPartiesAndClaims;
 import xaero.pac.common.packet.PacketHandlerFull;
 import xaero.pac.common.packet.type.PacketType;
 
+import javax.annotation.Nonnull;
+
 public class PacketPayloadReader implements FriendlyByteBuf.Reader<PacketPayload<?>> {
 
+	@Nonnull
 	@Override
 	public PacketPayload<?> apply(FriendlyByteBuf friendlyByteBuf) {
 		if(friendlyByteBuf.readableBytes() <= 0)
-			return null;
+			return new PacketPayload<>(null, null);
 		int index = friendlyByteBuf.readByte();
 		PacketType<?> packetType = ((PacketHandlerFull)OpenPartiesAndClaims.INSTANCE.getPacketHandler()).getByIndex(index);
 		return readPacketPayloadTyped(packetType, friendlyByteBuf);

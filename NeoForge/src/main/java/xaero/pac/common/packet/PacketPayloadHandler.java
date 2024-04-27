@@ -33,9 +33,9 @@ public class PacketPayloadHandler implements IPlayPayloadHandler<PacketPayload<?
 	}
 
 	private <P> void handleTyped(PacketPayload<P> payload, PlayPayloadContext context){
-		if(payload == null)
-			return;
 		PacketType<P> packetType = payload.getPacketType();
+		if(packetType == null)
+			return;
 		P packet = payload.getPacket();
 		if(packet == null)
 			return;
