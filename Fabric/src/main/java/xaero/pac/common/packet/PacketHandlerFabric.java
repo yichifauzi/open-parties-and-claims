@@ -19,10 +19,12 @@
 package xaero.pac.common.packet;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.level.ServerPlayer;
-import xaero.pac.OpenPartiesAndClaims;
+import xaero.pac.common.packet.payload.PacketPayload;
+import xaero.pac.common.packet.payload.PacketPayloadCodec;
 import xaero.pac.common.packet.type.PacketTypeManager;
 
 public class PacketHandlerFabric extends PacketHandlerFull {
@@ -42,7 +44,10 @@ public class PacketHandlerFabric extends PacketHandlerFull {
 	}
 
 	public void registerCommon() {
-		ServerPlayNetworking.registerGlobalReceiver(OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION, new ServerPacketReceiverFabric(this));
+		PacketPayloadCodec payloadCodec = new PacketPayloadCodec();
+		PayloadTypeRegistry.playS2C().register(PacketPayload.TYPE, payloadCodec);
+		PayloadTypeRegistry.playC2S().register(PacketPayload.TYPE, payloadCodec);
+		ServerPlayNetworking.registerGlobalReceiver(PacketPayload.TYPE, new ServerPacketReceiverFabric(this));
 	}
 
 	@Override
@@ -52,7 +57,7 @@ public class PacketHandlerFabric extends PacketHandlerFull {
 
 	@Override
 	public <T> void sendToPlayer(ServerPlayer player, T packet) {
-		ServerPlayNetworking.send(player, OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION, getPacketBuffer(packet));
+		ServerPlayNetworking.send(player, createPayload(packet));
 	}
 
 	public static class Builder extends PacketHandlerFull.Builder {

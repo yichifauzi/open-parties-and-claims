@@ -22,17 +22,22 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import earth.terrarium.prometheus.api.roles.options.RoleOption;
 import earth.terrarium.prometheus.api.roles.options.RoleOptionSerializer;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import xaero.pac.OpenPartiesAndClaims;
 import xaero.pac.common.server.player.permission.api.IPermissionNodeAPI;
 import xaero.pac.common.server.player.permission.api.UsedPermissionNodes;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class OPACOptions implements RoleOption<OPACOptions> {
 
@@ -78,7 +83,7 @@ public class OPACOptions implements RoleOption<OPACOptions> {
 		if(type == Short.class) return (ops, o) -> ops.createShort((Short)o);
 		if(type == Byte.class) return (ops, o) -> ops.createByte((Byte)o);
 		if(type == String.class) return (ops, o) -> ops.createString((String)o);
-		if(type == Component.class) return (ops, o) -> ops.createString(Component.Serializer.toJson((Component)o));
+		if(type == Component.class) return (ops, o) -> ops.createString(Component.Serializer.toJson((Component)o, USELESS_HOLDER_LOOKUP_PROVIDER));
 		return null;
 	}
 
@@ -92,7 +97,7 @@ public class OPACOptions implements RoleOption<OPACOptions> {
 		if(type == Short.class) return (ops, o) -> (Optional<V>)ops.getNumberValue(o).result().map(Number::shortValue);
 		if(type == Byte.class) return (ops, o) -> (Optional<V>)ops.getNumberValue(o).result().map(Number::byteValue);
 		if(type == String.class) return (ops, o) -> (Optional<V>)ops.getStringValue(o).result();
-		if(type == Component.class) return (ops, o) -> (Optional<V>)ops.getStringValue(o).result().map(Component.Serializer::fromJson);
+		if(type == Component.class) return (ops, o) -> (Optional<V>)ops.getStringValue(o).result().map(s -> Component.Serializer.fromJson(s, USELESS_HOLDER_LOOKUP_PROVIDER));
 		return null;
 	}
 
@@ -120,7 +125,7 @@ public class OPACOptions implements RoleOption<OPACOptions> {
 			@Override
 			public <T> DataResult<Pair<OPACOptions, T>> decode(DynamicOps<T> ops, T input) {
 				OPACOptions options = factory.get();
-				ops.getMapEntries(input).get().ifLeft(c -> c.accept((encodedNode, encodedValue) -> {
+				ops.getMapEntries(input).getOrThrow().accept((encodedNode, encodedValue) -> {
 					String key = ops.getStringValue(encodedNode).result().orElse(null);
 					if(key == null)
 						return;
@@ -133,7 +138,7 @@ public class OPACOptions implements RoleOption<OPACOptions> {
 						return;
 					}
 					options.values.put(node, result.get());
-				}));
+				});
 				return DataResult.success(Pair.of(options, input));
 			}
 		};
@@ -159,5 +164,18 @@ public class OPACOptions implements RoleOption<OPACOptions> {
 			Codec.of(getEncoder(), getDecoder(OPACOptions::new)),
 			new OPACOptions()
 	);
+
+	public static HolderLookup.Provider USELESS_HOLDER_LOOKUP_PROVIDER = new HolderLookup.Provider(){
+		@Nonnull
+		@Override
+		public Stream<ResourceKey<? extends Registry<?>>> listRegistries() {
+			return Stream.empty();
+		}
+		@Nonnull
+		@Override
+		public <T> Optional<HolderLookup.RegistryLookup<T>> lookup(ResourceKey<? extends Registry<? extends T>> var1) {
+			return Optional.empty();
+		}
+	};
 
 }

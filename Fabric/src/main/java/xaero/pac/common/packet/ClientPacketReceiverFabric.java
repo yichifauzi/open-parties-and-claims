@@ -19,20 +19,16 @@
 package xaero.pac.common.packet;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.FriendlyByteBuf;
+import xaero.pac.common.packet.payload.PacketPayload;
 
-public class ClientPacketReceiverFabric extends ClientPacketReceiver implements ClientPlayNetworking.PlayChannelHandler {
+public class ClientPacketReceiverFabric extends ClientPacketReceiver implements ClientPlayNetworking.PlayPayloadHandler<PacketPayload<?>> {
 
 	public ClientPacketReceiverFabric(PacketHandlerFabric packetHandlerFabric) {
 		super(packetHandlerFabric);
 	}
 
 	@Override
-	public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
-		receive(client, buf, null);
+	public void receive(PacketPayload<?> payload, ClientPlayNetworking.Context context) {
+		receive(context.client(), payload, null);
 	}
-
 }

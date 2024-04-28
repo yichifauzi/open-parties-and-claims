@@ -21,10 +21,10 @@ package xaero.pac.common.packet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import xaero.pac.OpenPartiesAndClaims;
 import xaero.pac.common.packet.payload.PacketPayload;
-import xaero.pac.common.packet.payload.PacketPayloadReader;
+import xaero.pac.common.packet.payload.PacketPayloadCodec;
 import xaero.pac.common.packet.type.PacketTypeManager;
 
 import java.util.HashMap;
@@ -37,21 +37,21 @@ public class PacketHandlerNeoForge extends PacketHandlerFull {
 		super(PacketTypeManager.Builder.begin(Int2ObjectOpenHashMap::new, HashMap::new).build());
 	}
 
-	public static void registerPayloadHandler(RegisterPayloadHandlerEvent event) {
+	public static void registerPayloadHandler(RegisterPayloadHandlersEvent event) {
 		event.registrar(OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION.getNamespace())
 				.versioned(PROTOCOL_VERSION)
 				.optional()
-				.play(OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION, new PacketPayloadReader(), new PacketPayloadHandler());
+				.playBidirectional(PacketPayload.TYPE, new PacketPayloadCodec(), new PacketPayloadHandler());
 	}
 
 	@Override
 	public <P> void sendToServer(P packet) {
-		PacketDistributor.SERVER.noArg().send(new PacketPayload<>(packetTypeManager.getType(packet), packet));
+		PacketDistributor.sendToServer(createPayload(packet));
 	}
 
 	@Override
 	public <P> void sendToPlayer(ServerPlayer player, P packet) {
-		PacketDistributor.PLAYER.with(player).send(new PacketPayload<>(packetTypeManager.getType(packet), packet));
+		PacketDistributor.sendToPlayer(player, createPayload(packet));
 	}
 
 }

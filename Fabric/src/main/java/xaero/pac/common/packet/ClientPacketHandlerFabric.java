@@ -19,7 +19,7 @@
 package xaero.pac.common.packet;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import xaero.pac.OpenPartiesAndClaims;
+import xaero.pac.common.packet.payload.PacketPayload;
 
 public class ClientPacketHandlerFabric {
 
@@ -30,11 +30,11 @@ public class ClientPacketHandlerFabric {
 	}
 
 	public void registerOnClient(){
-		ClientPlayNetworking.registerGlobalReceiver(OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION, new ClientPacketReceiverFabric(packetHandlerFabric));
+		ClientPlayNetworking.registerGlobalReceiver(PacketPayload.TYPE, new ClientPacketReceiverFabric(packetHandlerFabric));
 	}
 
 	public <T> void sendToServer(T packet) {
-		ClientPlayNetworking.send(OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION, packetHandlerFabric.getPacketBuffer(packet));
+		ClientPlayNetworking.send(packetHandlerFabric.createPayload(packet));
 	}
 
 }

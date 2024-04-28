@@ -18,14 +18,13 @@
 
 package xaero.pac.common.packet.payload;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import xaero.pac.OpenPartiesAndClaims;
-import xaero.pac.common.packet.PacketHandlerFull;
 import xaero.pac.common.packet.type.PacketType;
 
 public class PacketPayload<P> implements CustomPacketPayload {
+
+	public final static Type<PacketPayload<?>> TYPE = new Type<>(OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION);
 
 	private final PacketType<P> packetType;
 	private final P packet;
@@ -36,13 +35,8 @@ public class PacketPayload<P> implements CustomPacketPayload {
 	}
 
 	@Override
-	public void write(FriendlyByteBuf buf) {
-		PacketHandlerFull.encodePacket(packetType, packet, buf);
-	}
-
-	@Override
-	public ResourceLocation id() {
-		return OpenPartiesAndClaims.MAIN_CHANNEL_LOCATION;
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
 	}
 
 	public PacketType<P> getPacketType() {
@@ -52,5 +46,4 @@ public class PacketPayload<P> implements CustomPacketPayload {
 	public P getPacket() {
 		return packet;
 	}
-
 }

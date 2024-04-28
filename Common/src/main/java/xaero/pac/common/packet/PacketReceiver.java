@@ -20,6 +20,7 @@ package xaero.pac.common.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.thread.ReentrantBlockableEventLoop;
+import xaero.pac.common.packet.payload.PacketPayload;
 import xaero.pac.common.packet.type.PacketType;
 
 public abstract class PacketReceiver<C> {
@@ -37,16 +38,13 @@ public abstract class PacketReceiver<C> {
 		return packetHandlerFull.getPacketTypeByIndex(index);
 	}
 
-	protected void receive(ReentrantBlockableEventLoop<?> executor, FriendlyByteBuf buf, C context){
-		receive(executor, getPacketType(buf), buf, context);
-	}
-
-	private <T> void receive(ReentrantBlockableEventLoop<?> executor, PacketType<T> packetType, FriendlyByteBuf buf, C context){
+	protected <T> void receive(ReentrantBlockableEventLoop<?> executor, PacketPayload<T> payload, C context){
+		PacketType<T> packetType = payload.getPacketType();
 		if(packetType == null)
 			return;
 		if(!isCorrectSide(packetType))
 			return;
-		T packet = packetType.getDecoder().apply(buf);
+		T packet = payload.getPacket();
 		executor.execute(getTask(packetType, packet, context));
 	}
 

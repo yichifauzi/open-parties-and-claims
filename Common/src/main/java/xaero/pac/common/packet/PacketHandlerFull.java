@@ -22,6 +22,7 @@ import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import xaero.pac.common.packet.payload.PacketPayload;
 import xaero.pac.common.packet.type.PacketType;
 import xaero.pac.common.packet.type.PacketTypeManager;
 
@@ -64,6 +65,10 @@ public abstract class PacketHandlerFull implements IPacketHandler {
 
 	public PacketType<?> getByIndex(int index) {
 		return packetTypeManager.getByIndex(index);
+	}
+
+	public <T> PacketPayload<?> createPayload(T packet){
+		return new PacketPayload<>(packetTypeManager.getType(packet), packet);
 	}
 
 	public static abstract class Builder {

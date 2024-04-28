@@ -69,7 +69,7 @@ public class OPACOptionsDisplay implements OptionDisplay {
 				entry = new TextBoxListEntry(currentValue, 200, node.getName(), node.getComment(), s -> true);
 			} else if(node.getType() == Component.class){
 				Component currentValue = options.getValueCast(node);
-				String text = Component.Serializer.toJson(currentValue);
+				String text = Component.Serializer.toJson(currentValue, OPACOptions.USELESS_HOLDER_LOOKUP_PROVIDER);
 				entry = new TextBoxListEntry(text, 5000, node.getName(), node.getComment(), s -> true);
 			} else {
 				TriState state = TriState.UNDEFINED;
@@ -122,7 +122,7 @@ public class OPACOptionsDisplay implements OptionDisplay {
 			if((node.getType() == String.class || node.getType() == Component.class) && entry instanceof TextBoxListEntry textBoxListEntry){
 				Object value = textBoxListEntry.getText();
 				if(node.getType() == Component.class)
-					value = Component.Serializer.fromJson(textBoxListEntry.getText());
+					value = Component.Serializer.fromJson(textBoxListEntry.getText(), OPACOptions.USELESS_HOLDER_LOOKUP_PROVIDER);
 				options.setValueCast(node, value);
 				return;
 			}

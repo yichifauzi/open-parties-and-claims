@@ -18,25 +18,31 @@
 
 package xaero.pac.common.config;
 
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ForgeConfigHelperNeoForge implements IForgeConfigHelper {
 
+	private ModContainer modContainer;
+
+	public void setModContainer(ModContainer modContainer) {
+		this.modContainer = modContainer;
+	}
+
 	@Override
 	public void registerServerConfig(ModConfigSpec spec) {
-		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, spec);
+		modContainer.registerConfig(ModConfig.Type.SERVER, spec);
 	}
 
 	@Override
 	public void registerClientConfig(ModConfigSpec spec) {
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, spec);
+		modContainer.registerConfig(ModConfig.Type.CLIENT, spec);
 	}
 
 	@Override
 	public void registerCommonConfig(ModConfigSpec spec) {
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, spec);
+		modContainer.registerConfig(ModConfig.Type.COMMON, spec);
 	}
 
 }

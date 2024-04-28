@@ -24,47 +24,47 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
 
 public class ServerCoreNeoForge {
 
-	public static boolean isCreateGlueSelectionAllowed(BlockPos from, BlockPos to, PlayPayloadContext ctx){
-		if(ctx.player().isEmpty())
+	public static boolean isCreateGlueSelectionAllowed(BlockPos from, BlockPos to, IPayloadContext ctx){
+		if(ctx.player() == null)
 			return true;
-		return ServerCore.isCreateGlueSelectionAllowed(from, to, (ServerPlayer) ctx.player().get());
+		return ServerCore.isCreateGlueSelectionAllowed(from, to, (ServerPlayer) ctx.player());
 	}
 
-	public static boolean isCreateGlueRemovalAllowed(int entityId, PlayPayloadContext ctx){
-		if(ctx.player().isEmpty())
+	public static boolean isCreateGlueRemovalAllowed(int entityId, IPayloadContext ctx){
+		if(ctx.player() == null)
 			return true;
-		return ServerCore.isCreateGlueRemovalAllowed(entityId, (ServerPlayer) ctx.player().get());
+		return ServerCore.isCreateGlueRemovalAllowed(entityId, (ServerPlayer) ctx.player());
 	}
 
-	public static boolean isCreateTileEntityPacketAllowed(BlockPos pos, PlayPayloadContext ctx){
-		if(ctx.player().isEmpty())
+	public static boolean isCreateTileEntityPacketAllowed(BlockPos pos, IPayloadContext ctx){
+		if(ctx.player() == null)
 			return true;
-		ServerPlayer player = (ServerPlayer) ctx.player().get();
+		ServerPlayer player = (ServerPlayer) ctx.player();
 		return ServerCore.isCreateTileEntityPacketAllowed(pos, player);
 	}
 
-	public static boolean isCreateContraptionInteractionPacketAllowed(int contraptionId, InteractionHand interactionHand, PlayPayloadContext ctx){
-		if(ctx.player().isEmpty())
+	public static boolean isCreateContraptionInteractionPacketAllowed(int contraptionId, InteractionHand interactionHand, IPayloadContext ctx){
+		if(ctx.player() == null)
 			return true;
-		return ServerCore.isCreateContraptionInteractionPacketAllowed(contraptionId, interactionHand, (ServerPlayer) ctx.player().get());
+		return ServerCore.isCreateContraptionInteractionPacketAllowed(contraptionId, interactionHand, (ServerPlayer) ctx.player());
 	}
 
-	public static boolean isCreateTrainRelocationPacketAllowed(int contraptionId, BlockPos pos, PlayPayloadContext ctx){
-		if(ctx.player().isEmpty())
+	public static boolean isCreateTrainRelocationPacketAllowed(int contraptionId, BlockPos pos, IPayloadContext ctx){
+		if(ctx.player() == null)
 			return true;
-		return ServerCore.isCreateTrainRelocationPacketAllowed(contraptionId, pos, (ServerPlayer) ctx.player().get());
+		return ServerCore.isCreateTrainRelocationPacketAllowed(contraptionId, pos, (ServerPlayer) ctx.player());
 	}
 
-	public static boolean isCreateTrainControlsPacketAllowed(int contraptionId, PlayPayloadContext ctx){
-		if(ctx.player().isEmpty())
+	public static boolean isCreateTrainControlsPacketAllowed(int contraptionId, IPayloadContext ctx){
+		if(ctx.player() == null)
 			return true;
-		return ServerCore.isCreateTrainControlsPacketAllowed(contraptionId, (ServerPlayer) ctx.player().get());
+		return ServerCore.isCreateTrainControlsPacketAllowed(contraptionId, (ServerPlayer) ctx.player());
 	}
 
 	public static FluidStack onCreatePipeCollectBlock(Level level, BlockPos from, BlockPos to, boolean simulate){

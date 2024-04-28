@@ -9,7 +9,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
 
-    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+    java.toolchain.languageVersion = JavaLanguageVersion.of(21)
     //java.withSourcesJar()
     //java.withJavadocJar()
 
@@ -64,7 +64,7 @@ subprojects {
     tasks.withType(JavaCompile).configureEach {
 
         it.options.encoding = 'UTF-8'
-        it.options.release = 17
+        it.options.release = 21
     }
 
      processResources {
@@ -100,7 +100,7 @@ subprojects {
                 "issues": issues
         ]
 
-        filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', '*.mixins.json']) {
+        filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', 'META-INF/neoforge.mods.toml', '*.mixins.json']) {
             expand expandProps
         }
         inputs.properties(expandProps)

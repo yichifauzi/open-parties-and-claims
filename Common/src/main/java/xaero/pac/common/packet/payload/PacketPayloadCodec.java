@@ -19,17 +19,27 @@
 package xaero.pac.common.packet.payload;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import xaero.pac.OpenPartiesAndClaims;
 import xaero.pac.common.packet.PacketHandlerFull;
 import xaero.pac.common.packet.type.PacketType;
 
 import javax.annotation.Nonnull;
 
-public class PacketPayloadReader implements FriendlyByteBuf.Reader<PacketPayload<?>> {
+public class PacketPayloadCodec implements StreamCodec<FriendlyByteBuf, PacketPayload<?>> {
+
+	@Override
+	public void encode(@Nonnull FriendlyByteBuf friendlyByteBuf, @Nonnull PacketPayload<?> packetPayload) {
+		encodeTyped(friendlyByteBuf, packetPayload);
+	}
+
+	private <P> void encodeTyped(FriendlyByteBuf friendlyByteBuf, PacketPayload<P> packetPayload){
+		PacketHandlerFull.encodePacket(packetPayload.getPacketType(), packetPayload.getPacket(), friendlyByteBuf);
+	}
 
 	@Nonnull
 	@Override
-	public PacketPayload<?> apply(FriendlyByteBuf friendlyByteBuf) {
+	public PacketPayload<?> decode(FriendlyByteBuf friendlyByteBuf) {
 		if(friendlyByteBuf.readableBytes() <= 0)
 			return new PacketPayload<>(null, null);
 		int index = friendlyByteBuf.readByte();

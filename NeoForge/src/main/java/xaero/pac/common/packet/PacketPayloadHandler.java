@@ -20,19 +20,21 @@ package xaero.pac.common.packet;
 
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.handling.IPlayPayloadHandler;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import xaero.pac.common.packet.payload.PacketPayload;
 import xaero.pac.common.packet.type.PacketType;
 
-public class PacketPayloadHandler implements IPlayPayloadHandler<PacketPayload<?>> {
+import javax.annotation.Nonnull;
+
+public class PacketPayloadHandler implements IPayloadHandler<PacketPayload<?>> {
 
 	@Override
-	public void handle(PacketPayload<?> payload, PlayPayloadContext context) {
+	public void handle(@Nonnull PacketPayload<?> payload, @Nonnull IPayloadContext context) {
 		handleTyped(payload, context);
 	}
 
-	private <P> void handleTyped(PacketPayload<P> payload, PlayPayloadContext context){
+	private <P> void handleTyped(PacketPayload<P> payload, IPayloadContext context){
 		PacketType<P> packetType = payload.getPacketType();
 		if(packetType == null)
 			return;
@@ -42,17 +44,15 @@ public class PacketPayloadHandler implements IPlayPayloadHandler<PacketPayload<?
 		if(context.flow() == PacketFlow.CLIENTBOUND) {
 			if (packetType.getClientHandler() == null)
 				return;
-			context.workHandler().execute(() -> packetType.getClientHandler().accept(packet));
+			context.enqueueWork(() -> packetType.getClientHandler().accept(packet));
 			return;
 		}
 		if(packetType.getServerHandler() == null)
 			return;
 		if(context.flow() != PacketFlow.SERVERBOUND)
 			return;
-		if(context.player().isEmpty())
-			return;
-		ServerPlayer player = (ServerPlayer) context.player().get();
-		context.workHandler().execute(() -> packetType.getServerHandler().accept(packet, player));
+		ServerPlayer player = (ServerPlayer) context.player();
+		context.enqueueWork(() -> packetType.getServerHandler().accept(packet, player));
 	}
 
 }

@@ -25,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -779,7 +780,7 @@ public class ChunkProtection
 		Item item = itemStack.getItem();
 		if(itemUseProtectionExceptions.contains(item))
 			return false;
-		return item.getFoodProperties() == null &&
+		return !itemStack.has(DataComponents.FOOD) &&
 				!(item instanceof PotionItem) &&
 				!(item instanceof ProjectileWeaponItem) &&
 				!(item instanceof TridentItem) &&

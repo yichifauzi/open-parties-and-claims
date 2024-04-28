@@ -62,4 +62,8 @@ public class OpenPartiesAndClaimsNeoForge extends OpenPartiesAndClaims {
 		return commonEventsNeoForge;
 	}
 
+	@Override
+	public ForgeConfigHelperNeoForge getForgeConfigHelper() {
+		return (ForgeConfigHelperNeoForge) super.getForgeConfigHelper();
+	}
 }

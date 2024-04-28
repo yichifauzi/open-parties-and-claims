@@ -21,8 +21,7 @@ package xaero.pac.server;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import xaero.pac.OpenPartiesAndClaimsNeoForge;
 import xaero.pac.common.LoadCommonNeoForge;
 import xaero.pac.server.event.DedicatedServerEventsNeoForge;
@@ -46,7 +45,7 @@ public class LoadDedicatedServerNeoForge extends LoadCommonNeoForge<LoadDedicate
 	}
 
 	@SubscribeEvent
-	public void onRegisterPayloadHandler(RegisterPayloadHandlerEvent event){
+	public void onRegisterPayloadHandler(RegisterPayloadHandlersEvent event){
 		super.onRegisterPayloadHandler(event);
 	}
 
