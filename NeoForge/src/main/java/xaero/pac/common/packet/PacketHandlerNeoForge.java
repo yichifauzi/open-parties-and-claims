@@ -23,7 +23,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import xaero.pac.OpenPartiesAndClaims;
-import xaero.pac.common.packet.payload.PacketPayload;
 import xaero.pac.common.packet.payload.PacketPayloadReader;
 import xaero.pac.common.packet.type.PacketTypeManager;
 
@@ -46,12 +45,12 @@ public class PacketHandlerNeoForge extends PacketHandlerFull {
 
 	@Override
 	public <P> void sendToServer(P packet) {
-		PacketDistributor.SERVER.noArg().send(new PacketPayload<>(packetTypeManager.getType(packet), packet));
+		PacketDistributor.SERVER.noArg().send(createPayload(packet));
 	}
 
 	@Override
 	public <P> void sendToPlayer(ServerPlayer player, P packet) {
-		PacketDistributor.PLAYER.with(player).send(new PacketPayload<>(packetTypeManager.getType(packet), packet));
+		PacketDistributor.PLAYER.with(player).send(createPayload(packet));
 	}
 
 }
