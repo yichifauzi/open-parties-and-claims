@@ -67,7 +67,7 @@ public abstract class PacketHandlerFull implements IPacketHandler {
 		return packetTypeManager.getByIndex(index);
 	}
 
-	public <T> PacketPayload<?> createPayload(T packet){
+	public <T> PacketPayload<T> createPayload(T packet){
 		return new PacketPayload<>(packetTypeManager.getType(packet), packet);
 	}
 
