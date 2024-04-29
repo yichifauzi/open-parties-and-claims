@@ -41,8 +41,8 @@ public class LoadCommonNeoForge<L extends LoadCommon> {
 	}
 
 	public void loadCommon(final FMLCommonSetupEvent event) {
-		loader.loadCommon();
 		modMain.getForgeConfigHelper().setModContainer(ModList.get().getModContainerById(OpenPartiesAndClaims.MOD_ID).get());
+		loader.loadCommon();
 	}
 
 	public void onRegisterPayloadHandler(RegisterPayloadHandlersEvent event){

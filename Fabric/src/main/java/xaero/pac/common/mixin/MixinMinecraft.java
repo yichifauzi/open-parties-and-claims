@@ -35,8 +35,8 @@ public class MixinMinecraft {
 	@Shadow
 	public LocalPlayer player;
 
-	@Inject(at = @At("HEAD"), method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;)V")
-	public void onClearLevel(Screen screen, CallbackInfo info) {
+	@Inject(at = @At("HEAD"), method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V")
+	public void onClearLevel(Screen screen, boolean b, CallbackInfo info) {
 		((OpenPartiesAndClaimsFabric) OpenPartiesAndClaims.INSTANCE).getClientEvents().onPlayerLogout(player);
 	}
 

@@ -25,14 +25,25 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import xaero.pac.common.server.core.ServerCore;
 import xaero.pac.common.server.core.ServerCoreFabric;
 
-@Mixin(Projectile.class)
+@Mixin(value = Projectile.class, priority = 1000001)
 public class MixinProjectile {
 
 	@Inject(method = "mayInteract", at = @At("HEAD"))
 	public void onMobGriefGameRuleMethod(CallbackInfoReturnable<Boolean> callbackInfo){
 		ServerCoreFabric.tryToSetMobGriefingEntity((Entity)(Object)this);
+	}
+
+	@Inject(method = "hitTargetOrDeflectSelf", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/Projectile;onHit(Lnet/minecraft/world/phys/HitResult;)V"))
+	public void preHit(CallbackInfo ci){
+		ServerCore.preProjectileHit((Projectile)(Object)this);
+	}
+
+	@Inject(method = "hitTargetOrDeflectSelf", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/projectile/Projectile;onHit(Lnet/minecraft/world/phys/HitResult;)V"))
+	public void postHit(CallbackInfo ci){
+		ServerCore.postProjectileHit((Projectile)(Object)this);
 	}
 
 }

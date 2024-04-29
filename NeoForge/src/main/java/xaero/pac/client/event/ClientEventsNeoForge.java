@@ -21,9 +21,8 @@ package xaero.pac.client.event;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
-import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import xaero.pac.client.IClientData;
 import xaero.pac.client.claims.IClientClaimsManager;
@@ -53,8 +52,13 @@ public final class ClientEventsNeoForge extends ClientEvents {
 	}
 
 	@SubscribeEvent
-	public void onClientTick(ClientTickEvent event) {
-		super.onClientTick(event.phase == Phase.START);
+	public void onClientTickPre(ClientTickEvent.Pre event) {
+		super.onClientTick(true);
+	}
+
+	@SubscribeEvent
+	public void onClientTickPost(ClientTickEvent.Post event) {
+		super.onClientTick(false);
 	}
 
 	@SubscribeEvent

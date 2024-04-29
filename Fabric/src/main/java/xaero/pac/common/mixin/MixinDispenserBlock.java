@@ -33,7 +33,7 @@ public class MixinDispenserBlock {
 
 	@ModifyVariable(method = "dispenseFrom",
 			at = @At(value = "INVOKE_ASSIGN",
-			target = "Lnet/minecraft/world/level/block/DispenserBlock;getDispenseMethod(Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/core/dispenser/DispenseItemBehavior;"))
+			target = "Lnet/minecraft/world/level/block/DispenserBlock;getDispenseMethod(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/core/dispenser/DispenseItemBehavior;"))
 	public DispenseItemBehavior onDispenseFrom(DispenseItemBehavior defaultValue, ServerLevel serverLevel, BlockState blockState, BlockPos blockPos){
 		return ServerCore.replaceDispenseBehavior(defaultValue, serverLevel, blockPos);
 	}

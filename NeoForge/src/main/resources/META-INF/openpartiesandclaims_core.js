@@ -530,7 +530,7 @@ function initializeCoreMod() {
                 insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
                 insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 3))
                 insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'replaceDispenseBehavior', '(Lnet/minecraft/core/dispenser/DispenseItemBehavior;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/core/dispenser/DispenseItemBehavior;'))
-                insertOnInvoke(methodNode, insnToInsert, false/*after*/, 'net/minecraft/world/level/block/DispenserBlock', 'getDispenseMethod', 'm_7216_', '(Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/core/dispenser/DispenseItemBehavior;')
+                insertOnInvoke(methodNode, insnToInsert, false/*after*/, 'net/minecraft/world/level/block/DispenserBlock', 'getDispenseMethod', 'm_7216_', '(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/core/dispenser/DispenseItemBehavior;')
                 return methodNode
             }
         },
@@ -1799,37 +1799,15 @@ function initializeCoreMod() {
                 return methodNode
             }
         },
-        'xaero_pac_abstractarrow_tick': {
+        'xaero_pac_projectile_hittargetordeflectself': {
             'target' : {
                 'type': 'METHOD',
-                'class': 'net.minecraft.world.entity.projectile.AbstractArrow',
-                'methodName': 'tick',
-                'methodDesc' : '()V'
+                'class': 'net.minecraft.world.entity.projectile.Projectile',
+                'methodName': 'hitTargetOrDeflectSelf',
+                'methodDesc' : '(Lnet/minecraft/world/phys/HitResult;)Lnet/minecraft/world/entity/projectile/ProjectileDeflection;'
             },
             'transformer' : function(methodNode){
-                return transformProjectileHitCapture(methodNode, 'net/minecraft/world/entity/projectile/AbstractArrow', 'preArrowProjectileHit', 'postArrowProjectileHit');
-            }
-        },
-        'xaero_pac_abstracthurtingprojectile_tick': {
-            'target' : {
-                'type': 'METHOD',
-                'class': 'net.minecraft.world.entity.projectile.AbstractHurtingProjectile',
-                'methodName': 'tick',
-                'methodDesc' : '()V'
-            },
-            'transformer' : function(methodNode){
-                return transformProjectileHitCapture(methodNode, 'net/minecraft/world/entity/projectile/AbstractHurtingProjectile', 'preHurtingProjectileHit', 'postHurtingProjectileHit');
-            }
-        },
-        'xaero_pac_throwableprojectile_tick': {
-            'target' : {
-                'type': 'METHOD',
-                'class': 'net.minecraft.world.entity.projectile.ThrowableProjectile',
-                'methodName': 'tick',
-                'methodDesc' : '()V'
-            },
-            'transformer' : function(methodNode){
-                return transformProjectileHitCapture(methodNode, 'net/minecraft/world/entity/projectile/ThrowableProjectile', 'preThrowableProjectileHit', 'postThrowableProjectileHit');
+                return transformProjectileHitCapture(methodNode, 'net/minecraft/world/entity/projectile/Projectile', 'preProjectileHit', 'postProjectileHit');
             }
         },
         'xaero_pac_clientlevel': {

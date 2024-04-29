@@ -23,12 +23,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityMobGriefingEvent;
@@ -41,6 +39,8 @@ import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import xaero.pac.OpenPartiesAndClaims;
@@ -113,18 +113,36 @@ public class CommonEventsNeoForge extends CommonEvents {
 	public void onPlayerLogOut(PlayerEvent.PlayerLoggedOutEvent event) {
 		super.onPlayerLogOut(event.getEntity());
 	}
-	
-	@SubscribeEvent
-	public void onServerTick(TickEvent.ServerTickEvent event) throws Throwable {
+
+	private void onServerTick(ServerTickEvent event) throws Throwable {
 		//TODO probably need to stop using this event that doesn't provide the server instance
 		if(lastServerStarted == null || !lastServerStarted.isSameThread())
 			throw new RuntimeException("The last recorded server does not have the expected value!");
-		super.onServerTick(lastServerStarted, event.phase == TickEvent.Phase.START);
+		super.onServerTick(lastServerStarted, event instanceof ServerTickEvent.Pre);
 	}
-	
+
 	@SubscribeEvent
-	public void onPlayerTick(TickEvent.PlayerTickEvent event) throws Throwable {
-		super.onPlayerTick(event.phase == TickEvent.Phase.START, event.side == LogicalSide.SERVER, event.player);
+	public void onServerTickPre(ServerTickEvent.Pre event) throws Throwable {
+		onServerTick(event);
+	}
+
+	@SubscribeEvent
+	public void onServerTickPost(ServerTickEvent.Post event) throws Throwable {
+		onServerTick(event);
+	}
+
+	private void onPlayerTick(PlayerTickEvent event) throws Throwable {
+		super.onPlayerTick(event instanceof PlayerTickEvent.Pre, event.getEntity().getServer() != null, event.getEntity());
+	}
+
+	@SubscribeEvent
+	public void onPlayerTickPre(PlayerTickEvent.Pre event) throws Throwable {
+		onPlayerTick(event);
+	}
+
+	@SubscribeEvent
+	public void onPlayerTickPost(PlayerTickEvent.Post event) throws Throwable {
+		onPlayerTick(event);
 	}
 	
 	@SubscribeEvent
