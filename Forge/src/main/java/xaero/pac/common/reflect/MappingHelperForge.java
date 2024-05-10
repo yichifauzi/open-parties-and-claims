@@ -18,8 +18,6 @@
 
 package xaero.pac.common.reflect;
 
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -37,7 +35,9 @@ public class MappingHelperForge implements IMappingHelper {
 	@Override
 	public Field findForgeField(Class<?> clazz, String deobfName, String obfName) {
 		try {
-			return ObfuscationReflectionHelper.findField(clazz, obfName);
+			//no longer obfuscated
+			return clazz.getDeclaredField(deobfName);
+			//return ObfuscationReflectionHelper.findField(clazz, obfName);
 		} catch(Exception e){
 			return null;
 		}
@@ -46,7 +46,9 @@ public class MappingHelperForge implements IMappingHelper {
 	@Override
 	public Method findForgeMethod(Class<?> clazz, String deobfName, String obfName, Class<?>... parameterTypes) {
 		try {
-			return ObfuscationReflectionHelper.findMethod(clazz, obfName, parameterTypes);
+			//no longer obfuscated
+			return clazz.getDeclaredMethod(deobfName, parameterTypes);
+			//return ObfuscationReflectionHelper.findMethod(clazz, obfName, parameterTypes);
 		} catch(Exception e){
 			return null;
 		}

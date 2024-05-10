@@ -42,12 +42,11 @@ public class PacketConsumerForge<P> implements BiConsumer<P, CustomPayloadEvent.
 			context.setPacketHandled(true);
 			return;
 		}
-		NetworkDirection networkDirection = context.getDirection();
-		if(clientHandler != null && networkDirection == NetworkDirection.PLAY_TO_CLIENT) {
+		if(clientHandler != null && context.isClientSide()) {
 			context.enqueueWork(
 					() -> clientHandler.accept(msg)
 			);
-		} else if(serverHandler != null && networkDirection == NetworkDirection.PLAY_TO_SERVER) {
+		} else if(serverHandler != null && context.isServerSide()) {
 			ServerPlayer sender = context.getSender();
 			context.enqueueWork(
 					() -> serverHandler.accept(msg, sender)

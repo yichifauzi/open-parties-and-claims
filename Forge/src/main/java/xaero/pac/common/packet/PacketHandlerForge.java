@@ -40,7 +40,7 @@ public class PacketHandlerForge implements IPacketHandler {
 							 Consumer<P> clientHandler) {
 		PacketConsumerForge<P> consumer = new PacketConsumerForge<P>(serverHandler, clientHandler);
 		if((serverHandler == null) != (clientHandler == null))
-			NETWORK.messageBuilder(type, index, clientHandler != null ? NetworkDirection.PLAY_TO_CLIENT : NetworkDirection.PLAY_TO_SERVER).consumerNetworkThread(consumer).decoder(decoder).encoder(encoder).add();
+			NETWORK.messageBuilder(type, index, clientHandler != null ? NetworkDirection.PLAY_TO_CLIENT : NetworkDirection.PLAY_TO_SERVER).consumerNetworkThread(consumer).decoder(decoder::apply).encoder(encoder::accept).add();
 		else
 			NETWORK.messageBuilder(type, index).consumerNetworkThread(consumer).decoder(decoder).encoder(encoder).add();
 	}

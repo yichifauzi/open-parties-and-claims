@@ -1,6 +1,6 @@
 plugins {
     id 'idea'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
 }
 
 base {
@@ -9,6 +9,8 @@ base {
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
+
+    reobf = false
     
     if (project.hasProperty('forge_ats_enabled') && project.findProperty('forge_ats_enabled').toBoolean()) {
         // This location is hardcoded in Forge and can not be changed.
@@ -29,7 +31,7 @@ minecraft {
             mods {
                 modClientRun {
                     source sourceSets.main
-                    source project(":Common").sourceSets.main
+//                    source project(":Common").sourceSets.main
                 }
             }
         }
@@ -43,7 +45,7 @@ minecraft {
             mods {
                 modServerRun {
                     source sourceSets.main
-                    source project(":Common").sourceSets.main
+//                    source project(":Common").sourceSets.main
                 }
             }
         }
@@ -58,7 +60,7 @@ minecraft {
             mods {
                 modDataRun {
                     source sourceSets.main
-                    source project(":Common").sourceSets.main
+//                    source project(":Common").sourceSets.main
                 }
             }
         }
@@ -71,22 +73,28 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compileOnly project(":Common")
 
-    implementation fg.deobf("fuzs.forgeconfigapiport:forgeconfigapiport-forge:20.4.3")//source: https://github.com/Fuzss/forgeconfigapiport-fabric
+    implementation("io.github.llamalad7:mixinextras-forge:0.3.5")//required for forgeconfigapiport because the transitive dep causes issues
+    implementation("fuzs.forgeconfigapiport:forgeconfigapiport-forge:20.6.0"){//source: https://github.com/Fuzss/forgeconfigapiport-fabric
+        transitive = false
+    }
 
-    compileOnly fg.deobf("curse.maven:ftbranks-314905:3890135")//home: https://www.curseforge.com/minecraft/mc-mods/ftb-ranks-forge
-    compileOnly fg.deobf("curse.maven:architectury-419699:4581905")//home: https://www.curseforge.com/minecraft/mc-mods/architectury-api
-    compileOnly fg.deobf("curse.maven:ftblibrary-404465:4596511")//home: https://www.curseforge.com/minecraft/mc-mods/ftb-library-forge
+    compileOnly "curse.maven:ftbranks-314905:3890135"//home: https://www.curseforge.com/minecraft/mc-mods/ftb-ranks-forge
+    compileOnly "curse.maven:architectury-419699:4581905"//home: https://www.curseforge.com/minecraft/mc-mods/architectury-api
+    compileOnly "curse.maven:ftblibrary-404465:4596511"//home: https://www.curseforge.com/minecraft/mc-mods/ftb-library-forge
 
-    compileOnly fg.deobf("maven.modrinth:resourceful-lib:2.1.1")//source: https://github.com/Team-Resourceful/ResourcefulLib
-    compileOnly fg.deobf("maven.modrinth:prometheus:0.0.0")//source: https://github.com/terrarium-earth/Prometheus
+    compileOnly "maven.modrinth:resourceful-lib:2.1.1"//source: https://github.com/Team-Resourceful/ResourcefulLib
+    compileOnly "maven.modrinth:prometheus:0.0.0"//source: https://github.com/terrarium-earth/Prometheus
 
     //implementation fg.deobf("curse.maven:create-328085:4835191")//source: https://github.com/Creators-of-Create/Create
 
 
     compileOnly "net.luckperms:api:5.4"//source: https://github.com/LuckPerms/LuckPerms
     
-    compileOnly fg.deobf("curse.maven:ftbteams-404468:4616152")//home: https://www.curseforge.com/minecraft/mc-mods/ftb-teams-forge
-    compileOnly fg.deobf("maven.modrinth:argonauts:IH2HFcvL")//source: https://modrinth.com/mod/argonauts
+    compileOnly "curse.maven:ftbteams-404468:4616152"//home: https://www.curseforge.com/minecraft/mc-mods/ftb-teams-forge
+    compileOnly "maven.modrinth:argonauts:IH2HFcvL"//source: https://modrinth.com/mod/argonauts
+
+    // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transtive dependencies request 6.0+
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
 tasks.withType(JavaCompile) {
@@ -97,7 +105,7 @@ processResources {
     from project(":Common").sourceSets.main.resources
 }
 
-jar.finalizedBy('reobfJar', 'packageSources')
+jar.finalizedBy('packageSources')
 
 //disabling this because it seems bugged, because of mod dependencies in the Common project, with no apparent workaround
 //works fine in the Fabric one for some reason
