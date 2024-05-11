@@ -20,6 +20,7 @@ package xaero.pac.common.mixin;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -37,12 +38,12 @@ public class MixinProjectile {
 	}
 
 	@Inject(method = "hitTargetOrDeflectSelf", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/Projectile;onHit(Lnet/minecraft/world/phys/HitResult;)V"))
-	public void preHit(CallbackInfo ci){
+	public void preHit(CallbackInfoReturnable<ProjectileDeflection> cir){
 		ServerCore.preProjectileHit((Projectile)(Object)this);
 	}
 
 	@Inject(method = "hitTargetOrDeflectSelf", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/projectile/Projectile;onHit(Lnet/minecraft/world/phys/HitResult;)V"))
-	public void postHit(CallbackInfo ci){
+	public void postHit(CallbackInfoReturnable<ProjectileDeflection> cir){
 		ServerCore.postProjectileHit((Projectile)(Object)this);
 	}
 
