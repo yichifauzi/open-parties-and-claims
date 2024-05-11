@@ -86,8 +86,8 @@ public class XPACScreen extends Screen implements IDropDownContainer {
 
 	@Override
 	public void render(PoseStack poseStack, int mouseX, int mouseY, float partial) {
-		drawCenteredString(poseStack, font, XPAC_TITLE, width / 2, 5, -1);
 		super.render(poseStack, mouseX, mouseY, partial);
+		drawCenteredString(poseStack, font, XPAC_TITLE, width / 2, 5, -1);
 		renderPreDropdown(poseStack, mouseX, mouseY, partial);
 		if(openDropdown != null) {
 			poseStack.pushPose();
