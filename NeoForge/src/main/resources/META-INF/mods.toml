@@ -17,7 +17,7 @@ description="${description}"
 [[dependencies.${mod_id}]]
     modId="neoforge" #mandatory
     mandatory=true #mandatory
-    versionRange="${neoforge_loader_version_range}" #mandatory
+    versionRange="${neoforge_version_range}" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]
