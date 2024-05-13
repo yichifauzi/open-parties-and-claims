@@ -87,6 +87,7 @@ subprojects {
                 "license": license,
                 "description": project.description,
                 "neoforge_version": neoforge_version,
+                "neoforge_version_range": neoforge_version_range,
                 "neoforge_loader_version_range": neoforge_loader_version_range,
                 "forgeconfigapiport_fabric_range": forgeconfigapiport_fabric_range,
                 "forgeconfigapiport_forge_range": forgeconfigapiport_forge_range,
