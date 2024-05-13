@@ -31,6 +31,7 @@ import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityMobGriefingEvent;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.*;
@@ -262,7 +263,7 @@ public class CommonEventsNeoForge extends CommonEvents {
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public void onMobCheckSpawn(MobSpawnEvent.FinalizeSpawn event){
+	public void onMobCheckSpawn(FinalizeSpawnEvent event){
 		if(super.onMobSpawn(event.getEntity(), event.getX(), event.getY(), event.getZ(), event.getSpawnType())) {
 			event.setSpawnCancelled(true);//won't be spawned
 			event.setCanceled(true);//won't call finalizeSpawn
