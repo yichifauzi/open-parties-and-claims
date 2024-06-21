@@ -45,6 +45,10 @@ public abstract class PacketReceiver<C> {
 		if(!isCorrectSide(packetType))
 			return;
 		T packet = payload.getPacket();
+		if(executor.isSameThread()) {
+			getTask(packetType, packet, context).run();
+			return;
+		}
 		executor.execute(getTask(packetType, packet, context));
 	}
 
