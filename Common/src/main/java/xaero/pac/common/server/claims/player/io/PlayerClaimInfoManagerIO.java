@@ -114,7 +114,7 @@ public final class PlayerClaimInfoManagerIO<S>
 		IPlayerConfig playerConfig = playerInfo.getConfig();
 		if(!Objects.equals(loadedObject.getPlayerId(), PlayerConfig.EXPIRED_CLAIM_UUID) && !Objects.equals(loadedObject.getPlayerId(), PlayerConfig.SERVER_CLAIM_UUID))
 			playerInfo.setPlayerUsername(loadedObject.getPlayerUsername());
-		playerInfo.setLastConfirmedActivity(loadedObject.getLastConfirmedActivity());
+		playerInfo.setConfirmedActivity(loadedObject.getConfirmedActivity());
 		loadedObject.getFullStream().forEach(
 				e -> {
 					ResourceLocation dim = e.getKey();

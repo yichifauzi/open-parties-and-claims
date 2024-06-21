@@ -28,13 +28,13 @@ public class ServerInfoSerializationHandler extends SerializationHandler<Compoun
 	@Override
 	public CompoundTag serialize(ServerInfo object) {
 		CompoundTag tag = new CompoundTag();
-		tag.putLong("useTime", object.getUseTime());
+		tag.putLong("totalUseTime", object.getTotalUseTime());
 		return tag;
 	}
 
 	@Override
 	public ServerInfo deserialize(Object id, ServerInfoHolder manager, CompoundTag serializedData) {
-		long useTime = serializedData.getLong("useTime");
+		long useTime = serializedData.getLong("totalUseTime");
 		return new ServerInfo(useTime);
 	}
 
