@@ -216,7 +216,7 @@ public class ServerConfig {
 					The permission that should override the default "maxPlayerClaimForceloads" value. Set it to an empty string to never check permissions.
 					The permission override only takes effect after the player logs in at least once after a server (re)launch, so it is recommended to keep all permission-based forceload limits equal to or greater than "maxPlayerClaimForceloads".
 					The used permission system can be configured with "permissionSystem".""")
-			.translation("gui.xaero_pac_config_max_claims_permission")
+			.translation("gui.xaero_pac_config_max_forceloads_permission")
 			.worldRestart()
 			.define("maxPlayerClaimForceloadsPermission", UsedPermissionNodes.MAX_PLAYER_FORCELOADS.getDefaultNodeString());
 
