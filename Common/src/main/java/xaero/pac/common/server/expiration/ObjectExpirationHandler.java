@@ -60,7 +60,7 @@ public abstract class ObjectExpirationHandler
 		this.liveCheckInterval = liveCheckInterval;
 		this.expirationTime = expirationTime;
 		this.checkingMessage = checkingMessage;
-		this.lastCheck = serverInfo.getTotalUseTime();
+		this.lastCheck = serverInfo.getTotalUseTime() - liveCheckInterval - 1;//forces a check on server start which is important for servers that restart often
 	}
 	
 	public abstract void preExpirationCheck(T object);
