@@ -392,7 +392,7 @@ public class ServerCore {
 	}
 
 	public static boolean canCreatePipeAffectBlock(Level level, BlockPos from, BlockPos to, boolean simulate){
-		if(level == null || simulate)
+		if(simulate || level == null || level.getServer() == null)
 			return true;
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
 				serverData = ServerData.from(level.getServer());
@@ -400,7 +400,7 @@ public class ServerCore {
 	}
 
 	public static boolean canCreatePloughPos(Level level, ICreateContraption contraption, BlockPos pos){
-		if(level == null)
+		if(level == null || level.getServer() == null)
 			return true;
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
 				serverData = ServerData.from(level.getServer());
