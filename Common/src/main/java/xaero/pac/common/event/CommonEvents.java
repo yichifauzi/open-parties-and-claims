@@ -66,6 +66,7 @@ import xaero.pac.common.server.claims.IServerDimensionClaimsManager;
 import xaero.pac.common.server.claims.IServerRegionClaims;
 import xaero.pac.common.server.claims.command.ClaimsCommandRegister;
 import xaero.pac.common.server.claims.player.IServerPlayerClaimInfo;
+import xaero.pac.common.server.claims.protection.ChunkProtection;
 import xaero.pac.common.server.command.CommonCommandRegister;
 import xaero.pac.common.server.core.ServerCore;
 import xaero.pac.common.server.core.accessor.ICreateContraptionEntity;
@@ -457,17 +458,19 @@ public abstract class CommonEvents {
 			return false;
 		Set<ChunkPos> chunkPositions = new HashSet<>();
 		Iterator<Pair<BlockPos, BlockState>> iterator = blocks.iterator();
+		boolean result = false;
 		while(iterator.hasNext()){
 			Pair<BlockPos, BlockState> blockEntry = iterator.next();
 			BlockPos pos = blockEntry.getLeft();
 			if(chunkPositions.add(new ChunkPos(pos))) {
 				//not protecting destroyed blocks here because it causes dupes with mods like create
 				BlockState placedBlock = blockEntry.getRight();
-				if (placedBlock != null && !placedBlock.isAir() && serverData.getChunkProtection().onEntityPlaceBlock(serverData, entity, serverLevel, pos, null))
-					return true;
+				if(placedBlock == null || placedBlock.isAir())//even 1 instance of a block break can create a dupe
+					return false;
+				result = result || serverData.getChunkProtection().onEntityPlaceBlock(serverData, entity, serverLevel, pos, null);
 			}
 		}
-		return false;
+		return result;
 	}
 
 	protected void onTagsUpdate(){
