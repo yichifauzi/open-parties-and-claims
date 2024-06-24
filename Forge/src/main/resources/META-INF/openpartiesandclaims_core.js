@@ -1078,7 +1078,7 @@ function initializeCoreMod() {
             'target' : {
                 'type': 'METHOD',
                 'class': 'com.simibubi.create.content.contraptions.mounted.MinecartContraptionItem',
-                'methodName': 'm_41661_',
+                'methodName': 'm_6225_',
                 'methodDesc' : '(Lnet/minecraft/world/item/context/UseOnContext;)Lnet/minecraft/world/InteractionResult;'
             },
             'transformer' : function(methodNode){
