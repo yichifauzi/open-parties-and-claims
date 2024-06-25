@@ -371,11 +371,13 @@ public abstract class CommonEvents {
 				if(serverData.getChunkProtection().onProjectileHitSpawnedEntity(serverData, spawnerProjectile, entity))
 					return true;
 			}
+			boolean isMobLoot = false;
 			if (!(entity instanceof LivingEntity) && ServerCore.getDyingDamageSourceForCurrentEntitySpawns(serverLevel.getServer().getTickCount()) != null) {
 				IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
 						serverData = ServerData.from(serverLevel.getServer());
 				if (serverData == null)
 					return false;
+				isMobLoot = true;
 				if(serverData.getChunkProtection().onLivingLootEntity(serverData, ServerCore.getDyingLivingForCurrentEntitySpawns(serverLevel.getServer().getTickCount()), entity, ServerCore.getDyingDamageSourceForCurrentEntitySpawns(serverLevel.getServer().getTickCount())))
 					return true;
 			}
@@ -392,7 +394,7 @@ public abstract class CommonEvents {
 					serverData.getChunkProtection().onEntityEnterChunk(serverData, entity, projectile.getOwner().getX(), projectile.getOwner().getZ(), newSection, oldSection);
 				}
 				return false;
-			} else if (!fromDisk && entity instanceof ItemEntity itemEntity) {
+			} else if (!fromDisk && !isMobLoot && entity instanceof ItemEntity itemEntity) {
 				IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
 						serverData = ServerData.from(serverLevel.getServer());
 				if (serverData == null)
