@@ -65,6 +65,7 @@ import xaero.pac.OpenPartiesAndClaims;
 import xaero.pac.common.claims.player.IPlayerChunkClaim;
 import xaero.pac.common.claims.player.IPlayerClaimPosList;
 import xaero.pac.common.claims.player.IPlayerDimensionClaims;
+import xaero.pac.common.entity.EntityData;
 import xaero.pac.common.entity.IEntity;
 import xaero.pac.common.entity.IItemEntity;
 import xaero.pac.common.packet.ClientboundPacDimensionHandshakePacket;
@@ -701,11 +702,11 @@ public class ServerCore {
 	}
 
 	private final static String LOOT_OWNER_KEY = "xaero_OPAC_lootOwnerId";
-	private final static BiConsumer<IEntity, UUID> LOOT_OWNER_SETTER = IEntity::setXaero_OPAC_lootOwner;
-	private final static Function<IEntity, UUID> LOOT_OWNER_GETTER = IEntity::getXaero_OPAC_lootOwner;
+	private final static BiConsumer<IEntity, UUID> LOOT_OWNER_SETTER = (e, id) -> EntityData.from(e).setLootOwner(id);
+	private final static Function<IEntity, UUID> LOOT_OWNER_GETTER = e -> EntityData.from(e).getLootOwner();
 	private final static String DEAD_PLAYER_KEY = "xaero_OPAC_deadPlayer";
-	private final static BiConsumer<IEntity, UUID> DEAD_PLAYER_SETTER = IEntity::setXaero_OPAC_deadPlayer;
-	private final static Function<IEntity, UUID> DEAD_PLAYER_GETTER = IEntity::getXaero_OPAC_deadPlayer;
+	private final static BiConsumer<IEntity, UUID> DEAD_PLAYER_SETTER = (e, id) -> EntityData.from(e).setDeadPlayer(id);
+	private final static Function<IEntity, UUID> DEAD_PLAYER_GETTER = e -> EntityData.from(e).getDeadPlayer();
 	private final static String THROWER_ACCESSOR_KEY = "xaero_OPAC_throwerAccessor";
 	private final static BiConsumer<IEntity, UUID> THROWER_ACCESSOR_SETTER = (ie, id) -> ((IItemEntity)ie).setXaero_OPAC_throwerAccessor(id);
 	private final static Function<IEntity, UUID> THROWER_ACCESSOR_GETTER = ie -> ((IItemEntity)ie).getXaero_OPAC_throwerAccessor();

@@ -52,7 +52,7 @@ import xaero.pac.common.claims.player.IPlayerChunkClaim;
 import xaero.pac.common.claims.player.IPlayerClaimPosList;
 import xaero.pac.common.claims.player.IPlayerDimensionClaims;
 import xaero.pac.common.claims.tracker.api.IClaimsManagerTrackerRegisterAPI;
-import xaero.pac.common.entity.IEntity;
+import xaero.pac.common.entity.EntityData;
 import xaero.pac.common.mods.create.CreateContraptionHelper;
 import xaero.pac.common.parties.party.IPartyPlayerInfo;
 import xaero.pac.common.parties.party.ally.IPartyAlly;
@@ -66,7 +66,6 @@ import xaero.pac.common.server.claims.IServerDimensionClaimsManager;
 import xaero.pac.common.server.claims.IServerRegionClaims;
 import xaero.pac.common.server.claims.command.ClaimsCommandRegister;
 import xaero.pac.common.server.claims.player.IServerPlayerClaimInfo;
-import xaero.pac.common.server.claims.protection.ChunkProtection;
 import xaero.pac.common.server.command.CommonCommandRegister;
 import xaero.pac.common.server.core.ServerCore;
 import xaero.pac.common.server.core.accessor.ICreateContraptionEntity;
@@ -260,6 +259,36 @@ public abstract class CommonEvents {
 		return serverData.getChunkProtection().onItemRightClick(serverData, hand, itemStack, pos, player, true);
 	}
 
+	public boolean onItemUseTick(LivingEntity entityLiving, ItemStack itemStack) {
+		ServerLevel serverLevel = ServerLevelHelper.getServerLevel(entityLiving.level);
+		if(serverLevel == null)
+			return false;
+		if(!EntityData.from(entityLiving).getShouldCheckItemUseTick())
+			return false;
+		EntityData.from(entityLiving).setShouldCheckItemUseTick(false);
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(serverLevel.getServer());
+		InteractionHand hand = entityLiving.getItemInHand(InteractionHand.MAIN_HAND) == itemStack ? InteractionHand.MAIN_HAND :
+				entityLiving.getItemInHand(InteractionHand.OFF_HAND) == itemStack ? InteractionHand.OFF_HAND : null;
+		if(serverData.getChunkProtection().onItemRightClick(serverData, hand, itemStack, entityLiving.blockPosition(), entityLiving, true)){
+			entityLiving.stopUsingItem();
+			return true;
+		}
+		return false;
+	}
+
+	public boolean onItemUseStop(LivingEntity entityLiving, ItemStack itemStack) {
+		ServerLevel serverLevel = ServerLevelHelper.getServerLevel(entityLiving.level);
+		if(serverLevel == null)
+			return false;
+		EntityData.from(entityLiving).setShouldCheckItemUseTick(false);
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(serverLevel.getServer());
+		InteractionHand hand = entityLiving.getItemInHand(InteractionHand.MAIN_HAND) == itemStack ? InteractionHand.MAIN_HAND :
+				entityLiving.getItemInHand(InteractionHand.OFF_HAND) == itemStack ? InteractionHand.OFF_HAND : null;
+		return serverData.getChunkProtection().onItemRightClick(serverData, hand, itemStack, entityLiving.blockPosition(), entityLiving, true);
+	}
+
 	public boolean onMobGrief(Entity entity) {
 		if(entity == null /*anonymous fireballs on Forge*/)
 			return false;
@@ -380,8 +409,8 @@ public abstract class CommonEvents {
 			} else if(entity instanceof ICreateContraptionEntity contraptionEntity)
 				CreateContraptionHelper.handleCreateContraptionAdded(entity, contraptionEntity);
 		} finally {
-			if(((IEntity)entity).getXaero_OPAC_lastChunkEntryDimension() == null)
-				((IEntity)entity).setXaero_OPAC_lastChunkEntryDimension(entity.getLevel().dimension());
+			if(EntityData.from(entity).getLastChunkEntryDimension() == null)
+				EntityData.from(entity).setLastChunkEntryDimension(entity.getLevel().dimension());
 			if (entity instanceof ItemEntity itemEntity) {
 				if (itemEntity.getThrower() == null && ServerCore.getResourcesDropOwner() != null)//after the protection checks so that this isn't immediately affected by toss protection
 					itemEntity.setThrower(ServerCore.getResourcesDropOwner().getUUID());
@@ -398,12 +427,13 @@ public abstract class CommonEvents {
 	}
 
 	protected void onEntityEnteringSection(Entity entity, SectionPos oldSection, SectionPos newSection, boolean chunkChanged){
-		if(entity.getServer() != null && chunkChanged && (entity.xOld != 0 || entity.yOld != 0 || entity.zOld != 0)) {
+		if(entity.getServer() != null && chunkChanged) {
 			IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
 					serverData = ServerData.from(entity.getServer());
-			if(entity.getLevel().dimension().equals(((IEntity)entity).getXaero_OPAC_lastChunkEntryDimension()))
+			if(entity.getLevel().dimension().equals(EntityData.from(entity).getLastChunkEntryDimension()))
 				serverData.getChunkProtection().onEntityEnterChunk(serverData, entity, entity.xOld, entity.zOld, newSection, oldSection);
-			((IEntity)entity).setXaero_OPAC_lastChunkEntryDimension(entity.getLevel().dimension());
+			EntityData.from(entity).setLastChunkEntryDimension(entity.getLevel().dimension());
+			EntityData.from(entity).setShouldCheckItemUseTick(true);
 		}
 	}
 

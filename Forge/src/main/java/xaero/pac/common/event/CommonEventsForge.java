@@ -32,6 +32,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMobGriefingEvent;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
@@ -164,6 +165,18 @@ public class CommonEventsForge extends CommonEvents {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onItemRightClick(PlayerInteractEvent.RightClickItem event) {
 		if(super.onItemRightClick(event.getWorld(), event.getPos(), event.getPlayer(), event.getHand(), event.getItemStack()))
+			event.setCanceled(true);
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onItemUseTick(LivingEntityUseItemEvent.Tick event) {
+		if(super.onItemUseTick(event.getEntityLiving(), event.getItem()))
+			event.setCanceled(true);
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onItemUseTick(LivingEntityUseItemEvent.Stop event) {
+		if(super.onItemUseStop(event.getEntityLiving(), event.getItem()))
 			event.setCanceled(true);
 	}
 

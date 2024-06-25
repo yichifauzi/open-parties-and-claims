@@ -338,15 +338,9 @@ function initializeCoreMod() {
 			'transformer' : function(classNode){
 				var fields = classNode.fields
 				classNode.interfaces.add("xaero/pac/common/entity/IEntity")
-				fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "xaero_OPAC_lootOwner", "Ljava/util/UUID;", null, null))
-				addGetter(classNode, "xaero_OPAC_lootOwner", "Ljava/util/UUID;")
-				addSetter(classNode, "xaero_OPAC_lootOwner", "Ljava/util/UUID;")
-				fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "xaero_OPAC_deadPlayer", "Ljava/util/UUID;", null, null))
-				addGetter(classNode, "xaero_OPAC_deadPlayer", "Ljava/util/UUID;")
-				addSetter(classNode, "xaero_OPAC_deadPlayer", "Ljava/util/UUID;")
-				fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "xaero_OPAC_lastChunkEntryDimension", "Lnet/minecraft/resources/ResourceKey;", null, null))
-				addGetter(classNode, "xaero_OPAC_lastChunkEntryDimension", "Lnet/minecraft/resources/ResourceKey;")
-				addSetter(classNode, "xaero_OPAC_lastChunkEntryDimension", "Lnet/minecraft/resources/ResourceKey;")
+				fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "xaero_OPAC_data", "Lxaero/pac/common/entity/EntityData;", null, null))
+				addGetter(classNode, "xaero_OPAC_data", "Lxaero/pac/common/entity/EntityData;")
+				addSetter(classNode, "xaero_OPAC_data", "Lxaero/pac/common/entity/EntityData;")
 				return classNode
 			}
 		},

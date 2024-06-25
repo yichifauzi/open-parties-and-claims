@@ -796,17 +796,17 @@ public class ChunkProtection
 				additionalBannedItems.contains(item);
 	}
 	
-	public boolean onItemRightClick(IServerData<CM, ?> serverData, InteractionHand hand, ItemStack itemStack, BlockPos pos, Player player, boolean messages) {
+	public boolean onItemRightClick(IServerData<CM, ?> serverData, InteractionHand hand, ItemStack itemStack, BlockPos pos, LivingEntity entity, boolean messages) {
 		if(!ServerConfig.CONFIG.claimsEnabled.get())
 			return false;
 		boolean shouldProtect = false;
 		Item item = itemStack.getItem();
 		if(completelyDisabledItems.contains(item)) {
-			if(messages && player instanceof ServerPlayer serverPlayer)
-				player.sendMessage(serverData.getAdaptiveLocalizer().getFor(serverPlayer, hand == null ? ITEM_DISABLED_ANY : hand == InteractionHand.MAIN_HAND ? ITEM_DISABLED_MAIN : ITEM_DISABLED_OFF), serverPlayer.getUUID());
+			if(messages && entity instanceof ServerPlayer serverPlayer)
+				entity.sendMessage(serverData.getAdaptiveLocalizer().getFor(serverPlayer, hand == null ? ITEM_DISABLED_ANY : hand == InteractionHand.MAIN_HAND ? ITEM_DISABLED_MAIN : ITEM_DISABLED_OFF), serverPlayer.getUUID());
 			return true;
 		}
-		if(hasActiveFullPass(player))
+		if(hasActiveFullPass(entity))
 			return false;
 		if(isItemUseRestricted(itemStack) && !(item instanceof BucketItem) && !(item instanceof SolidBucketItem)) {
 			IPlayerConfigManager playerConfigs = serverData.getPlayerConfigs();
@@ -821,15 +821,16 @@ public class ChunkProtection
 			for(int i = -1; i < 2; i++)
 				j_loop: for(int j = -1; j < 2; j++) {//checking neighboring chunks too because of items that affect a high range
 					ChunkPos offsetChunkPos = new ChunkPos(chunkPos.x + i, chunkPos.z + j);
-					IPlayerChunkClaim claim = claimsManager.get(player.getLevel().dimension().location(), offsetChunkPos);
+					IPlayerChunkClaim claim = claimsManager.get(entity.getLevel().dimension().location(), offsetChunkPos);
 					boolean isCurrentChunk = i == 0 && j == 0;
 					if (isCurrentChunk || claim != null){//wilderness neighbors don't have to be protected this much
 						IPlayerConfig config = getClaimConfig(playerConfigs, claim);
-						if(checkProtectionLeveledOption(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_ITEM_USE, config, player, null) &&
+						if(checkProtectionLeveledOption(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_ITEM_USE, config, entity, null) &&
 								(isCurrentChunk || config.getEffective(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_NEIGHBOR_CHUNKS_ITEM_USE))
-								&& !hasChunkAccess(config, player, null) && !isAllowedStaticFakePlayerAction(serverData, player, offsetChunkPos.getMiddleBlockPosition(0))) {
+								&& !hasChunkAccess(config, entity, null) &&
+								(!(entity instanceof Player player) || !isAllowedStaticFakePlayerAction(serverData, player, offsetChunkPos.getMiddleBlockPosition(0)))) {
 							if(shouldCheckGroups) {
-								int exceptionAccessLevel = getExceptionAccessLevel(config, player, null);
+								int exceptionAccessLevel = getExceptionAccessLevel(config, entity, null);
 								for (ChunkProtectionExceptionGroup<Item> group : itemExceptionGroups.values()) {
 									if (exceptionAccessLevel <= config.getEffective(group.getPlayerConfigOption()) && group.contains(itemStack.getItem()))
 										continue j_loop;
@@ -841,8 +842,8 @@ public class ChunkProtection
 					}
 				}
 		}
-		if(messages && shouldProtect && player instanceof ServerPlayer)
-			player.sendMessage(serverData.getAdaptiveLocalizer().getFor((ServerPlayer) player, hand == null ? USE_ITEM_ANY : hand == InteractionHand.MAIN_HAND ? USE_ITEM_MAIN : USE_ITEM_OFF), player.getUUID());
+		if(messages && shouldProtect && entity instanceof ServerPlayer)
+			entity.sendMessage(serverData.getAdaptiveLocalizer().getFor((ServerPlayer) entity, hand == null ? USE_ITEM_ANY : hand == InteractionHand.MAIN_HAND ? USE_ITEM_MAIN : USE_ITEM_OFF), entity.getUUID());
 		return shouldProtect;
 	}
 
@@ -1215,14 +1216,14 @@ public class ChunkProtection
 			return false;
 		if(!isItemUseRestricted(itemStack))
 			return false;
-		if(entity instanceof Player player) {
+		if(entity instanceof LivingEntity living) {
 			if (hand == null)
-				hand = player.getItemInHand(InteractionHand.MAIN_HAND) == itemStack ? InteractionHand.MAIN_HAND :
-						player.getItemInHand(InteractionHand.OFF_HAND) == itemStack ? InteractionHand.OFF_HAND : null;
+				hand = living.getItemInHand(InteractionHand.MAIN_HAND) == itemStack ? InteractionHand.MAIN_HAND :
+						living.getItemInHand(InteractionHand.OFF_HAND) == itemStack ? InteractionHand.OFF_HAND : null;
 			if (additionalBannedItems.contains(itemStack.getItem()) &&
-					onItemRightClick(serverData, hand, itemStack, pos, player, false)) {//only configured items on purpose
-				if(messages && player instanceof ServerPlayer)
-					player.sendMessage(serverData.getAdaptiveLocalizer().getFor((ServerPlayer) player, hand == null ? CANT_APPLY_ITEM_ANY : hand == InteractionHand.MAIN_HAND ? CANT_APPLY_ITEM_THIS_CLOSE_MAIN : CANT_APPLY_ITEM_THIS_CLOSE_OFF), player.getUUID());
+					onItemRightClick(serverData, hand, itemStack, pos, living, false)) {//only configured items on purpose
+				if(messages && living instanceof ServerPlayer)
+					living.sendMessage(serverData.getAdaptiveLocalizer().getFor((ServerPlayer) living, hand == null ? CANT_APPLY_ITEM_ANY : hand == InteractionHand.MAIN_HAND ? CANT_APPLY_ITEM_THIS_CLOSE_MAIN : CANT_APPLY_ITEM_THIS_CLOSE_OFF), living.getUUID());
 				return true;
 			}
 		}

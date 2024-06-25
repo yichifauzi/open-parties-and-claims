@@ -22,9 +22,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.block.Block;
 import xaero.pac.OpenPartiesAndClaims;
+import xaero.pac.OpenPartiesAndClaimsFabric;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -76,6 +78,23 @@ public class ServerCoreFabric {
 		return MOB_SPAWN_TYPE_FOR_NEW_ENTITIES;
 	}
 
+	public static void onReleaseUsingItem(LivingEntity livingEntity){
+		if(livingEntity.getServer() == null)
+			return;
+		if(livingEntity.getUseItem().isEmpty())
+			return;
+		if(OpenPartiesAndClaimsFabric.INSTANCE.getCommonEvents().onItemUseStop(livingEntity, livingEntity.getUseItem()))
+			livingEntity.stopUsingItem();
+	}
+
+	public static void onUpdatingUsingItem(LivingEntity livingEntity) {
+		if(livingEntity.getServer() == null)
+			return;
+		if(livingEntity.getUseItem().isEmpty())
+			return;
+		OpenPartiesAndClaimsFabric.INSTANCE.getCommonEvents().onItemUseTick(livingEntity, livingEntity.getUseItem());
+	}
+
 	public static void reset() {
 		MOB_GRIEFING_GAME_RULE_ENTITY = null;
 		CALCULATING_PRESSURE_PLATE_WEIGHT = null;
@@ -83,5 +102,4 @@ public class ServerCoreFabric {
 		MOB_SPAWN_TYPE_FOR_NEW_ENTITIES = null;
 		DISABLED_MOB_SPAWN_TYPES.clear();
 	}
-
 }
