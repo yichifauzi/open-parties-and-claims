@@ -301,7 +301,7 @@ public class ChunkProtection
 	}
 
 	private InteractionTargetResult entityAccessCheck(IPlayerConfigManager playerConfigs, IPlayerConfig claimConfig, Entity e, Entity from, Entity accessor, UUID accessorId, boolean attack, boolean emptyHand, boolean exceptions, boolean checkingInverted) {
-		if(e instanceof Player) {
+		if(e instanceof Player && e != accessor) {
 			boolean chunkProtected = claimConfig.getEffective(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS);
 			InteractionTargetResult result = InteractionTargetResult.ALLOW;
 			if (chunkProtected) {
@@ -966,7 +966,7 @@ public class ChunkProtection
 		boolean needsItemCheck = !attack && !emptyHand;
 		boolean itemUseAtTargetAllowed = false;
 		if(
-			target != accessor
+			(!targetExceptions || target != accessor)
 			&& (!isAllowedToGrief(interactingEntity, accessor, accessorId, config, attack, entitiesAllowedToKillEntities, entitiesAllowedToInteractWithEntities, entityAccessEntityGroups))
 		) {
 			InteractionTargetResult targetResult = entityAccessCheck(playerConfigs, config, target, interactingEntity, accessor, accessorId, attack, emptyHand, targetExceptions);
