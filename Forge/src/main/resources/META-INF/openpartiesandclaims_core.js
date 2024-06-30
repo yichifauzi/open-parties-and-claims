@@ -292,11 +292,25 @@ function transformPrePostResourcesDrop(methodNode, entityParIndex){
     return methodNode
 }
 
-function transformProjectileHitCapture(methodNode, invokeTargetClass, preMethodName, postMethodName){
-    var invokeTargetName = 'onHit'
-    var invokeTargetNameObf = 'm_6532_'
-    var invokeTargetDesc = '(Lnet/minecraft/world/phys/HitResult;)V'
+function transformProjectileHitCapture(methodNode, projectileClass, preMethodName, postMethodName, projectileUtilResult){
+    var invokeTargetClass = 'net/minecraft/world/entity/projectile/ProjectileUtil'
+    var invokeTargetName = 'getHitResult'
+    var invokeTargetNameObf = 'm_37294_'
+    var invokeTargetDesc = '(Lnet/minecraft/world/entity/Entity;Ljava/util/function/Predicate;)Lnet/minecraft/world/phys/HitResult;'
     var insnToInsertGetter = function() {
+        var insnToInsert = new InsnList()
+        insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
+        insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'checkProjectileHit', '(Lnet/minecraft/world/phys/HitResult;Lnet/minecraft/world/entity/projectile/Projectile;)Lnet/minecraft/world/phys/HitResult;'))
+        return insnToInsert
+    }
+    if(projectileUtilResult)
+        insertOnInvoke2(methodNode, insnToInsertGetter, false/*after*/, invokeTargetClass, invokeTargetName, invokeTargetNameObf, invokeTargetDesc, false)
+
+    invokeTargetClass = projectileClass
+    invokeTargetName = 'onHit'
+    invokeTargetNameObf = 'm_6532_'
+    invokeTargetDesc = '(Lnet/minecraft/world/phys/HitResult;)V'
+    insnToInsertGetter = function() {
         var insnToInsert = new InsnList()
         insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
         insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', preMethodName, '(Lnet/minecraft/world/entity/projectile/Projectile;)V'))
@@ -310,6 +324,35 @@ function transformProjectileHitCapture(methodNode, invokeTargetClass, preMethodN
         return insnToInsert
     }
     insertOnInvoke2(methodNode, insnToInsertGetter, false/*after*/, invokeTargetClass, invokeTargetName, invokeTargetNameObf, invokeTargetDesc, false)
+    return methodNode
+}
+
+function transformArrowHitCapture(methodNode, projectileClass, preMethodName, postMethodName){
+    var invokeTargetClass = levelClass
+    var invokeTargetName = 'clip'
+    var invokeTargetNameObf = 'm_45547_'
+    var invokeTargetDesc = '(Lnet/minecraft/world/level/ClipContext;)Lnet/minecraft/world/phys/BlockHitResult;'
+    var insnToInsertGetter = function() {
+        var insnToInsert = new InsnList()
+        insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
+        insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'checkProjectileHit', '(Lnet/minecraft/world/phys/HitResult;Lnet/minecraft/world/entity/projectile/Projectile;)Lnet/minecraft/world/phys/HitResult;'))
+        return insnToInsert
+    }
+    insertOnInvoke2(methodNode, insnToInsertGetter, false/*after*/, invokeTargetClass, invokeTargetName, invokeTargetNameObf, invokeTargetDesc, false)
+
+    invokeTargetClass = 'net/minecraft/world/entity/projectile/AbstractArrow'
+    invokeTargetName = 'findHitEntity'
+    invokeTargetNameObf = 'm_6351_'
+    invokeTargetDesc = '(Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/EntityHitResult;'
+    insnToInsertGetter = function() {
+        var insnToInsert = new InsnList()
+        insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
+        insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'checkArrowEntityHit', '(Lnet/minecraft/world/phys/HitResult;Lnet/minecraft/world/entity/projectile/Projectile;)Lnet/minecraft/world/phys/EntityHitResult;'))
+        return insnToInsert
+    }
+    insertOnInvoke2(methodNode, insnToInsertGetter, false/*after*/, invokeTargetClass, invokeTargetName, invokeTargetNameObf, invokeTargetDesc, false)
+
+    transformProjectileHitCapture(methodNode, projectileClass, preMethodName, postMethodName, false)
     return methodNode
 }
 
@@ -950,26 +993,6 @@ function initializeCoreMod() {
 	            insnToInsert.add(new FieldInsnNode(Opcodes.GETFIELD, "com/simibubi/create/content/contraptions/glue/SuperGlueRemovalPacket", "entityId", "I"))
                 insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
                 insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCoreForge', 'isCreateGlueRemovalAllowed', '(ILnet/minecraftforge/network/NetworkEvent$Context;)Z'))
-                insnToInsert.add(new JumpInsnNode(Opcodes.IFNE, MY_LABEL))
-                insnToInsert.add(new InsnNode(Opcodes.RETURN))
-                insnToInsert.add(MY_LABEL)
-                methodNode.instructions.insert(methodNode.instructions.get(0), insnToInsert)
-                return methodNode
-            }
-        },
-        'xaero_pac_create_potatoprojectileentity_onhitentity': {
-            'target' : {
-                'type': 'METHOD',
-                'class': 'com.simibubi.create.content.equipment.potatoCannon.PotatoProjectileEntity',
-                'methodName': 'm_5790_',
-                'methodDesc' : '(Lnet/minecraft/world/phys/EntityHitResult;)V'
-            },
-            'transformer' : function(methodNode){
-                var MY_LABEL = new LabelNode(new Label())
-                var insnToInsert = new InsnList()
-                insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
-                insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
-                insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'isProjectileHitAllowed', '(Lnet/minecraft/world/entity/projectile/Projectile;Lnet/minecraft/world/phys/EntityHitResult;)Z'))
                 insnToInsert.add(new JumpInsnNode(Opcodes.IFNE, MY_LABEL))
                 insnToInsert.add(new InsnNode(Opcodes.RETURN))
                 insnToInsert.add(MY_LABEL)
@@ -1745,7 +1768,7 @@ function initializeCoreMod() {
                 'methodDesc' : '()V'
             },
             'transformer' : function(methodNode){
-                return transformProjectileHitCapture(methodNode, 'net/minecraft/world/entity/projectile/AbstractArrow', 'preArrowProjectileHit', 'postArrowProjectileHit');
+                return transformArrowHitCapture(methodNode, 'net/minecraft/world/entity/projectile/AbstractArrow', 'preArrowProjectileHit', 'postArrowProjectileHit');
             }
         },
         'xaero_pac_abstracthurtingprojectile_tick': {
@@ -1756,7 +1779,7 @@ function initializeCoreMod() {
                 'methodDesc' : '()V'
             },
             'transformer' : function(methodNode){
-                return transformProjectileHitCapture(methodNode, 'net/minecraft/world/entity/projectile/AbstractHurtingProjectile', 'preHurtingProjectileHit', 'postHurtingProjectileHit');
+                return transformProjectileHitCapture(methodNode, 'net/minecraft/world/entity/projectile/AbstractHurtingProjectile', 'preHurtingProjectileHit', 'postHurtingProjectileHit', true);
             }
         },
         'xaero_pac_throwableprojectile_tick': {
@@ -1767,7 +1790,7 @@ function initializeCoreMod() {
                 'methodDesc' : '()V'
             },
             'transformer' : function(methodNode){
-                return transformProjectileHitCapture(methodNode, 'net/minecraft/world/entity/projectile/ThrowableProjectile', 'preThrowableProjectileHit', 'postThrowableProjectileHit');
+                return transformProjectileHitCapture(methodNode, 'net/minecraft/world/entity/projectile/ThrowableProjectile', 'preThrowableProjectileHit', 'postThrowableProjectileHit', true);
             }
         },
         'xaero_pac_clientlevel': {

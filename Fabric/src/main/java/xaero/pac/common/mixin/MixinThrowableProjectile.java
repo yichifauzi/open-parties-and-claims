@@ -20,14 +20,21 @@ package xaero.pac.common.mixin;
 
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.phys.HitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xaero.pac.common.server.core.ServerCore;
 
 @Mixin(value = ThrowableProjectile.class, priority = 1000001)
 public class MixinThrowableProjectile {
+
+	@ModifyVariable(method = "tick", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/entity/projectile/ProjectileUtil;getHitResult(Lnet/minecraft/world/entity/Entity;Ljava/util/function/Predicate;)Lnet/minecraft/world/phys/HitResult;"))
+	public HitResult replaceHitResult(HitResult actual){
+		return ServerCore.checkProjectileHit(actual, (Projectile)(Object)this);
+	}
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/ThrowableProjectile;onHit(Lnet/minecraft/world/phys/HitResult;)V"))
 	public void preHit(CallbackInfo ci){
