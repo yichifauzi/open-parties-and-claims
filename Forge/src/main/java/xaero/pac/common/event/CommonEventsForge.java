@@ -170,13 +170,13 @@ public class CommonEventsForge extends CommonEvents {
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onItemUseTick(LivingEntityUseItemEvent.Tick event) {
-		if(super.onItemUseTick(event.getEntityLiving(), event.getItem()))
+		if(super.onItemUseTick(event.getEntity(), event.getItem()))
 			event.setCanceled(true);
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onItemUseTick(LivingEntityUseItemEvent.Stop event) {
-		if(super.onItemUseStop(event.getEntityLiving(), event.getItem()))
+		if(super.onItemUseStop(event.getEntity(), event.getItem()))
 			event.setCanceled(true);
 	}
 
