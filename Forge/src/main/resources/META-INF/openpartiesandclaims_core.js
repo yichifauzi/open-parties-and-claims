@@ -294,8 +294,8 @@ function transformPrePostResourcesDrop(methodNode, entityParIndex){
 
 function transformProjectileHitCapture(methodNode, projectileClass, preMethodName, postMethodName, projectileUtilResult){
     var invokeTargetClass = 'net/minecraft/world/entity/projectile/ProjectileUtil'
-    var invokeTargetName = 'getHitResult'
-    var invokeTargetNameObf = 'm_37294_'
+    var invokeTargetName = 'getHitResultOnMoveVector'
+    var invokeTargetNameObf = 'm_278158_'
     var invokeTargetDesc = '(Lnet/minecraft/world/entity/Entity;Ljava/util/function/Predicate;)Lnet/minecraft/world/phys/HitResult;'
     var insnToInsertGetter = function() {
         var insnToInsert = new InsnList()

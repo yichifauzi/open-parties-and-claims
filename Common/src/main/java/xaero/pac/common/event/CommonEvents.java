@@ -262,7 +262,7 @@ public abstract class CommonEvents {
 	}
 
 	public boolean onItemUseTick(LivingEntity entityLiving, ItemStack itemStack) {
-		ServerLevel serverLevel = ServerLevelHelper.getServerLevel(entityLiving.level);
+		ServerLevel serverLevel = ServerLevelHelper.getServerLevel(entityLiving.level());
 		if(serverLevel == null)
 			return false;
 		if(!EntityData.from(entityLiving).getShouldCheckItemUseTick())
@@ -280,7 +280,7 @@ public abstract class CommonEvents {
 	}
 
 	public boolean onItemUseStop(LivingEntity entityLiving, ItemStack itemStack) {
-		ServerLevel serverLevel = ServerLevelHelper.getServerLevel(entityLiving.level);
+		ServerLevel serverLevel = ServerLevelHelper.getServerLevel(entityLiving.level());
 		if(serverLevel == null)
 			return false;
 		EntityData.from(entityLiving).setShouldCheckItemUseTick(false);

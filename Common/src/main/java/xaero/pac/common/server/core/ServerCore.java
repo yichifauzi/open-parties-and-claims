@@ -391,7 +391,7 @@ public class ServerCore {
 				serverData = ServerData.from(projectile.getServer());
 		if(serverData == null)
 			return true;
-		ServerLevel world = ServerLevelHelper.getServerLevel(projectile.level);
+		ServerLevel world = ServerLevelHelper.getServerLevel(projectile.level());
 		if(world == null)
 			return true;
 		//null block state so that block exceptions don't affect this
