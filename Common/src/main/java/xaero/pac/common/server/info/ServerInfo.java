@@ -21,13 +21,16 @@ package xaero.pac.common.server.info;
 import xaero.pac.common.server.io.ObjectManagerIOObject;
 
 public final class ServerInfo implements ObjectManagerIOObject {
-	
-	private long useTime;
-	private boolean dirty;
 
-	public ServerInfo(long useTime) {
+	public static final int CURRENT_VERSION = 1;
+	private long totalUseTime;
+	private boolean dirty;
+	private final int loadedVersion;
+
+	public ServerInfo(long totalUseTime, int loadedVersion) {
 		super();
-		this.useTime = useTime;
+		this.totalUseTime = totalUseTime;
+		this.loadedVersion = loadedVersion;
 	}
 
 	@Override
@@ -45,13 +48,16 @@ public final class ServerInfo implements ObjectManagerIOObject {
 		return null;
 	}
 	
-	public void setUseTime(long useTime) {
-		this.useTime = useTime;
+	public void setTotalUseTime(long totalUseTime) {
+		this.totalUseTime = totalUseTime;
 		setDirty(true);
 	}
 	
-	public long getUseTime() {
-		return useTime;
+	public long getTotalUseTime() {
+		return totalUseTime;
 	}
 
+	public int getLoadedVersion() {
+		return loadedVersion;
+	}
 }

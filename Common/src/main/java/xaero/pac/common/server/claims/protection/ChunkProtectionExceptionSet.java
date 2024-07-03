@@ -44,6 +44,8 @@ public final class ChunkProtectionExceptionSet<T> {
 	}
 
 	public boolean contains(T object){
+		if(object == null)
+			return false;
 		return exceptions.contains(object) || tagBasedExceptions.contains(object);
 	}
 
