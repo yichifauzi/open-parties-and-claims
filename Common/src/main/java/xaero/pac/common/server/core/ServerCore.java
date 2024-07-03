@@ -364,10 +364,10 @@ public class ServerCore {
 	}
 
 	public static boolean isProjectileHitAllowed(Projectile entity, EntityHitResult hitResult){
-		return isProjectileEntityHitAllowed(entity, hitResult, false);
+		return isProjectileEntityHitAllowed(entity, hitResult);
 	}
 
-	public static boolean isProjectileEntityHitAllowed(Projectile entity, EntityHitResult hitResult, boolean messages){
+	public static boolean isProjectileEntityHitAllowed(Projectile projectile, EntityHitResult hitResult){
 		Entity target = hitResult.getEntity();
 		if(target.getServer() == null)
 			return true;
@@ -375,7 +375,9 @@ public class ServerCore {
 				serverData = ServerData.from(target.getServer());
 		if(serverData == null)
 			return true;
-		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, entity.getOwner(), entity, target, null, null, false, messages, false);
+		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, projectile.getOwner(), projectile, target, null, null, false, false, false);
+		if(shouldProtect && projectile.getOwner() instanceof ServerPlayer player)
+			player.sendMessage(serverData.getAdaptiveLocalizer().getFor(player, serverData.getChunkProtection().PROJECTILE_HIT_ENTITY), player.getUUID());
 		return !shouldProtect;
 	}
 
@@ -390,11 +392,13 @@ public class ServerCore {
 		if(world == null)
 			return true;
 		//null block state so that block exceptions don't affect this
-		boolean shouldProtect = serverData.getChunkProtection().onBlockInteraction(serverData, null, projectile, null, null, world, hitResult.getBlockPos(), null, false, true);
+		boolean shouldProtect = serverData.getChunkProtection().onBlockInteraction(serverData, null, projectile, null, null, world, hitResult.getBlockPos(), null, false, false);
 		if(!shouldProtect) {
 			BlockPos offPos = hitResult.getBlockPos().offset(hitResult.getDirection().getNormal());
-			shouldProtect = serverData.getChunkProtection().onBlockInteraction(serverData, null, projectile, null, null, world, offPos, null, false, true);
+			shouldProtect = serverData.getChunkProtection().onBlockInteraction(serverData, null, projectile, null, null, world, offPos, null, false, false);
 		}
+		if(shouldProtect && projectile.getOwner() instanceof ServerPlayer player)
+			player.sendMessage(serverData.getAdaptiveLocalizer().getFor(player, serverData.getChunkProtection().PROJECTILE_HIT_BLOCK), player.getUUID());
 		return !shouldProtect;
 	}
 
@@ -403,7 +407,7 @@ public class ServerCore {
 			return hitResult;
 		if(hitResult == null || hitResult.getType() == HitResult.Type.MISS)
 			return hitResult;
-		if(hitResult instanceof EntityHitResult entityHitResult && !isProjectileEntityHitAllowed(entity, entityHitResult, true))
+		if(hitResult instanceof EntityHitResult entityHitResult && !isProjectileEntityHitAllowed(entity, entityHitResult))
 			hitResult = BlockHitResult.miss(hitResult.getLocation(), Direction.UP, entity.blockPosition());
 		else if(hitResult instanceof BlockHitResult blockHitResult && !isProjectileBlockHitAllowed(entity, blockHitResult))
 			hitResult = BlockHitResult.miss(hitResult.getLocation(), blockHitResult.getDirection(), blockHitResult.getBlockPos());
