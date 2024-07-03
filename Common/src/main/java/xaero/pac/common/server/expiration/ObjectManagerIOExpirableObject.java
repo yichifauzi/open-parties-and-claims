@@ -27,6 +27,6 @@ public interface ObjectManagerIOExpirableObject extends ObjectManagerIOObject {
 	
 	public void confirmActivity(ServerInfo serverInfo);
 	
-	public long getLastConfirmedActivity();
+	public long getConfirmedActivity();
 	
 }

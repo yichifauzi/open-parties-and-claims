@@ -22,9 +22,11 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xaero.pac.OpenPartiesAndClaims;
@@ -70,6 +72,17 @@ public class MixinLivingEntity {
 	@Inject(at = @At("RETURN"), method = "dropAllDeathLoot")
 	public void onDie(DamageSource source, CallbackInfo info) {
 		ServerCore.onLivingEntityDropDeathLootPost((LivingEntity) (Object)this);
+	}
+
+	@Inject(at = @At("HEAD"), method = "releaseUsingItem")
+	public void onReleaseUsingItem(CallbackInfo info) {
+		ServerCoreFabric.onReleaseUsingItem((LivingEntity) (Object)this);
+	}
+
+	@ModifyArg(method = "updatingUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;updateUsingItem(Lnet/minecraft/world/item/ItemStack;)V"))
+	public ItemStack onUpdatingUsingItem(ItemStack arg) {
+		ServerCoreFabric.onUpdatingUsingItem((LivingEntity) (Object)this);
+		return ((LivingEntity) (Object)this).getUseItem();
 	}
 
 }

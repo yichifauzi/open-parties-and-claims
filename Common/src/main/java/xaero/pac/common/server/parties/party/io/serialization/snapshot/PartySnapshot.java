@@ -31,7 +31,7 @@ public class PartySnapshot implements GsonSnapshot {
 	private final List<PartyMemberSnapshot> members;
 	private final List<PartyInviteSnapshot> invitedPlayers;
 	private final List<String> allyParties;
-	private long lastConfirmedActivity;
+	private long confirmedActivity;
 	
 	public PartySnapshot(PartyMemberSnapshot owner) {
 		super();
@@ -69,12 +69,12 @@ public class PartySnapshot implements GsonSnapshot {
 		return owner;
 	}
 	
-	public void setLastConfirmedActivity(long lastConfirmedActivity) {
-		this.lastConfirmedActivity = lastConfirmedActivity;
+	public void setConfirmedActivity(long confirmedActivity) {
+		this.confirmedActivity = confirmedActivity;
 	}
 	
-	public long getLastConfirmedActivity() {
-		return lastConfirmedActivity;
+	public long getConfirmedActivity() {
+		return confirmedActivity;
 	}
 
 }

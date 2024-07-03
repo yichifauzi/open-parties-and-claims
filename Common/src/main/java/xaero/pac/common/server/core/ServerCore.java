@@ -59,11 +59,13 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import xaero.pac.OpenPartiesAndClaims;
 import xaero.pac.common.claims.player.IPlayerChunkClaim;
 import xaero.pac.common.claims.player.IPlayerClaimPosList;
 import xaero.pac.common.claims.player.IPlayerDimensionClaims;
+import xaero.pac.common.entity.EntityData;
 import xaero.pac.common.entity.IEntity;
 import xaero.pac.common.entity.IItemEntity;
 import xaero.pac.common.packet.ClientboundPacDimensionHandshakePacket;
@@ -119,7 +121,7 @@ public class ServerCore {
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(source.getServer());
 		if(serverData == null)
 			return true;
-		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null, null, true, false);
+		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null, null, true, false, true);
 		return !shouldProtect;
 	}
 
@@ -299,7 +301,7 @@ public class ServerCore {
 		if(serverData == null)
 			return true;
 		Entity contraption = player.getLevel().getEntity(contraptionId);
-		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, null, player, contraption, null, interactionHand, false, true);
+		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, null, player, contraption, null, interactionHand, false, true, true);
 		return !shouldProtect;
 	}
 
@@ -310,7 +312,7 @@ public class ServerCore {
 		if(serverData == null)
 			return true;
 		Entity contraption = player.getLevel().getEntity(contraptionId);
-		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, null, player, contraption, null, null, false, true);
+		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, null, player, contraption, null, null, false, true, true);
 		if(!shouldProtect)
 			shouldProtect = serverData.getChunkProtection().onBlockInteraction(serverData, player.getLevel().getBlockState(pos), player, null, null, player.getLevel(), pos, Direction.UP, false, true);
 		return !shouldProtect;
@@ -323,7 +325,7 @@ public class ServerCore {
 		if(serverData == null)
 			return true;
 		Entity contraption = player.getLevel().getEntity(contraptionId);
-		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, null, player, contraption, null, null, false, false);
+		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, null, player, contraption, null, null, false, false, true);
 		if(shouldProtect)
 			player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(player, TRAIN_CONTROLS_MESSAGE));
 		return !shouldProtect;
@@ -360,14 +362,59 @@ public class ServerCore {
 	}
 
 	public static boolean isProjectileHitAllowed(Projectile entity, EntityHitResult hitResult){
+		return isProjectileEntityHitAllowed(entity, hitResult, false);
+	}
+
+	public static boolean isProjectileEntityHitAllowed(Projectile entity, EntityHitResult hitResult, boolean messages){
 		Entity target = hitResult.getEntity();
 		if(target.getServer() == null)
 			return true;
-		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(target.getServer());
 		if(serverData == null)
 			return true;
-		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, entity.getOwner(), entity, target, null, null, true, false);
+		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, entity.getOwner(), entity, target, null, null, false, messages, false);
 		return !shouldProtect;
+	}
+
+	public static boolean isProjectileBlockHitAllowed(Projectile projectile, BlockHitResult hitResult){
+		if(projectile.getServer() == null)
+			return true;
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(projectile.getServer());
+		if(serverData == null)
+			return true;
+		ServerLevel world = ServerLevelHelper.getServerLevel(projectile.level);
+		if(world == null)
+			return true;
+		//null block state so that block exceptions don't affect this
+		boolean shouldProtect = serverData.getChunkProtection().onBlockInteraction(serverData, null, projectile, null, null, world, hitResult.getBlockPos(), null, false, true);
+		if(!shouldProtect) {
+			BlockPos offPos = hitResult.getBlockPos().offset(hitResult.getDirection().getNormal());
+			shouldProtect = serverData.getChunkProtection().onBlockInteraction(serverData, null, projectile, null, null, world, offPos, null, false, true);
+		}
+		return !shouldProtect;
+	}
+
+	public static HitResult checkProjectileHit(HitResult hitResult, Projectile entity){
+		if(entity.getServer() == null)
+			return hitResult;
+		if(hitResult == null || hitResult.getType() == HitResult.Type.MISS)
+			return hitResult;
+		if(hitResult instanceof EntityHitResult entityHitResult && !isProjectileEntityHitAllowed(entity, entityHitResult, true))
+			hitResult = BlockHitResult.miss(hitResult.getLocation(), Direction.UP, entity.blockPosition());
+		else if(hitResult instanceof BlockHitResult blockHitResult && !isProjectileBlockHitAllowed(entity, blockHitResult))
+			hitResult = BlockHitResult.miss(hitResult.getLocation(), blockHitResult.getDirection(), blockHitResult.getBlockPos());
+		if(hitResult.getType() == HitResult.Type.MISS)
+			entity.discard();
+		return hitResult;
+	}
+
+	public static EntityHitResult checkArrowEntityHit(HitResult hitResult, Projectile entity){
+		hitResult = checkProjectileHit(hitResult, entity);
+		if(hitResult != null && hitResult.getType() == HitResult.Type.MISS)
+			return null;
+		return (EntityHitResult) hitResult;
 	}
 
 	private static Level CREATE_DISASSEMBLE_SUPER_GLUE_LEVEL;
@@ -391,7 +438,7 @@ public class ServerCore {
 	}
 
 	public static boolean canCreatePipeAffectBlock(Level level, BlockPos from, BlockPos to, boolean simulate){
-		if(level == null || simulate)
+		if(simulate || level == null || level.getServer() == null)
 			return true;
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
 				serverData = ServerData.from(level.getServer());
@@ -399,7 +446,7 @@ public class ServerCore {
 	}
 
 	public static boolean canCreatePloughPos(Level level, ICreateContraption contraption, BlockPos pos){
-		if(level == null)
+		if(level == null || level.getServer() == null)
 			return true;
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
 				serverData = ServerData.from(level.getServer());
@@ -465,10 +512,10 @@ public class ServerCore {
 			return true;
 		Entity cart1 = world.getEntity(cartId1);
 		ItemStack heldItem = new ItemStack(couplingItem);
-		if(cart1 != null && serverData.getChunkProtection().onEntityInteraction(serverData, null, player, cart1, heldItem, null, false, false))
+		if(cart1 != null && serverData.getChunkProtection().onEntityInteraction(serverData, null, player, cart1, heldItem, null, false, false, true))
 			return false;
 		Entity cart2 = world.getEntity(cartId2);
-		return cart2 == null || !serverData.getChunkProtection().onEntityInteraction(serverData, null, player, cart2, heldItem, null, false, false);
+		return cart2 == null || !serverData.getChunkProtection().onEntityInteraction(serverData, null, player, cart2, heldItem, null, false, false, true);
 	}
 
 	private static InteractionHand ENTITY_INTERACTION_HAND;
@@ -700,11 +747,11 @@ public class ServerCore {
 	}
 
 	private final static String LOOT_OWNER_KEY = "xaero_OPAC_lootOwnerId";
-	private final static BiConsumer<IEntity, UUID> LOOT_OWNER_SETTER = IEntity::setXaero_OPAC_lootOwner;
-	private final static Function<IEntity, UUID> LOOT_OWNER_GETTER = IEntity::getXaero_OPAC_lootOwner;
+	private final static BiConsumer<IEntity, UUID> LOOT_OWNER_SETTER = (e, id) -> EntityData.from(e).setLootOwner(id);
+	private final static Function<IEntity, UUID> LOOT_OWNER_GETTER = e -> EntityData.from(e).getLootOwner();
 	private final static String DEAD_PLAYER_KEY = "xaero_OPAC_deadPlayer";
-	private final static BiConsumer<IEntity, UUID> DEAD_PLAYER_SETTER = IEntity::setXaero_OPAC_deadPlayer;
-	private final static Function<IEntity, UUID> DEAD_PLAYER_GETTER = IEntity::getXaero_OPAC_deadPlayer;
+	private final static BiConsumer<IEntity, UUID> DEAD_PLAYER_SETTER = (e, id) -> EntityData.from(e).setDeadPlayer(id);
+	private final static Function<IEntity, UUID> DEAD_PLAYER_GETTER = e -> EntityData.from(e).getDeadPlayer();
 	private final static String THROWER_ACCESSOR_KEY = "xaero_OPAC_throwerAccessor";
 	private final static BiConsumer<IEntity, UUID> THROWER_ACCESSOR_SETTER = (ie, id) -> ((IItemEntity)ie).setXaero_OPAC_throwerAccessor(id);
 	private final static Function<IEntity, UUID> THROWER_ACCESSOR_GETTER = ie -> ((IItemEntity)ie).getXaero_OPAC_throwerAccessor();

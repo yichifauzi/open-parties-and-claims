@@ -39,13 +39,17 @@ public final class ChunkProtectionExceptionGroup<T> {
 	private IPlayerConfigOptionSpecAPI<Integer> playerConfigOption;
 	private final String contentString;
 	private final PlayerConfigOptionCategory optionCategory;
+	private final boolean ofSubjects;//(usually true) the group contains objects that are being interacted with as opposed to actors that interact
+	private final Class<?> subjectType;//doesn't always match element type
 
-	private ChunkProtectionExceptionGroup(String name, ChunkProtectionExceptionType type, ChunkProtectionExceptionSet<T> exceptionSet, String contentString, PlayerConfigOptionCategory optionCategory) {
+	private ChunkProtectionExceptionGroup(String name, ChunkProtectionExceptionType type, ChunkProtectionExceptionSet<T> exceptionSet, String contentString, PlayerConfigOptionCategory optionCategory, boolean ofSubjects, Class<?> subjectType) {
 		this.name = name;
 		this.type = type;
 		this.exceptionSet = exceptionSet;
 		this.contentString = contentString;
 		this.optionCategory = optionCategory;
+		this.ofSubjects = ofSubjects;
+		this.subjectType = subjectType;
 	}
 
 	public String getName() {
@@ -84,6 +88,18 @@ public final class ChunkProtectionExceptionGroup<T> {
 		return optionCategory;
 	}
 
+	public boolean isOfSubjects() {
+		return ofSubjects;
+	}
+
+	public ExceptionElementType<T> getElementType(){
+		return exceptionSet.getElementType();
+	}
+
+	public Class<?> getSubjectType() {
+		return subjectType;
+	}
+
 	public static final class Builder<T> {
 
 		private String name;
@@ -91,15 +107,31 @@ public final class ChunkProtectionExceptionGroup<T> {
 		private ChunkProtectionExceptionSet.Builder<T> exceptionSetBuilder;
 		private String contentString;
 		private PlayerConfigOptionCategory optionCategory;
+		private boolean ofSubjects;
+		private ExceptionElementType<T> elementType;
+		private Class<?> subjectType;
 
 		private Builder(ExceptionElementType<T> elementType){
+			this.elementType = elementType;
 			exceptionSetBuilder = ChunkProtectionExceptionSet.Builder.begin(elementType);
 		}
 
 		private Builder<T> setDefault() {
+			setOfSubjects(true);
+			setSubjectType(elementType.getType());
 			setName(null);
 			setType(null);
 			exceptionSetBuilder.setDefault();
+			return this;
+		}
+
+		public Builder<T> setSubjectType(Class<?> subjectType) {
+			this.subjectType = subjectType;
+			return this;
+		}
+
+		public Builder<T> setOfSubjects(boolean ofSubjects) {
+			this.ofSubjects = ofSubjects;
 			return this;
 		}
 
@@ -133,7 +165,7 @@ public final class ChunkProtectionExceptionGroup<T> {
 				throw new IllegalStateException();
 			if(!GROUP_NAME_PATTERN.matcher(name).matches())
 				throw new IllegalArgumentException("Exception group name must consist of A - Z, numbers or the - and _ characters: " + name);
-			return new ChunkProtectionExceptionGroup<>(name, type, exceptionSetBuilder.build(), contentString, optionCategory);
+			return new ChunkProtectionExceptionGroup<>(name, type, exceptionSetBuilder.build(), contentString, optionCategory, ofSubjects, subjectType);
 		}
 
 		public static <T> Builder<T> begin(ExceptionElementType<T> elementType){
