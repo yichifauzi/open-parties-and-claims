@@ -109,12 +109,14 @@ public class ChunkProtection
 	private final Component CANT_INTERACT_BLOCK_MAIN = new TranslatableComponent("gui.xaero_claims_protection_interact_block", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component BLOCK_TRY_EMPTY_MAIN = new TranslatableComponent("gui.xaero_claims_protection_interact_block_try_empty", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component BLOCK_DISABLED = new TranslatableComponent("gui.xaero_claims_protection_block_disabled").withStyle(s -> s.withColor(ChatFormatting.RED));
+	public final Component PROJECTILE_HIT_BLOCK = new TranslatableComponent("gui.xaero_claims_protection_projectile_hit_block").withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component USE_ITEM_ANY = new TranslatableComponent("gui.xaero_claims_protection_use_item_any").withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component USE_ITEM_MAIN = new TranslatableComponent("gui.xaero_claims_protection_use_item", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component CANT_INTERACT_ENTITY = new TranslatableComponent("gui.xaero_claims_protection_interact_entity_any").withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component CANT_INTERACT_ENTITY_MAIN = new TranslatableComponent("gui.xaero_claims_protection_interact_entity", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component ENTITY_TRY_EMPTY_MAIN = new TranslatableComponent("gui.xaero_claims_protection_interact_entity_try_empty", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component ENTITY_DISABLED = new TranslatableComponent("gui.xaero_claims_protection_entity_disabled").withStyle(s -> s.withColor(ChatFormatting.RED));
+	public final Component PROJECTILE_HIT_ENTITY = new TranslatableComponent("gui.xaero_claims_protection_projectile_hit_entity").withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component CANT_APPLY_ITEM_ANY = new TranslatableComponent("gui.xaero_claims_protection_interact_item_apply_any").withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component CANT_APPLY_ITEM_MAIN = new TranslatableComponent("gui.xaero_claims_protection_interact_item_apply", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component CANT_APPLY_ITEM_THIS_CLOSE_MAIN = new TranslatableComponent("gui.xaero_claims_protection_interact_item_apply_too_close", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
