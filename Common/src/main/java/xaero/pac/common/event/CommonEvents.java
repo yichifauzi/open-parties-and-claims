@@ -53,6 +53,7 @@ import xaero.pac.common.claims.player.IPlayerChunkClaim;
 import xaero.pac.common.claims.player.IPlayerClaimPosList;
 import xaero.pac.common.claims.player.IPlayerDimensionClaims;
 import xaero.pac.common.claims.tracker.api.IClaimsManagerTrackerRegisterAPI;
+import xaero.pac.common.entity.EntityData;
 import xaero.pac.common.entity.IEntity;
 import xaero.pac.common.mods.create.CreateContraptionHelper;
 import xaero.pac.common.parties.party.IPartyPlayerInfo;
@@ -260,6 +261,36 @@ public abstract class CommonEvents {
 		return serverData.getChunkProtection().onItemRightClick(serverData, hand, itemStack, pos, player, true);
 	}
 
+	public boolean onItemUseTick(LivingEntity entityLiving, ItemStack itemStack) {
+		ServerLevel serverLevel = ServerLevelHelper.getServerLevel(entityLiving.level);
+		if(serverLevel == null)
+			return false;
+		if(!EntityData.from(entityLiving).getShouldCheckItemUseTick())
+			return false;
+		EntityData.from(entityLiving).setShouldCheckItemUseTick(false);
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(serverLevel.getServer());
+		InteractionHand hand = entityLiving.getItemInHand(InteractionHand.MAIN_HAND) == itemStack ? InteractionHand.MAIN_HAND :
+				entityLiving.getItemInHand(InteractionHand.OFF_HAND) == itemStack ? InteractionHand.OFF_HAND : null;
+		if(serverData.getChunkProtection().onItemRightClick(serverData, hand, itemStack, entityLiving.blockPosition(), entityLiving, true)){
+			entityLiving.stopUsingItem();
+			return true;
+		}
+		return false;
+	}
+
+	public boolean onItemUseStop(LivingEntity entityLiving, ItemStack itemStack) {
+		ServerLevel serverLevel = ServerLevelHelper.getServerLevel(entityLiving.level);
+		if(serverLevel == null)
+			return false;
+		EntityData.from(entityLiving).setShouldCheckItemUseTick(false);
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(serverLevel.getServer());
+		InteractionHand hand = entityLiving.getItemInHand(InteractionHand.MAIN_HAND) == itemStack ? InteractionHand.MAIN_HAND :
+				entityLiving.getItemInHand(InteractionHand.OFF_HAND) == itemStack ? InteractionHand.OFF_HAND : null;
+		return serverData.getChunkProtection().onItemRightClick(serverData, hand, itemStack, entityLiving.blockPosition(), entityLiving, true);
+	}
+
 	public boolean onMobGrief(Entity entity) {
 		if(entity == null /*anonymous fireballs on Forge*/)
 			return false;
@@ -284,7 +315,7 @@ public abstract class CommonEvents {
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
 		if(isFire)
 			return serverData.getChunkProtection().onEntityFire(serverData, target);
-		return serverData.getChunkProtection().onEntityInteraction(serverData, source.getEntity(), source.getDirectEntity(), target, null, InteractionHand.MAIN_HAND, true, true);
+		return serverData.getChunkProtection().onEntityInteraction(serverData, source.getEntity(), source.getDirectEntity(), target, null, InteractionHand.MAIN_HAND, true, source.getDirectEntity() instanceof Player, true);
 	}
 
 	protected boolean onEntityAttack(Player player, Entity target) {
@@ -293,7 +324,7 @@ public abstract class CommonEvents {
 		boolean result = false;
 		if(!player.isSpectator()){
 			IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-			result = serverData.getChunkProtection().onEntityInteraction(serverData, player, player, target, null, InteractionHand.MAIN_HAND, true, true);
+			result = serverData.getChunkProtection().onEntityInteraction(serverData, player, player, target, null, InteractionHand.MAIN_HAND, true, true, true);
 		}
 		if(result)
 			ServerCore.postResourcesDrop(player);//protected attack won't reach this call otherwise
@@ -306,14 +337,14 @@ public abstract class CommonEvents {
 		if(source.isSpectator())
 			return false;
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-		return serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null, hand, false, false);
+		return serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null, hand, false, false, true);
 	}
 
 	public boolean onInteractEntitySpecific(Entity source, Entity target, InteractionHand hand) {
 		if(target.getServer() == null)
 			return false;
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(target.getServer());
-		return serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null, hand, false, true);
+		return serverData.getChunkProtection().onEntityInteraction(serverData, source, source, target, null, hand, false, true, true);
 	}
 
 	public void onExplosionDetonate(Level level, Explosion explosion, List<Entity> affectedEntities, List<BlockPos> affectedBlocks) {
@@ -345,11 +376,13 @@ public abstract class CommonEvents {
 				if(serverData.getChunkProtection().onProjectileHitSpawnedEntity(serverData, spawnerProjectile, entity))
 					return true;
 			}
+			boolean isMobLoot = false;
 			if (!(entity instanceof LivingEntity) && ServerCore.getDyingDamageSourceForCurrentEntitySpawns(serverLevel.getServer().getTickCount()) != null) {
 				IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
 						serverData = ServerData.from(serverLevel.getServer());
 				if (serverData == null)
 					return false;
+				isMobLoot = true;
 				if(serverData.getChunkProtection().onLivingLootEntity(serverData, ServerCore.getDyingLivingForCurrentEntitySpawns(serverLevel.getServer().getTickCount()), entity, ServerCore.getDyingDamageSourceForCurrentEntitySpawns(serverLevel.getServer().getTickCount())))
 					return true;
 			}
@@ -366,7 +399,7 @@ public abstract class CommonEvents {
 					serverData.getChunkProtection().onEntityEnterChunk(serverData, entity, projectile.getOwner().getX(), projectile.getOwner().getZ(), newSection, oldSection);
 				}
 				return false;
-			} else if (!fromDisk && entity instanceof ItemEntity itemEntity) {
+			} else if (!fromDisk && !isMobLoot && entity instanceof ItemEntity itemEntity) {
 				IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
 						serverData = ServerData.from(serverLevel.getServer());
 				if (serverData == null)
@@ -383,8 +416,8 @@ public abstract class CommonEvents {
 			} else if(entity instanceof ICreateContraptionEntity contraptionEntity)
 				CreateContraptionHelper.handleCreateContraptionAdded(entity, contraptionEntity);
 		} finally {
-			if(((IEntity)entity).getXaero_OPAC_lastChunkEntryDimension() == null)
-				((IEntity)entity).setXaero_OPAC_lastChunkEntryDimension(entity.level().dimension());
+			if(EntityData.from(entity).getLastChunkEntryDimension() == null)
+				EntityData.from(entity).setLastChunkEntryDimension(entity.level().dimension());
 			if (entity instanceof ItemEntity itemEntity) {
 				if (ServerCore.getItemEntityThrower(itemEntity) == null && ServerCore.getResourcesDropOwner() != null)//after the protection checks so that this isn't immediately affected by toss protection
 					itemEntity.setThrower(ServerCore.getResourcesDropOwner().getUUID());
@@ -401,12 +434,13 @@ public abstract class CommonEvents {
 	}
 
 	protected void onEntityEnteringSection(Entity entity, SectionPos oldSection, SectionPos newSection, boolean chunkChanged){
-		if(entity.getServer() != null && chunkChanged && (entity.xOld != 0 || entity.yOld != 0 || entity.zOld != 0)) {
+		if(entity.getServer() != null && chunkChanged) {
 			IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
 					serverData = ServerData.from(entity.getServer());
-			if(entity.level().dimension().equals(((IEntity)entity).getXaero_OPAC_lastChunkEntryDimension()))
+			if(entity.level().dimension().equals(EntityData.from(entity).getLastChunkEntryDimension()))
 				serverData.getChunkProtection().onEntityEnterChunk(serverData, entity, entity.xOld, entity.zOld, newSection, oldSection);
-			((IEntity)entity).setXaero_OPAC_lastChunkEntryDimension(entity.level().dimension());
+			EntityData.from(entity).setLastChunkEntryDimension(entity.level().dimension());
+			EntityData.from(entity).setShouldCheckItemUseTick(true);
 		}
 	}
 
@@ -461,17 +495,19 @@ public abstract class CommonEvents {
 			return false;
 		Set<ChunkPos> chunkPositions = new HashSet<>();
 		Iterator<Pair<BlockPos, BlockState>> iterator = blocks.iterator();
+		boolean result = false;
 		while(iterator.hasNext()){
 			Pair<BlockPos, BlockState> blockEntry = iterator.next();
 			BlockPos pos = blockEntry.getLeft();
 			if(chunkPositions.add(new ChunkPos(pos))) {
 				//not protecting destroyed blocks here because it causes dupes with mods like create
 				BlockState placedBlock = blockEntry.getRight();
-				if (placedBlock != null && !placedBlock.isAir() && serverData.getChunkProtection().onEntityPlaceBlock(serverData, entity, serverLevel, pos, null))
-					return true;
+				if(placedBlock == null || placedBlock.isAir())//even 1 instance of a block break can create a dupe
+					return false;
+				result = result || serverData.getChunkProtection().onEntityPlaceBlock(serverData, entity, serverLevel, pos, null);
 			}
 		}
-		return false;
+		return result;
 	}
 
 	protected void onTagsUpdate(){

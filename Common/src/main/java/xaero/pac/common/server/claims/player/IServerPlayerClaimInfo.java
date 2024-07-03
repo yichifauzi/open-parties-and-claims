@@ -66,7 +66,7 @@ public interface IServerPlayerClaimInfo<DC extends IPlayerDimensionClaims<?>> ex
 	
 	public void registerActivity();
 
-	public long getLastConfirmedActivity();
+	public long getConfirmedActivity();
 
 	public boolean isReplacementInProgress();
 

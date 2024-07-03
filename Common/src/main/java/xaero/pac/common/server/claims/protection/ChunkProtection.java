@@ -97,6 +97,8 @@ public class ChunkProtection
 	public static final String BREAK_PREFIX = "break$";
 	public static final String HAND_PREFIX = "hand$";
 	public static final String ANYTHING_PREFIX = "anything$";
+	public static final String INTERACT_PREFIX = "interact$";
+	public static final String FULL_PREFIX = "full$";
 	private final TriFunction<IPlayerConfig, Entity, Entity, IPlayerConfigOptionSpecAPI<Integer>> usedDroppedItemProtectionOptionGetter = this::getUsedDroppedItemProtectionOption;
 	private final TriFunction<IPlayerConfig, Entity, Entity, IPlayerConfigOptionSpecAPI<Integer>> usedExperienceOrbProtectionOptionGetter = (c, e, a) -> PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_XP_PICKUP;
 
@@ -106,12 +108,14 @@ public class ChunkProtection
 	private final Component CANT_INTERACT_BLOCK_MAIN = Component.translatable("gui.xaero_claims_protection_interact_block", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component BLOCK_TRY_EMPTY_MAIN = Component.translatable("gui.xaero_claims_protection_interact_block_try_empty", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component BLOCK_DISABLED = Component.translatable("gui.xaero_claims_protection_block_disabled").withStyle(s -> s.withColor(ChatFormatting.RED));
+	public final Component PROJECTILE_HIT_BLOCK = Component.translatable("gui.xaero_claims_protection_projectile_hit_block").withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component USE_ITEM_ANY = Component.translatable("gui.xaero_claims_protection_use_item_any").withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component USE_ITEM_MAIN = Component.translatable("gui.xaero_claims_protection_use_item", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component CANT_INTERACT_ENTITY = Component.translatable("gui.xaero_claims_protection_interact_entity_any").withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component CANT_INTERACT_ENTITY_MAIN = Component.translatable("gui.xaero_claims_protection_interact_entity", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component ENTITY_TRY_EMPTY_MAIN = Component.translatable("gui.xaero_claims_protection_interact_entity_try_empty", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component ENTITY_DISABLED = Component.translatable("gui.xaero_claims_protection_entity_disabled").withStyle(s -> s.withColor(ChatFormatting.RED));
+	public final Component PROJECTILE_HIT_ENTITY = Component.translatable("gui.xaero_claims_protection_projectile_hit_entity").withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component CANT_APPLY_ITEM_ANY = Component.translatable("gui.xaero_claims_protection_interact_item_apply_any").withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component CANT_APPLY_ITEM_MAIN = Component.translatable("gui.xaero_claims_protection_interact_item_apply", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component CANT_APPLY_ITEM_THIS_CLOSE_MAIN = Component.translatable("gui.xaero_claims_protection_interact_item_apply_too_close", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
@@ -147,8 +151,10 @@ public class ChunkProtection
 	private final ChunkProtectionExceptionSet<EntityType<?>> requiresEmptyHandEntities;
 	private final ChunkProtectionExceptionSet<EntityType<?>> forcedAllowAnyItemEntities;
 	private final ChunkProtectionExceptionSet<EntityType<?>> forcedEntityClaimBarrierList;
-	private final ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToGrief;
-	private final ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToGriefEntities;
+	private final ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToBreakBlocks;
+	private final ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToInteractWithBlocks;
+	private final ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToKillEntities;
+	private final ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToInteractWithEntities;
 	private final ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToGriefDroppedItems;
 	private final ChunkProtectionExceptionSet<EntityType<?>> nonBlockGriefingMobs;
 	private final ChunkProtectionExceptionSet<EntityType<?>> entityGriefingMobs;
@@ -175,20 +181,46 @@ public class ChunkProtection
 	private final Set<UUID> fullPasses;
 	private boolean fullPassesPaused;
 	
-	private ChunkProtection(CM claimsManager, IPlayerPartySystemManager playerPartySystemManager, ChunkProtectionEntityHelper entityHelper,
+	private ChunkProtection(CM claimsManager,
+							IPlayerPartySystemManager playerPartySystemManager,
+							ChunkProtectionEntityHelper entityHelper,
 							ChunkProtectionExceptionSet<EntityType<?>> friendlyEntityList,
 							ChunkProtectionExceptionSet<EntityType<?>> hostileEntityList,
 							ChunkProtectionExceptionSet<Block> forcedInteractionExceptionBlocks,
 							ChunkProtectionExceptionSet<Block> forcedBreakExceptionBlocks,
 							ChunkProtectionExceptionSet<Block> requiresEmptyHandBlocks,
-							ChunkProtectionExceptionSet<Block> forcedAllowAnyItemBlocks, ChunkProtectionExceptionSet<Block> completelyDisabledBlocks,
+							ChunkProtectionExceptionSet<Block> forcedAllowAnyItemBlocks,
+							ChunkProtectionExceptionSet<Block> completelyDisabledBlocks,
 							ChunkProtectionExceptionSet<EntityType<?>> forcedInteractionExceptionEntities,
 							ChunkProtectionExceptionSet<EntityType<?>> forcedKillExceptionEntities,
-							ChunkProtectionExceptionSet<EntityType<?>> requiresEmptyHandEntities, ChunkProtectionExceptionSet<EntityType<?>> forcedAllowAnyItemEntities, ChunkProtectionExceptionSet<EntityType<?>> forcedEntityClaimBarrierList,
-							ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToGrief,
-							ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToGriefEntities, ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToGriefDroppedItems, ChunkProtectionExceptionSet<EntityType<?>> nonBlockGriefingMobs, ChunkProtectionExceptionSet<EntityType<?>> entityGriefingMobs, ChunkProtectionExceptionSet<EntityType<?>> droppedItemGriefingMobs, Set<String> staticFakePlayerUsernames, Set<UUID> staticFakePlayerIds, Set<Class<?>> staticFakePlayerClassExceptions, ChunkProtectionExceptionSet<Item> additionalBannedItems,
+							ChunkProtectionExceptionSet<EntityType<?>> requiresEmptyHandEntities,
+							ChunkProtectionExceptionSet<EntityType<?>> forcedAllowAnyItemEntities,
+							ChunkProtectionExceptionSet<EntityType<?>> forcedEntityClaimBarrierList,
+							ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToBreakBlocks,
+							ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToInteractWithBlocks,
+							ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToKillEntities,
+							ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToInteractWithEntities,
+							ChunkProtectionExceptionSet<EntityType<?>> entitiesAllowedToGriefDroppedItems,
+							ChunkProtectionExceptionSet<EntityType<?>> nonBlockGriefingMobs,
+							ChunkProtectionExceptionSet<EntityType<?>> entityGriefingMobs,
+							ChunkProtectionExceptionSet<EntityType<?>> droppedItemGriefingMobs,
+							Set<String> staticFakePlayerUsernames,
+							Set<UUID> staticFakePlayerIds,
+							Set<Class<?>> staticFakePlayerClassExceptions,
+							ChunkProtectionExceptionSet<Item> additionalBannedItems,
 							ChunkProtectionExceptionSet<Item> completelyBannedItems,
-							ChunkProtectionExceptionSet<Item> itemUseProtectionExceptions, ChunkProtectionExceptionSet<EntityType<?>> completelyDisabledEntities, Map<String, ChunkProtectionExceptionGroup<Block>> blockExceptionGroups, Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> entityExceptionGroups, Map<String, ChunkProtectionExceptionGroup<Item>> itemExceptionGroups, Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> entityBarrierGroups, Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> blockAccessEntityGroups, Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> entityAccessEntityGroups, Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> droppedItemAccessEntityGroups, Map<Entity, Set<ChunkPos>> cantPickItemsCache, Map<Entity, Set<ChunkPos>> cantPickupXPInTickCache, Set<UUID> fullPasses) {
+							ChunkProtectionExceptionSet<Item> itemUseProtectionExceptions,
+							ChunkProtectionExceptionSet<EntityType<?>> completelyDisabledEntities,
+							Map<String, ChunkProtectionExceptionGroup<Block>> blockExceptionGroups,
+							Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> entityExceptionGroups,
+							Map<String, ChunkProtectionExceptionGroup<Item>> itemExceptionGroups,
+							Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> entityBarrierGroups,
+							Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> blockAccessEntityGroups,
+							Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> entityAccessEntityGroups,
+							Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> droppedItemAccessEntityGroups,
+							Map<Entity, Set<ChunkPos>> cantPickItemsCache,
+							Map<Entity, Set<ChunkPos>> cantPickupXPInTickCache,
+							Set<UUID> fullPasses) {
 		this.claimsManager = claimsManager;
 		this.playerPartySystemManager = playerPartySystemManager;
 		this.entityHelper = entityHelper;
@@ -204,8 +236,10 @@ public class ChunkProtection
 		this.requiresEmptyHandEntities = requiresEmptyHandEntities;
 		this.forcedAllowAnyItemEntities = forcedAllowAnyItemEntities;
 		this.forcedEntityClaimBarrierList = forcedEntityClaimBarrierList;
-		this.entitiesAllowedToGrief = entitiesAllowedToGrief;
-		this.entitiesAllowedToGriefEntities = entitiesAllowedToGriefEntities;
+		this.entitiesAllowedToBreakBlocks = entitiesAllowedToBreakBlocks;
+		this.entitiesAllowedToInteractWithBlocks = entitiesAllowedToInteractWithBlocks;
+		this.entitiesAllowedToKillEntities = entitiesAllowedToKillEntities;
+		this.entitiesAllowedToInteractWithEntities = entitiesAllowedToInteractWithEntities;
 		this.entitiesAllowedToGriefDroppedItems = entitiesAllowedToGriefDroppedItems;
 		this.nonBlockGriefingMobs = nonBlockGriefingMobs;
 		this.entityGriefingMobs = entityGriefingMobs;
@@ -263,12 +297,12 @@ public class ChunkProtection
 		return false;
 	}
 
-	private InteractionTargetResult entityAccessCheck(IPlayerConfigManager playerConfigs, IPlayerConfig claimConfig, Entity e, Entity from, Entity accessor, UUID accessorId, boolean attack, boolean emptyHand) {
-		return entityAccessCheck(playerConfigs, claimConfig, e, from, accessor, accessorId, attack, emptyHand, false);
+	private InteractionTargetResult entityAccessCheck(IPlayerConfigManager playerConfigs, IPlayerConfig claimConfig, Entity e, Entity from, Entity accessor, UUID accessorId, boolean attack, boolean emptyHand, boolean exceptions) {
+		return entityAccessCheck(playerConfigs, claimConfig, e, from, accessor, accessorId, attack, emptyHand, exceptions, false);
 	}
 
-	private InteractionTargetResult entityAccessCheck(IPlayerConfigManager playerConfigs, IPlayerConfig claimConfig, Entity e, Entity from, Entity accessor, UUID accessorId, boolean attack, boolean emptyHand, boolean checkingInverted) {
-		if(e instanceof Player) {
+	private InteractionTargetResult entityAccessCheck(IPlayerConfigManager playerConfigs, IPlayerConfig claimConfig, Entity e, Entity from, Entity accessor, UUID accessorId, boolean attack, boolean emptyHand, boolean exceptions, boolean checkingInverted) {
+		if(e instanceof Player && e != accessor) {
 			boolean chunkProtected = claimConfig.getEffective(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS);
 			InteractionTargetResult result = InteractionTargetResult.ALLOW;
 			if (chunkProtected) {
@@ -290,13 +324,13 @@ public class ChunkProtection
 			}
 			if(accessor instanceof Player && !checkingInverted) {
 				//gotta check whether the attacked player can attack back the same way (melee/ranged)
-				return entityAccessCheck(playerConfigs, getClaimConfig(playerConfigs, claimsManager.get(accessor.level().dimension().location(), accessor.chunkPosition())), accessor, accessor == from ? e : from, e, null, attack, emptyHand, true);
+				return entityAccessCheck(playerConfigs, getClaimConfig(playerConfigs, claimsManager.get(accessor.level().dimension().location(), accessor.chunkPosition())), accessor, accessor == from ? e : from, e, null, attack, emptyHand, exceptions, true);
 			}
 			return result;
 		}
 		if(hasChunkAccess(claimConfig, accessor, accessorId))
 			return InteractionTargetResult.ALLOW;
-		boolean isProtectable = isProtectable(e);
+		boolean isProtectable = !exceptions || isProtectable(e);
 		if(isProtectable){
 			if(accessor instanceof Raider raider && raider.canJoinRaid() && claimConfig.getEffective(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_RAIDS))//based on the accessor on purpose;
 				return InteractionTargetResult.PROTECT;
@@ -306,6 +340,8 @@ public class ChunkProtection
 		boolean optionProtects = checkProtectionLeveledOption(option, claimConfig, accessor, accessorId);
 		if(!optionProtects && (attack || emptyHand || !checkProtectionLeveledOption(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_ITEM_USE, claimConfig, accessor, accessorId)))
 			return InteractionTargetResult.ALLOW;
+		if(!exceptions)
+			return optionProtects ? InteractionTargetResult.PROTECT : InteractionTargetResult.PASS;
 		EntityType<?> entityType = e.getType();
 		if(attack && forcedKillExceptionEntities.contains(entityType))
 			return InteractionTargetResult.ALLOW;
@@ -415,17 +451,17 @@ public class ChunkProtection
 		if(e == null)
 			return false;
 		IPlayerConfigOptionSpecAPI<Integer> option;
-		if(blocks && !isAllowedToGrief(e, accessor, accessorId, config, entitiesAllowedToGrief, blockAccessEntityGroups)) {
+		if(blocks && !isAllowedToGrief(e, accessor, accessorId, config, true, entitiesAllowedToBreakBlocks, null, blockAccessEntityGroups)) {
 			option = getUsedBlockProtectionOption(config, e, accessor);
 			if(checkProtectionLeveledOption(option, config, accessor, accessorId))
 				return false;
 		}
-		if(entities && !isAllowedToGrief(e, accessor, accessorId, config, entitiesAllowedToGriefEntities, entityAccessEntityGroups)) {
+		if(entities && !isAllowedToGrief(e, accessor, accessorId, config, true, entitiesAllowedToKillEntities, null, entityAccessEntityGroups)) {
 			option = getUsedEntityProtectionOption(config, e, accessor);
 			if(checkProtectionLeveledOption(option, config, accessor, accessorId))
 				return false;
 		}
-		if(items && !isAllowedToGrief(e, accessor, accessorId, config, entitiesAllowedToGriefDroppedItems, droppedItemAccessEntityGroups)) {
+		if(items && !isAllowedToGrief(e, accessor, accessorId, config, true, entitiesAllowedToGriefDroppedItems, null, droppedItemAccessEntityGroups)) {
 			option = getUsedDroppedItemProtectionOption(config, e, accessor);
 			if(checkProtectionLeveledOption(option, config, accessor, accessorId))
 				return false;
@@ -433,13 +469,18 @@ public class ChunkProtection
 		return true;
 	}
 
-	private boolean isAllowedToGrief(Entity e, Entity accessor, UUID accessorId, IPlayerConfig config, ChunkProtectionExceptionSet<EntityType<?>> forcedSet, Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> groups){
+	private boolean isAllowedToGrief(Entity e, Entity accessor, UUID accessorId, IPlayerConfig config, boolean breaking, ChunkProtectionExceptionSet<EntityType<?>> breakingForcedSet, ChunkProtectionExceptionSet<EntityType<?>> interactForcedSet, Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> groups){
 		if(e == null)
 			return false;
 		EntityType<?> entityType = e.getType();
-		if(forcedSet.contains(entityType))
+		if(breaking && breakingForcedSet.contains(entityType))
+			return true;
+		if(!breaking && interactForcedSet.contains(entityType))
 			return true;
 		for(ChunkProtectionExceptionGroup<EntityType<?>> group : groups.values()){
+			if(group.getType() != ChunkProtectionExceptionType.FULL &&
+					breaking != (group.getType() == ChunkProtectionExceptionType.BREAK))
+				continue;
 			if(group.contains(entityType) && checkExceptionLeveledOption(group.getPlayerConfigOption(), config, accessor, accessorId))
 				return true;
 		}
@@ -611,9 +652,12 @@ public class ChunkProtection
 		else {
 			boolean optionProtects = checkProtectionLeveledOption(getUsedBlockProtectionOption(config, entity, accessor), config, accessor, accessorId);
 			if(optionProtects)
-				optionProtects = entity instanceof Player || !isAllowedToGrief(entity, accessor, accessorId, config, entitiesAllowedToGrief, blockAccessEntityGroups);
+				optionProtects = entity instanceof Player ||
+						!isAllowedToGrief(entity, accessor, accessorId, config, breaking, entitiesAllowedToBreakBlocks, entitiesAllowedToInteractWithBlocks, blockAccessEntityGroups);
 			if(!optionProtects && (breaking || emptyHand || !checkProtectionLeveledOption(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_ITEM_USE, config, accessor, accessorId)))
 				return InteractionTargetResult.ALLOW;
+			if(block == null)
+				return optionProtects ? InteractionTargetResult.PROTECT : InteractionTargetResult.PASS;
 			if(breaking && forcedBreakExceptionBlocks.contains(block))
 				return InteractionTargetResult.ALLOW;
 			if(!breaking && forcedAllowAnyItemBlocks.contains(block))
@@ -641,10 +685,10 @@ public class ChunkProtection
 		}
 	}
 	
-	private InteractionTargetResult onBlockAccess(IServerData<CM, ?> serverData, Block block, IPlayerConfig config, Entity entity, Entity accessor, UUID accessorId, InteractionHand hand, boolean emptyHand, boolean leftClick, Component message, boolean messages) {
+	private InteractionTargetResult onBlockAccess(IServerData<CM, ?> serverData, Block block, IPlayerConfig config, Entity entity, Entity accessor, UUID accessorId, InteractionHand hand, boolean emptyHand, boolean leftClick, Component message, Entity messageReceiver) {
 		InteractionTargetResult result = blockAccessCheck(block, config, entity, accessor, accessorId, emptyHand, leftClick);
 		if(result == InteractionTargetResult.PROTECT) {
-			if(messages && entity instanceof ServerPlayer player) {
+			if(messageReceiver instanceof ServerPlayer player) {
 				player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(player, hand == null ? CANT_INTERACT_BLOCK : hand == InteractionHand.MAIN_HAND ? CANT_INTERACT_BLOCK_MAIN : CANT_INTERACT_BLOCK_OFF));
 				if (message != null)
 					player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(player, message));
@@ -657,13 +701,6 @@ public class ChunkProtection
 		if(!ServerConfig.CONFIG.claimsEnabled.get())
 			return false;
 		//entity can be null!
-		if(completelyDisabledBlocks.contains(blockState.getBlock())){
-			if(messages && entity instanceof ServerPlayer)
-				entity.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor((ServerPlayer) entity, BLOCK_DISABLED));
-			return true;
-		}
-		if(entity != null && hasActiveFullPass(entity))//uses custom protection
-			return false;
 		Entity accessor;
 		UUID accessorId;
 		Object accessorInfo = getAccessorInfo(entity);
@@ -674,6 +711,15 @@ public class ChunkProtection
 			accessor = (Entity) accessorInfo;
 			accessorId = accessor == null ? null : accessor.getUUID();
 		}
+		Block block = blockState == null ? null : blockState.getBlock();
+		Entity messageReceiver = !messages ? null : accessor == null ? entity : accessor;
+		if(completelyDisabledBlocks.contains(block)){
+			if(messageReceiver instanceof ServerPlayer player)
+				player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor((ServerPlayer) entity, BLOCK_DISABLED));
+			return true;
+		}
+		if(entity != null && hasActiveFullPass(entity))//uses custom protection
+			return false;
 		if(heldItem == null)
 			heldItem = hand != null && entity instanceof LivingEntity livingEntity ? livingEntity.getItemInHand(hand) : ItemStack.EMPTY;
 		boolean emptyHand = heldItem.isEmpty();
@@ -686,7 +732,7 @@ public class ChunkProtection
 		IPlayerConfigManager playerConfigs = serverData.getPlayerConfigs();
 		if(!isPlayer || !isAllowedStaticFakePlayerAction(serverData, (Player)entity, pos)){
 			IPlayerConfig config = getClaimConfig(playerConfigs, claim);
-			InteractionTargetResult targetResult = onBlockAccess(serverData, blockState.getBlock(), config, entity, accessor, accessorId, hand, emptyHand, breaking, message, messages);
+			InteractionTargetResult targetResult = onBlockAccess(serverData, block, config, entity, accessor, accessorId, hand, emptyHand, breaking, message, messageReceiver);
 			if(targetResult == InteractionTargetResult.PROTECT)
 				return true;
 			else if(isPlayer && !emptyHand && targetResult == InteractionTargetResult.ALLOW && !((Player)entity).isSecondaryUseActive())
@@ -707,7 +753,7 @@ public class ChunkProtection
 						UUID offsetClaimOwnerId = offsetClaim.getPlayerId();
 						if(Objects.equals(claimOwnerId, offsetClaimOwnerId)) {//should only work between claims of the same owner
 							IPlayerConfig config = getClaimConfig(playerConfigs, offsetClaim);
-							InteractionTargetResult offsetResult = onBlockAccess(serverData, blockState.getBlock()/*same block on purpose*/, config, entity, accessor, accessorId, hand, emptyHand, breaking, message, messages);
+							InteractionTargetResult offsetResult = onBlockAccess(serverData, block/*same block on purpose*/, config, entity, accessor, accessorId, hand, emptyHand, breaking, message, messageReceiver);
 							itemUseAtOffsetAllowed = offsetResult == InteractionTargetResult.ALLOW;
 						}
 					} else
@@ -722,9 +768,14 @@ public class ChunkProtection
 
 	@Override
 	public boolean onBlockInteraction(@Nullable Entity entity, @Nullable InteractionHand hand, @Nullable ItemStack heldItem, @Nonnull ServerLevel world, @Nonnull BlockPos pos, @Nonnull Direction direction, boolean breaking, boolean messages) {
+		return onBlockInteraction(entity, hand, heldItem, world, pos, direction, breaking, messages, true);
+	}
+
+	@Override
+	public boolean onBlockInteraction(@Nullable Entity entity, @Nullable InteractionHand hand, @Nullable ItemStack heldItem, @Nonnull ServerLevel world, @Nonnull BlockPos pos, @Nonnull Direction direction, boolean breaking, boolean messages, boolean targetExceptions) {
 		try {
 			fullPassesPaused = true;
-			return onBlockInteraction(serverData, world.getBlockState(pos), entity, hand, heldItem, world, pos, direction, breaking, messages);
+			return onBlockInteraction(serverData, targetExceptions ? world.getBlockState(pos) : null, entity, hand, heldItem, world, pos, direction, breaking, messages);
 		} finally {
 			fullPassesPaused = false;
 		}
@@ -757,7 +808,7 @@ public class ChunkProtection
 		if(entity instanceof Player && isAllowedStaticFakePlayerAction(serverData, (Player) entity, pos))
 			return false;
 		return (option == null || checkProtectionLeveledOption(option, config, accessor, accessorId)) && (entity instanceof Player || !canGrief(entity, config, accessor, accessorId, true, false, false))
-				&& blockAccessCheck(Blocks.AIR, config, entity, accessor, accessorId, false, false) == InteractionTargetResult.PROTECT;
+				&& blockAccessCheck(null, config, entity, accessor, accessorId, false, false) == InteractionTargetResult.PROTECT;
 	}
 
 	@Override
@@ -795,17 +846,17 @@ public class ChunkProtection
 				additionalBannedItems.contains(item);
 	}
 	
-	public boolean onItemRightClick(IServerData<CM, ?> serverData, InteractionHand hand, ItemStack itemStack, BlockPos pos, Player player, boolean messages) {
+	public boolean onItemRightClick(IServerData<CM, ?> serverData, InteractionHand hand, ItemStack itemStack, BlockPos pos, LivingEntity entity, boolean messages) {
 		if(!ServerConfig.CONFIG.claimsEnabled.get())
 			return false;
 		boolean shouldProtect = false;
 		Item item = itemStack.getItem();
 		if(completelyDisabledItems.contains(item)) {
-			if(messages && player instanceof ServerPlayer serverPlayer)
-				player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(serverPlayer, hand == null ? ITEM_DISABLED_ANY : hand == InteractionHand.MAIN_HAND ? ITEM_DISABLED_MAIN : ITEM_DISABLED_OFF));
+			if(messages && entity instanceof ServerPlayer serverPlayer)
+				entity.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(serverPlayer, hand == null ? ITEM_DISABLED_ANY : hand == InteractionHand.MAIN_HAND ? ITEM_DISABLED_MAIN : ITEM_DISABLED_OFF));
 			return true;
 		}
-		if(hasActiveFullPass(player))
+		if(hasActiveFullPass(entity))
 			return false;
 		if(isItemUseRestricted(itemStack) && !(item instanceof BucketItem) && !(item instanceof SolidBucketItem)) {
 			IPlayerConfigManager playerConfigs = serverData.getPlayerConfigs();
@@ -820,15 +871,16 @@ public class ChunkProtection
 			for(int i = -1; i < 2; i++)
 				j_loop: for(int j = -1; j < 2; j++) {//checking neighboring chunks too because of items that affect a high range
 					ChunkPos offsetChunkPos = new ChunkPos(chunkPos.x + i, chunkPos.z + j);
-					IPlayerChunkClaim claim = claimsManager.get(player.level().dimension().location(), offsetChunkPos);
+					IPlayerChunkClaim claim = claimsManager.get(entity.level().dimension().location(), offsetChunkPos);
 					boolean isCurrentChunk = i == 0 && j == 0;
 					if (isCurrentChunk || claim != null){//wilderness neighbors don't have to be protected this much
 						IPlayerConfig config = getClaimConfig(playerConfigs, claim);
-						if(checkProtectionLeveledOption(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_ITEM_USE, config, player, null) &&
+						if(checkProtectionLeveledOption(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_ITEM_USE, config, entity, null) &&
 								(isCurrentChunk || config.getEffective(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_NEIGHBOR_CHUNKS_ITEM_USE))
-								&& !hasChunkAccess(config, player, null) && !isAllowedStaticFakePlayerAction(serverData, player, offsetChunkPos.getMiddleBlockPosition(0))) {
+								&& !hasChunkAccess(config, entity, null) &&
+								(!(entity instanceof Player player) || !isAllowedStaticFakePlayerAction(serverData, player, offsetChunkPos.getMiddleBlockPosition(0)))) {
 							if(shouldCheckGroups) {
-								int exceptionAccessLevel = getExceptionAccessLevel(config, player, null);
+								int exceptionAccessLevel = getExceptionAccessLevel(config, entity, null);
 								for (ChunkProtectionExceptionGroup<Item> group : itemExceptionGroups.values()) {
 									if (exceptionAccessLevel <= config.getEffective(group.getPlayerConfigOption()) && group.contains(itemStack.getItem()))
 										continue j_loop;
@@ -840,8 +892,8 @@ public class ChunkProtection
 					}
 				}
 		}
-		if(messages && shouldProtect && player instanceof ServerPlayer)
-			player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor((ServerPlayer) player, hand == null ? USE_ITEM_ANY : hand == InteractionHand.MAIN_HAND ? USE_ITEM_MAIN : USE_ITEM_OFF));
+		if(messages && shouldProtect && entity instanceof ServerPlayer)
+			entity.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor((ServerPlayer) entity, hand == null ? USE_ITEM_ANY : hand == InteractionHand.MAIN_HAND ? USE_ITEM_MAIN : USE_ITEM_OFF));
 		return shouldProtect;
 	}
 
@@ -881,11 +933,12 @@ public class ChunkProtection
 		return false;
 	}
 
-	public boolean onEntityInteraction(IServerData<CM, ?> serverData, Entity interactingEntityIndirect, Entity interactingEntity, Entity target, ItemStack heldItem, InteractionHand hand, boolean attack, boolean messages) {
+	public boolean onEntityInteraction(IServerData<CM, ?> serverData, Entity interactingEntityIndirect, Entity interactingEntity, Entity target, ItemStack heldItem, InteractionHand hand, boolean attack, boolean messages, boolean targetExceptions) {
 		if (!ServerConfig.CONFIG.claimsEnabled.get())
 			return false;
+		Entity messageReceiver = !messages ? null : (interactingEntityIndirect == null ? interactingEntity : interactingEntityIndirect);
 		if (!attack && completelyDisabledEntities.contains(target.getType())) {
-			if (messages && hand != InteractionHand.OFF_HAND && interactingEntity instanceof ServerPlayer player)
+			if (hand != InteractionHand.OFF_HAND && messageReceiver instanceof ServerPlayer player)
 				player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(player, ENTITY_DISABLED));
 			return true;
 		}
@@ -914,19 +967,17 @@ public class ChunkProtection
 		boolean needsItemCheck = !attack && !emptyHand;
 		boolean itemUseAtTargetAllowed = false;
 		if(
-			target != accessor
-			&& (!isAllowedToGrief(interactingEntity, accessor, accessorId, config, entitiesAllowedToGriefEntities, entityAccessEntityGroups))
+			(!targetExceptions || target != accessor)
+			&& (!isAllowedToGrief(interactingEntity, accessor, accessorId, config, attack, entitiesAllowedToKillEntities, entitiesAllowedToInteractWithEntities, entityAccessEntityGroups))
 		) {
-			InteractionTargetResult targetResult = entityAccessCheck(playerConfigs, config, target, interactingEntity, accessor, accessorId, attack, emptyHand);
+			InteractionTargetResult targetResult = entityAccessCheck(playerConfigs, config, target, interactingEntity, accessor, accessorId, attack, emptyHand, targetExceptions);
 			//checking checkEntityExceptions before shouldProtectEntity so that ALLOW isn't overridden with PASS
 			if (targetResult == InteractionTargetResult.PROTECT) {
-				if (interactingEntity instanceof ServerPlayer) {
-					if (messages) {//avoiding double messages
-						interactingEntity.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor((ServerPlayer) interactingEntity, hand == null ? CANT_INTERACT_ENTITY : hand == InteractionHand.MAIN_HAND ? CANT_INTERACT_ENTITY_MAIN : CANT_INTERACT_ENTITY_OFF));
-						if (needsItemCheck) {
-							Component message = hand == InteractionHand.MAIN_HAND ? ENTITY_TRY_EMPTY_MAIN : ENTITY_TRY_EMPTY_OFF;
-							interactingEntity.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor((ServerPlayer) interactingEntity, message));
-						}
+				if (messageReceiver instanceof ServerPlayer player) {
+					messageReceiver.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(player, hand == null ? CANT_INTERACT_ENTITY : hand == InteractionHand.MAIN_HAND ? CANT_INTERACT_ENTITY_MAIN : CANT_INTERACT_ENTITY_OFF));
+					if (needsItemCheck) {
+						Component message = hand == InteractionHand.MAIN_HAND ? ENTITY_TRY_EMPTY_MAIN : ENTITY_TRY_EMPTY_OFF;
+						messageReceiver.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(player, message));
 					}
 				}
 				//OpenPartiesAndClaims.LOGGER.info("stopped {} interacting with {}", entity, target);
@@ -941,16 +992,21 @@ public class ChunkProtection
 
 	@Override
 	public boolean onEntityInteraction(@Nullable Entity interactingEntityIndirect, @Nullable Entity interactingEntity, @Nonnull Entity target, @Nullable ItemStack heldItem, @Nullable InteractionHand hand, boolean attack, boolean messages) {
+		return onEntityInteraction(interactingEntityIndirect, interactingEntity, target, heldItem, hand, attack, messages, true);
+	}
+
+	@Override
+	public boolean onEntityInteraction(@Nullable Entity interactingEntityIndirect, @Nullable Entity interactingEntity, @Nonnull Entity target, @Nullable ItemStack heldItem, @Nullable InteractionHand hand, boolean attack, boolean messages, boolean targetExceptions) {
 		try {
 			fullPassesPaused = true;
-			return onEntityInteraction(serverData, interactingEntityIndirect, interactingEntity, target, heldItem, hand, attack, messages);
+			return onEntityInteraction(serverData, interactingEntityIndirect, interactingEntity, target, heldItem, hand, attack, messages, targetExceptions);
 		} finally {
 			fullPassesPaused = false;
 		}
 	}
 
 	public boolean onFishingHookedEntity(IServerData<CM, ?> serverData, FishingHook hook, Entity entity) {
-		return onEntityInteraction(serverData, hook.getOwner(), hook, entity, ItemStack.EMPTY, InteractionHand.MAIN_HAND, true, false);
+		return onEntityInteraction(serverData, hook.getOwner(), hook, entity, ItemStack.EMPTY, InteractionHand.MAIN_HAND, true, false, true);
 	}
 
 	public boolean onEntityFire(IServerData<CM, ?> serverData, Entity target) {
@@ -1105,7 +1161,7 @@ public class ChunkProtection
 				config = null;
 			if(config != null && config.getEffective(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_ENTITIES_FROM_EXPLOSIONS) &&
 					(!(damager instanceof Player) && isProtectable(entity) ||
-							entityAccessCheck(playerConfigs, config, entity, directDamager, damager, null, true, true) == InteractionTargetResult.PROTECT)
+							entityAccessCheck(playerConfigs, config, entity, directDamager, damager, null, true, true, true) == InteractionTargetResult.PROTECT)
 					) {
 				entities.remove();
 			}
@@ -1214,14 +1270,14 @@ public class ChunkProtection
 			return false;
 		if(!isItemUseRestricted(itemStack))
 			return false;
-		if(entity instanceof Player player) {
+		if(entity instanceof LivingEntity living) {
 			if (hand == null)
-				hand = player.getItemInHand(InteractionHand.MAIN_HAND) == itemStack ? InteractionHand.MAIN_HAND :
-						player.getItemInHand(InteractionHand.OFF_HAND) == itemStack ? InteractionHand.OFF_HAND : null;
+				hand = living.getItemInHand(InteractionHand.MAIN_HAND) == itemStack ? InteractionHand.MAIN_HAND :
+						living.getItemInHand(InteractionHand.OFF_HAND) == itemStack ? InteractionHand.OFF_HAND : null;
 			if (additionalBannedItems.contains(itemStack.getItem()) &&
-					onItemRightClick(serverData, hand, itemStack, pos, player, false)) {//only configured items on purpose
-				if(messages && player instanceof ServerPlayer)
-					player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor((ServerPlayer) player, hand == null ? CANT_APPLY_ITEM_ANY : hand == InteractionHand.MAIN_HAND ? CANT_APPLY_ITEM_THIS_CLOSE_MAIN : CANT_APPLY_ITEM_THIS_CLOSE_OFF));
+					onItemRightClick(serverData, hand, itemStack, pos, living, false)) {//only configured items on purpose
+				if(messages && living instanceof ServerPlayer)
+					living.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor((ServerPlayer) living, hand == null ? CANT_APPLY_ITEM_ANY : hand == InteractionHand.MAIN_HAND ? CANT_APPLY_ITEM_THIS_CLOSE_MAIN : CANT_APPLY_ITEM_THIS_CLOSE_OFF));
 				return true;
 			}
 		}
@@ -1588,7 +1644,7 @@ public class ChunkProtection
 		Iterator<Entity> iterator = targets.iterator();
 		while(iterator.hasNext()){
 			Entity target = iterator.next();
-			if(onEntityInteraction(serverData, null, entity, target, null, null, true, false))
+			if(onEntityInteraction(serverData, null, entity, target, null, null, true, false, true))
 				iterator.remove();
 		}
 	}
@@ -1596,7 +1652,7 @@ public class ChunkProtection
 	public boolean onEntityPushed(IServerData<CM, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData, Entity target, MoverType moverType) {
 		if(moverType != MoverType.SHULKER)
 			return false;
-		return onEntityInteraction(serverData, null, null, target, null, null, true, false);
+		return onEntityInteraction(serverData, null, null, target, null, null, true, false, true);
 	}
 
 	public boolean onNetherPortal(IServerData<CM, ?> serverData, Entity entity, ServerLevel world, BlockPos pos) {
@@ -1848,7 +1904,7 @@ public class ChunkProtection
 			accessor = (Entity) accessorInfo;
 			accessorId = accessor.getUUID();
 		}
-		if(isAllowedToGrief(entity, accessor, accessorId, config, entitiesAllowedToGriefDroppedItems, droppedItemAccessEntityGroups))
+		if(isAllowedToGrief(entity, accessor, accessorId, config, true, entitiesAllowedToGriefDroppedItems, null, droppedItemAccessEntityGroups))
 			return false;
 		if(config.getEffective(PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS)) {
 			if (!hasChunkAccess(config, accessor, accessorId)) {
@@ -2204,8 +2260,10 @@ public class ChunkProtection
 		requiresEmptyHandEntities.updateTagExceptions(server);
 		forcedAllowAnyItemEntities.updateTagExceptions(server);
 		forcedEntityClaimBarrierList.updateTagExceptions(server);
-		entitiesAllowedToGrief.updateTagExceptions(server);
-		entitiesAllowedToGriefEntities.updateTagExceptions(server);
+		entitiesAllowedToBreakBlocks.updateTagExceptions(server);
+		entitiesAllowedToInteractWithBlocks.updateTagExceptions(server);
+		entitiesAllowedToKillEntities.updateTagExceptions(server);
+		entitiesAllowedToInteractWithEntities.updateTagExceptions(server);
 		entitiesAllowedToGriefDroppedItems.updateTagExceptions(server);
 		nonBlockGriefingMobs.updateTagExceptions(server);
 		entityGriefingMobs.updateTagExceptions(server);
@@ -2337,9 +2395,13 @@ public class ChunkProtection
 					ChunkProtectionExceptionSet.Builder.begin(ExceptionElementType.ENTITY_TYPE);
 			ChunkProtectionExceptionSet.Builder<EntityType<?>> forcedEntityClaimBarrierList =
 					ChunkProtectionExceptionSet.Builder.begin(ExceptionElementType.ENTITY_TYPE);
-			ChunkProtectionExceptionSet.Builder<EntityType<?>> entitiesAllowedToGrief =
+			ChunkProtectionExceptionSet.Builder<EntityType<?>> entitiesAllowedToBreakBlocks =
 					ChunkProtectionExceptionSet.Builder.begin(ExceptionElementType.ENTITY_TYPE);
-			ChunkProtectionExceptionSet.Builder<EntityType<?>> entitiesAllowedToGriefEntities =
+			ChunkProtectionExceptionSet.Builder<EntityType<?>> entitiesAllowedToInteractWithBlocks =
+					ChunkProtectionExceptionSet.Builder.begin(ExceptionElementType.ENTITY_TYPE);
+			ChunkProtectionExceptionSet.Builder<EntityType<?>> entitiesAllowedToKillEntities =
+					ChunkProtectionExceptionSet.Builder.begin(ExceptionElementType.ENTITY_TYPE);
+			ChunkProtectionExceptionSet.Builder<EntityType<?>> entitiesAllowedToInteractWithEntities =
 					ChunkProtectionExceptionSet.Builder.begin(ExceptionElementType.ENTITY_TYPE);
 			ChunkProtectionExceptionSet.Builder<EntityType<?>> entitiesAllowedToGriefDroppedItems =
 					ChunkProtectionExceptionSet.Builder.begin(ExceptionElementType.ENTITY_TYPE);
@@ -2362,14 +2424,14 @@ public class ChunkProtection
 
 			WildcardResolver wildcardResolver = new WildcardResolver();
 			onExceptionList(server, ServerConfig.CONFIG.friendlyChunkProtectedEntityList,
-					friendlyEntityList::addEither, null, null, null,
+					friendlyEntityList::addEither, null, null, null, null,
 					ExceptionElementType.ENTITY_TYPE, wildcardResolver
 			);
 			onExceptionList(server, ServerConfig.CONFIG.hostileChunkProtectedEntityList,
-					hostileEntityList::addEither, null, null, null,
+					hostileEntityList::addEither, null, null, null, null,
 					ExceptionElementType.ENTITY_TYPE, wildcardResolver
 			);
-			onExceptionList(server, ServerConfig.CONFIG.forcedBlockProtectionExceptionList,
+			onExceptionList(server, ServerConfig.CONFIG.forcedBlockProtectionExceptionList, null,
 					forcedInteractionExceptionBlocksBuilder::addEither, forcedBreakExceptionBlocksBuilder::addEither,
 					o -> {
 						forcedInteractionExceptionBlocksBuilder.addEither(o);
@@ -2378,7 +2440,7 @@ public class ChunkProtection
 					forcedAllowAnyItemBlocksBuilder::addEither,
 					ExceptionElementType.BLOCK, wildcardResolver
 			);
-			onExceptionList(server, ServerConfig.CONFIG.forcedEntityProtectionExceptionList,
+			onExceptionList(server, ServerConfig.CONFIG.forcedEntityProtectionExceptionList, null,
 					forcedInteractionExceptionEntities::addEither,forcedKillExceptionEntities::addEither,
 					o -> {
 						forcedInteractionExceptionEntities.addEither(o);
@@ -2389,49 +2451,63 @@ public class ChunkProtection
 			);
 			onExceptionList(server, ServerConfig.CONFIG.forcedEntityClaimBarrierList,
 					forcedEntityClaimBarrierList::addEither, null, null, null,
+					null,
 					ExceptionElementType.ENTITY_TYPE, wildcardResolver
 			);
 			onExceptionList(server, ServerConfig.CONFIG.entitiesAllowedToGrief,
-					entitiesAllowedToGrief::addEither, null, null, null,
+					e -> {
+						entitiesAllowedToBreakBlocks.addEither(e);
+						entitiesAllowedToInteractWithBlocks.addEither(e);
+					}, entitiesAllowedToInteractWithBlocks::addEither,
+					entitiesAllowedToBreakBlocks::addEither, null, null,
 					ExceptionElementType.ENTITY_TYPE, wildcardResolver
 			);
 			onExceptionList(server, ServerConfig.CONFIG.entitiesAllowedToGriefEntities,
-					entitiesAllowedToGriefEntities::addEither, null, null, null,
+					e -> {
+						entitiesAllowedToKillEntities.addEither(e);
+						entitiesAllowedToInteractWithEntities.addEither(e);
+					}, entitiesAllowedToInteractWithEntities::addEither,
+					entitiesAllowedToKillEntities::addEither, null, null,
 					ExceptionElementType.ENTITY_TYPE, wildcardResolver
 			);
 			onExceptionList(server, ServerConfig.CONFIG.entitiesAllowedToGriefDroppedItems,
 					entitiesAllowedToGriefDroppedItems::addEither, null, null, null,
+					null,
 					ExceptionElementType.ENTITY_TYPE, wildcardResolver
 			);
 			onExceptionList(server, ServerConfig.CONFIG.nonBlockGriefingMobs,
 					nonBlockGriefingMobs::addEither, null, null, null,
+					null,
 					ExceptionElementType.ENTITY_TYPE, wildcardResolver
 			);
 			onExceptionList(server, ServerConfig.CONFIG.entityGriefingMobs,
 					entityGriefingMobs::addEither, null, null, null,
+					null,
 					ExceptionElementType.ENTITY_TYPE, wildcardResolver
 			);
 			onExceptionList(server, ServerConfig.CONFIG.droppedItemGriefingMobs,
 					droppedItemGriefingMobs::addEither, null, null, null,
+					null,
 					ExceptionElementType.ENTITY_TYPE, wildcardResolver
 			);
 			onExceptionList(server, ServerConfig.CONFIG.additionalBannedItemsList,
 					additionalBannedItems::addEither, null, null, null,
+					null,
 					ExceptionElementType.ITEM, wildcardResolver
 			);
-			onExceptionList(server, ServerConfig.CONFIG.itemUseProtectionExceptionList,
+			onExceptionList(server, ServerConfig.CONFIG.itemUseProtectionExceptionList, null,
 					itemUseProtectionExceptions::addEither, null, null, null,
 					ExceptionElementType.ITEM, wildcardResolver
 			);
-			onExceptionList(server, ServerConfig.CONFIG.completelyDisabledItemInteractions,
+			onExceptionList(server, ServerConfig.CONFIG.completelyDisabledItemInteractions, null,
 					completelyDisabledItems::addEither, null, null, null,
 					ExceptionElementType.ITEM, wildcardResolver
 			);
-			onExceptionList(server, ServerConfig.CONFIG.completelyDisabledBlockInteractions,
+			onExceptionList(server, ServerConfig.CONFIG.completelyDisabledBlockInteractions, null,
 					completelyDisabledBlocks::addEither, null, null, null,
 					ExceptionElementType.BLOCK, wildcardResolver
 			);
-			onExceptionList(server, ServerConfig.CONFIG.completelyDisabledEntityInteractions,
+			onExceptionList(server, ServerConfig.CONFIG.completelyDisabledEntityInteractions, null,
 					completelyDisabledEntities::addEither, null, null, null,
 					ExceptionElementType.ENTITY_TYPE, wildcardResolver
 			);
@@ -2456,13 +2532,20 @@ public class ChunkProtection
 					friendlyEntityList.build(), hostileEntityList.build(),
 					forcedInteractionExceptionBlocksBuilder.build(), forcedBreakExceptionBlocksBuilder.build(),
 					requiresEmptyHandBlocksBuilder.build(), forcedAllowAnyItemBlocksBuilder.build(), completelyDisabledBlocks.build(), forcedInteractionExceptionEntities.build(),
-					forcedKillExceptionEntities.build(), requiresEmptyHandEntitiesBuilder.build(), forcedAllowAnyItemEntitiesBuilder.build(), forcedEntityClaimBarrierList.build(), entitiesAllowedToGrief.build(),
-					entitiesAllowedToGriefEntities.build(), entitiesAllowedToGriefDroppedItems.build(), nonBlockGriefingMobs.build(), entityGriefingMobs.build(), droppedItemGriefingMobs.build(), staticFakePlayerUsernames, staticFakePlayerIds, staticFakePlayerClassExceptions, additionalBannedItems.build(), completelyDisabledItems.build(),
-					itemUseProtectionExceptions.build(), completelyDisabledEntities.build(), blockExceptionGroups, entityExceptionGroups, itemExceptionGroups, entityBarrierGroups, blockAccessEntityGroups, entityAccessEntityGroups, droppedItemAccessEntityGroups, new HashMap<>(), new HashMap<>(), fullPasses);
+					forcedKillExceptionEntities.build(), requiresEmptyHandEntitiesBuilder.build(), forcedAllowAnyItemEntitiesBuilder.build(), forcedEntityClaimBarrierList.build(),
+					entitiesAllowedToBreakBlocks.build(), entitiesAllowedToInteractWithBlocks.build(), entitiesAllowedToKillEntities.build(),
+					entitiesAllowedToInteractWithEntities.build(), entitiesAllowedToGriefDroppedItems.build(), nonBlockGriefingMobs.build(),
+					entityGriefingMobs.build(), droppedItemGriefingMobs.build(), staticFakePlayerUsernames, staticFakePlayerIds,
+					staticFakePlayerClassExceptions, additionalBannedItems.build(), completelyDisabledItems.build(),
+					itemUseProtectionExceptions.build(), completelyDisabledEntities.build(), blockExceptionGroups,
+					entityExceptionGroups, itemExceptionGroups, entityBarrierGroups, blockAccessEntityGroups,
+					entityAccessEntityGroups, droppedItemAccessEntityGroups, new HashMap<>(), new HashMap<>(), fullPasses);
 		}
 
 
-		private <T> void onExceptionList(MinecraftServer server, ForgeConfigSpec.ConfigValue<List<? extends String>> list, Consumer<Either<T,TagKey<T>>> interactionException,
+		private <T> void onExceptionList(MinecraftServer server, ForgeConfigSpec.ConfigValue<List<? extends String>> list,
+										 Consumer<Either<T,TagKey<T>>> defaultException,
+										 Consumer<Either<T,TagKey<T>>> interactException,
 										 Consumer<Either<T,TagKey<T>>> breakException,
 										 Consumer<Either<T,TagKey<T>>> handException,
 										 Consumer<Either<T,TagKey<T>>> anythingException,
@@ -2476,13 +2559,14 @@ public class ChunkProtection
 			Iterable<TagKey<T>> tagIterable = elementType.getTagIterable();
 			Function<TagKey<T>, ResourceLocation> tagKeyGetter = TagKey::location;
 			list.get().forEach(s -> onExceptionListElement(
-							s, interactionException, breakException, handException, anythingException,
+							s, defaultException, interactException, breakException, handException, anythingException,
 							objectGetter, iterable, keyGetter, objectTagGetter, tagIterable, tagKeyGetter,
 							wildcardResolver
 					));
 		}
 
-		private <T> void onExceptionListElement(String element, Consumer<Either<T,TagKey<T>>> interactionException,
+		private <T> void onExceptionListElement(String element, Consumer<Either<T,TagKey<T>>> defaultException,
+												Consumer<Either<T,TagKey<T>>> interactException,
 												Consumer<Either<T,TagKey<T>>> breakException,
 												Consumer<Either<T,TagKey<T>>> handException,
 												Consumer<Either<T,TagKey<T>>> anythingException,
@@ -2494,13 +2578,18 @@ public class ChunkProtection
 												Function<TagKey<T>, ResourceLocation> tagKeyGetter,
 												WildcardResolver wildcardResolver){
 			String id = element;
-			Consumer<Either<T,TagKey<T>>> destination = interactionException;
-			if(element.startsWith(BREAK_PREFIX) || element.startsWith(HAND_PREFIX) || element.startsWith(ANYTHING_PREFIX)){
+			if(defaultException == null)
+				defaultException = interactException;
+			Consumer<Either<T,TagKey<T>>> destination = defaultException;
+			if(element.startsWith(BREAK_PREFIX) || element.startsWith(HAND_PREFIX) ||
+					element.startsWith(ANYTHING_PREFIX) || element.startsWith(INTERACT_PREFIX)){
 				id = element.substring(element.indexOf("$") + 1);
 				if(element.startsWith(BREAK_PREFIX))
 					destination = breakException;
 				else if(element.startsWith(ANYTHING_PREFIX))
 					destination = anythingException;
+				else if(element.startsWith(INTERACT_PREFIX))
+					destination = interactException;
 				else
 					destination = handException;
 			}
