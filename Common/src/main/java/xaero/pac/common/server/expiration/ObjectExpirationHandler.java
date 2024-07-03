@@ -60,7 +60,7 @@ public abstract class ObjectExpirationHandler
 		this.liveCheckInterval = liveCheckInterval;
 		this.expirationTime = expirationTime;
 		this.checkingMessage = checkingMessage;
-		this.lastCheck = serverInfo.getUseTime();
+		this.lastCheck = serverInfo.getTotalUseTime() - liveCheckInterval - 1;//forces a check on server start which is important for servers that restart often
 	}
 	
 	public abstract void preExpirationCheck(T object);
@@ -70,7 +70,7 @@ public abstract class ObjectExpirationHandler
 	protected void handle(IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData) {
 		checkingIterator = manager.getExpirationIterator();
 
-		lastCheck = serverInfo.getUseTime();
+		lastCheck = serverInfo.getTotalUseTime();
 		OpenPartiesAndClaims.LOGGER.debug(checkingMessage);
 		serverData.getObjectExpirationCheckTaskHandler().addTask(new ObjectExpirationCheckSpreadoutTask<>(this, checkingIterator), serverData);
 	}
@@ -95,7 +95,7 @@ public abstract class ObjectExpirationHandler
 	public boolean onServerTick(IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData) {
 		if(checkingIterator != null)
 			return true;
-		if(serverInfo.getUseTime() - lastCheck > liveCheckInterval) {
+		if(serverInfo.getTotalUseTime() - lastCheck > liveCheckInterval) {
 			handle(serverData);
 			return true;
 		}

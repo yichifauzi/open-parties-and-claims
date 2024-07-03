@@ -32,6 +32,7 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityMobGriefingEvent;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
@@ -167,6 +168,18 @@ public class CommonEventsForge extends CommonEvents {
 			event.setCanceled(true);
 	}
 
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onItemUseTick(LivingEntityUseItemEvent.Tick event) {
+		if(super.onItemUseTick(event.getEntity(), event.getItem()))
+			event.setCanceled(true);
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onItemUseTick(LivingEntityUseItemEvent.Stop event) {
+		if(super.onItemUseStop(event.getEntity(), event.getItem()))
+			event.setCanceled(true);
+	}
+
 	@SubscribeEvent
 	public void onMobGrief(EntityMobGriefingEvent event) {
 		if(event.getEntity() == null)
@@ -195,6 +208,12 @@ public class CommonEventsForge extends CommonEvents {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
 		if(super.onEntityInteract(event.getEntity(), event.getTarget(), event.getHand()))
+			event.setCanceled(true);
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onInteractEntitySpecific(PlayerInteractEvent.EntityInteractSpecific event) {
+		if(super.onInteractEntitySpecific(event.getEntity(), event.getTarget(), event.getHand()))
 			event.setCanceled(true);
 	}
 	

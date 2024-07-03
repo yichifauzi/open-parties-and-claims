@@ -51,7 +51,7 @@ public final class ServerPlayerClaimInfo extends PlayerClaimInfo<ServerPlayerCla
 	private IPlayerConfig playerConfig;
 	private boolean dirty;
 	protected boolean beenUsed;
-	private long lastConfirmedActivity;
+	private long confirmedActivity;
 	private boolean hasBeenActive;
 	private boolean replacementInProgress;
 	private final Deque<PlayerClaimReplaceSpreadoutTask> replaceTaskQueue;
@@ -144,12 +144,12 @@ public final class ServerPlayerClaimInfo extends PlayerClaimInfo<ServerPlayerCla
 
 	@Override
 	public void confirmActivity(ServerInfo serverInfo) {
-		lastConfirmedActivity = serverInfo.getUseTime();
+		confirmedActivity = serverInfo.getTotalUseTime();
 		hasBeenActive = false;
 	}
 	
-	public void setLastConfirmedActivity(long lastActiveTime) {
-		this.lastConfirmedActivity = lastActiveTime;
+	public void setConfirmedActivity(long lastActiveTime) {
+		this.confirmedActivity = lastActiveTime;
 	}
 	
 	public boolean hasBeenActive() {
@@ -160,8 +160,8 @@ public final class ServerPlayerClaimInfo extends PlayerClaimInfo<ServerPlayerCla
 		hasBeenActive = true;
 	}
 	
-	public long getLastConfirmedActivity() {
-		return lastConfirmedActivity;
+	public long getConfirmedActivity() {
+		return confirmedActivity;
 	}
 
 	@Override

@@ -20,14 +20,12 @@ package xaero.pac.common.server.claims.protection;
 
 public enum ChunkProtectionExceptionType {
 
-	INTERACTION("interact$"),
+	INTERACTION(ChunkProtection.INTERACT_PREFIX),
 	BARRIER("barrier$"),
 	EMPTY_HAND_INTERACTION(ChunkProtection.HAND_PREFIX),
 	ANY_ITEM_INTERACTION(ChunkProtection.ANYTHING_PREFIX),
 	BREAK(ChunkProtection.BREAK_PREFIX),
-	BLOCK_ACCESS("access$"),
-	ENTITY_ACCESS("access$"),
-	DROPPED_ITEM_ACCESS("access$");
+	FULL(ChunkProtection.FULL_PREFIX);
 
 	private final String prefix;
 

@@ -216,7 +216,7 @@ public class ServerConfig {
 					The permission that should override the default "maxPlayerClaimForceloads" value. Set it to an empty string to never check permissions.
 					The permission override only takes effect after the player logs in at least once after a server (re)launch, so it is recommended to keep all permission-based forceload limits equal to or greater than "maxPlayerClaimForceloads".
 					The used permission system can be configured with "permissionSystem".""")
-			.translation("gui.xaero_pac_config_max_claims_permission")
+			.translation("gui.xaero_pac_config_max_forceloads_permission")
 			.worldRestart()
 			.define("maxPlayerClaimForceloadsPermission", UsedPermissionNodes.MAX_PLAYER_FORCELOADS.getDefaultNodeString());
 
@@ -437,19 +437,31 @@ public class ServerConfig {
 		entitiesAllowedToGrief = builder
 			.comment("""
 					Entities that can bypass all block protection. Supports entity type tags.
+					Prefixing an entity id/tag with "interact$" creates an exception which tries to exclude block breaking.
+					Prefixing an entity id/tag with "break$" creates an exception that only includes block breaking.
+					Leaving an entity id/tag without a prefix creates an exception that includes all block interactions.
+					Projectiles landing on blocks is considered a non-breaking interaction first, even if it can result in a block break,
+					which is protected separately afterwards.
+					Projectile landing on blocks requires non-break block access through this option or blockAccessEntityGroups.
 					Supports patterns with special characters *, (, ) and |, where * matches anything, ( ) are used for grouping and | means OR.
 					For example ["minecraft:(v|p)illager", "minecraft:*illager", "#minecraft:raiders"]""")
 			.translation("gui.xaero_pac_config_entities_allowed_to_grief")
 			.worldRestart()
-			.defineListAllowEmpty(Lists.newArrayList("entitiesAllowedToGrief"), () -> Lists.newArrayList("minecraft:sheep"), s -> s instanceof String);
+			.defineListAllowEmpty(Lists.newArrayList("entitiesAllowedToGrief"), () -> Lists.newArrayList("minecraft:sheep", "interact$minecraft:potion", "interact$minecraft:trident", "interact$minecraft:(*_|)arrow", "interact$minecraft:ender_pearl", "interact$minecraft:egg"), s -> s instanceof String);
 		entitiesAllowedToGriefEntities = builder
 			.comment("""
 					Entities that can bypass all protection of other entities. Supports entity type tags.
+					Prefixing an entity id/tag with "interact$" creates an exception which tries to exclude attacks.
+					Prefixing an entity id/tag with "break$" creates an exception that only includes attacks.
+					Leaving an entity id/tag without a prefix creates an exception that includes all entity interactions.
+					Projectiles landing on entities is considered a non-attack interaction first, even if it can result in an attack,
+					which is protected separately afterwards.
+					Projectile landing on entities requires non-attack entity access through this option or entityAccessEntityGroups.
 					Supports patterns with special characters *, (, ) and |, where * matches anything, ( ) are used for grouping and | means OR.
 					For example ["minecraft:(v|p)illager", "minecraft:*illager", "#minecraft:raiders"]""")
 			.translation("gui.xaero_pac_config_entities_allowed_to_grief_entities")
 			.worldRestart()
-			.defineListAllowEmpty(Lists.newArrayList("entitiesAllowedToGriefEntities"), Lists::newArrayList, s -> s instanceof String);
+			.defineListAllowEmpty(Lists.newArrayList("entitiesAllowedToGriefEntities"), () -> Lists.newArrayList("interact$minecraft:potion", "interact$minecraft:trident", "interact$minecraft:(*_|)arrow", "interact$minecraft:ender_pearl", "interact$minecraft:egg"), s -> s instanceof String);
 		entitiesAllowedToGriefDroppedItems = builder
 			.comment("""
 					Entities that can bypass all dropped item protection. Supports entity type tags.
@@ -501,6 +513,12 @@ public class ServerConfig {
 					Custom groups of entities that a player/claim config should be able to make block access exceptions for (e.g. letting sheep eat grass or endermen take blocks). Each group can consist of multiple entities and entity tags.
 					The format for an entity group is <group ID>{<entities/tags/wildcards separated by ,>}.
 					The group ID should consist of at most 32 characters that are letters A-Z, numbers 0-9 or the - and _ characters, e.g. "ePiC-GUYS98{minecraft:pig, minecraft:c(ow|at), #minecraft:beehive_inhabitors}".
+					The group can be prefixed with "interact$" to create an exception that tries to exclude block breaking.
+					The group can be prefixed with "break$" to create an exception that only includes block breaking.
+					The group can be left without a prefix to create an exception that includes all block interactions.
+					Projectiles landing on blocks is considered a non-breaking interaction first, even if it can result in a block break,
+					which is protected separately afterwards.
+					Projectile landing on blocks requires non-break block access through this option or entitiesAllowedToGrief.
 					The player config options created for the groups, like regular options, must be added in the "playerConfigurablePlayerConfigOptions" list for players to have access to them.
 					The exact paths of the added options can be found in the default player config file after you start the server.
 					Supports patterns with special characters *, (, ) and |, where * matches anything, ( ) are used for grouping and | means OR."""
@@ -517,6 +535,12 @@ public class ServerConfig {
 					The groups should consist of entities that are the ones accessing other entities. The groups should not contain entities that are being accessed. Check out the "entityProtectionOptionalExceptionGroups" option for that.
 					Each group can consist of multiple entities and entity tags. The format for an entity group is <group ID>{<entities/tags/wildcards separated by ,>}.
 					The group ID should consist of at most 32 characters that are letters A-Z, numbers 0-9 or the - and _ characters, e.g. "ePiC-GUYS98{minecraft:pig, minecraft:c(ow|at), #minecraft:beehive_inhabitors}".
+					The group can be prefixed with "interact$" to create an exception that tries to exclude attacks.
+					The group can be prefixed with "break$" to create an exception that only includes attacks.
+					The group can be left without a prefix to create an exception that includes all entity interactions.
+					Projectiles landing on entities is considered a non-attack interaction first, even if it can result in an attack,
+					which is protected separately afterwards.
+					Projectile landing on entities requires non-attack entity access through this option or entitiesAllowedToGriefEntities.
 					The player config options created for the groups, like regular options, must be added in the "playerConfigurablePlayerConfigOptions" list for players to have access to them.
 					The exact paths of the added options can be found in the default player config file after you start the server.
 					Supports patterns with special characters *, (, ) and |, where * matches anything, ( ) are used for grouping and | means OR."""

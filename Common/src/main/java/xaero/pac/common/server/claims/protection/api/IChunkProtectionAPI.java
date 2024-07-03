@@ -54,6 +54,12 @@ import java.util.UUID;
 public interface IChunkProtectionAPI {
 
 	/**
+	 * @deprecated Use {@link #onBlockInteraction(Entity, InteractionHand, ItemStack, ServerLevel, BlockPos, Direction, boolean, boolean, boolean)} instead.
+	 */
+	@Deprecated
+	boolean onBlockInteraction(@Nullable Entity entity, @Nullable InteractionHand hand, @Nullable ItemStack heldItem, @Nonnull ServerLevel world, @Nonnull BlockPos pos, @Nonnull Direction direction, boolean breaking, boolean messages);
+
+	/**
 	 * Checks whether a specified block interaction should be protected against.
 	 * <p>
 	 * Whenever possible, use the built-in block interaction events provided by the mod loader (Fabric/Forge)
@@ -68,9 +74,10 @@ public interface IChunkProtectionAPI {
 	 * @param direction  the direction which the entity is to interact from, not null
 	 * @param breaking  whether the interaction is to break the block
 	 * @param messages  whether to send the player system chat messages on protection
+	 * @param targetExceptions  whether to check the target block for protection exceptions
 	 * @return true if the block interaction should be protected against, otherwise false
 	 */
-	boolean onBlockInteraction(@Nullable Entity entity, @Nullable InteractionHand hand, @Nullable ItemStack heldItem, @Nonnull ServerLevel world, @Nonnull BlockPos pos, @Nonnull Direction direction, boolean breaking, boolean messages);
+	boolean onBlockInteraction(@Nullable Entity entity, @Nullable InteractionHand hand, @Nullable ItemStack heldItem, @Nonnull ServerLevel world, @Nonnull BlockPos pos, @Nonnull Direction direction, boolean breaking, boolean messages, boolean targetExceptions);
 
 	/**
 	 * Checks whether a specified block placement should be protected against.
@@ -87,6 +94,12 @@ public interface IChunkProtectionAPI {
 	boolean onEntityPlaceBlock(@Nullable Entity entity, @Nonnull ServerLevel world, @Nonnull BlockPos pos);
 
 	/**
+	 * @deprecated Use {@link #onEntityInteraction(Entity, Entity, Entity, ItemStack, InteractionHand, boolean, boolean, boolean)} instead.
+	 */
+	@Deprecated
+	boolean onEntityInteraction(@Nullable Entity interactingEntityIndirect, @Nullable Entity interactingEntity, @Nonnull Entity targetEntity, @Nullable ItemStack heldItem, @Nullable InteractionHand hand, boolean attack, boolean messages);
+
+	/**
 	 * Checks whether an entity interaction should be protected against.
 	 * <p>
 	 * Whenever possible, use the built-in entity interaction event provided by Forge instead of this method,
@@ -100,9 +113,10 @@ public interface IChunkProtectionAPI {
 	 * @param hand  the hand to interact with, can be null
 	 * @param attack  whether the interaction is to attack the target entity
 	 * @param messages  whether to send the player system chat messages on protection
+	 * @param targetExceptions  whether to check the target entity for protection exceptions
 	 * @return true if the entity interaction should be protected against, otherwise false
 	 */
-	boolean onEntityInteraction(@Nullable Entity interactingEntityIndirect, @Nullable Entity interactingEntity, @Nonnull Entity targetEntity, @Nullable ItemStack heldItem, @Nullable InteractionHand hand, boolean attack, boolean messages);
+	boolean onEntityInteraction(@Nullable Entity interactingEntityIndirect, @Nullable Entity interactingEntity, @Nonnull Entity targetEntity, @Nullable ItemStack heldItem, @Nullable InteractionHand hand, boolean attack, boolean messages, boolean targetExceptions);
 
 	/**
 	 * Checks whether a specified entity picking up a specified item entity should be protected against.

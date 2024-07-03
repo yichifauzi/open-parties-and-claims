@@ -19,27 +19,22 @@
 package xaero.pac.common.mixin;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import xaero.pac.common.entity.EntityData;
 import xaero.pac.common.entity.IEntityFabric;
 import xaero.pac.common.server.core.ServerCore;
-
-import java.util.UUID;
 
 @Mixin(value = Entity.class, priority = 1000001)
 public class MixinEntity implements IEntityFabric {
 
-	private UUID xaero_OPAC_lootOwner;
-	private UUID xaero_OPAC_deadPlayer;
+	private EntityData xaero_OPAC_data;
 	private CompoundTag xaero_OPAC_persistentData;
-	private ResourceKey<Level> xaero_OPAC_lastChunkEntryDimension;
 
 	@Override
 	public CompoundTag getXaero_OPAC_PersistentData() {
@@ -71,33 +66,13 @@ public class MixinEntity implements IEntityFabric {
 	}
 
 	@Override
-	public UUID getXaero_OPAC_lootOwner() {
-		return xaero_OPAC_lootOwner;
+	public EntityData getXaero_OPAC_data() {
+		return xaero_OPAC_data;
 	}
 
 	@Override
-	public void setXaero_OPAC_lootOwner(UUID lootOwner) {
-		this.xaero_OPAC_lootOwner = lootOwner;
-	}
-
-	@Override
-	public UUID getXaero_OPAC_deadPlayer() {
-		return xaero_OPAC_deadPlayer;
-	}
-
-	@Override
-	public void setXaero_OPAC_deadPlayer(UUID xaero_OPAC_deadPlayer) {
-		this.xaero_OPAC_deadPlayer = xaero_OPAC_deadPlayer;
-	}
-
-	@Override
-	public ResourceKey<Level> getXaero_OPAC_lastChunkEntryDimension() {
-		return xaero_OPAC_lastChunkEntryDimension;
-	}
-
-	@Override
-	public void setXaero_OPAC_lastChunkEntryDimension(ResourceKey<Level> xaero_OPAC_lastChunkEntryDimension) {
-		this.xaero_OPAC_lastChunkEntryDimension = xaero_OPAC_lastChunkEntryDimension;
+	public void setXaero_OPAC_data(EntityData entityData) {
+		this.xaero_OPAC_data = entityData;
 	}
 
 }
