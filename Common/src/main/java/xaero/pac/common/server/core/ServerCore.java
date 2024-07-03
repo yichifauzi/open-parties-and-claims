@@ -377,7 +377,7 @@ public class ServerCore {
 			return true;
 		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, projectile.getOwner(), projectile, target, null, null, false, false, false);
 		if(shouldProtect && projectile.getOwner() instanceof ServerPlayer player)
-			player.sendMessage(serverData.getAdaptiveLocalizer().getFor(player, serverData.getChunkProtection().PROJECTILE_HIT_ENTITY), player.getUUID());
+			player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(player, serverData.getChunkProtection().PROJECTILE_HIT_ENTITY));
 		return !shouldProtect;
 	}
 
@@ -398,7 +398,7 @@ public class ServerCore {
 			shouldProtect = serverData.getChunkProtection().onBlockInteraction(serverData, null, projectile, null, null, world, offPos, null, false, false);
 		}
 		if(shouldProtect && projectile.getOwner() instanceof ServerPlayer player)
-			player.sendMessage(serverData.getAdaptiveLocalizer().getFor(player, serverData.getChunkProtection().PROJECTILE_HIT_BLOCK), player.getUUID());
+			player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(player, serverData.getChunkProtection().PROJECTILE_HIT_BLOCK));
 		return !shouldProtect;
 	}
 
