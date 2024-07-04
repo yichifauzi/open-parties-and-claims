@@ -44,6 +44,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -405,25 +406,21 @@ public class ServerCore {
 		return !shouldProtect;
 	}
 
-	public static HitResult checkProjectileHit(HitResult hitResult, Projectile entity){
+	public static ProjectileDeflection checkProjectileHit(HitResult hitResult, Projectile entity){
 		if(entity.getServer() == null)
-			return hitResult;
-		if(hitResult == null || hitResult.getType() == HitResult.Type.MISS)
-			return hitResult;
-		if(hitResult instanceof EntityHitResult entityHitResult && !isProjectileEntityHitAllowed(entity, entityHitResult))
-			hitResult = BlockHitResult.miss(hitResult.getLocation(), Direction.UP, entity.blockPosition());
-		else if(hitResult instanceof BlockHitResult blockHitResult && !isProjectileBlockHitAllowed(entity, blockHitResult))
-			hitResult = BlockHitResult.miss(hitResult.getLocation(), blockHitResult.getDirection(), blockHitResult.getBlockPos());
-		if(hitResult.getType() == HitResult.Type.MISS)
-			entity.discard();
-		return hitResult;
-	}
-
-	public static EntityHitResult checkArrowEntityHit(HitResult hitResult, Projectile entity){
-		hitResult = checkProjectileHit(hitResult, entity);
-		if(hitResult != null && hitResult.getType() == HitResult.Type.MISS)
 			return null;
-		return (EntityHitResult) hitResult;
+		if(hitResult == null || hitResult.getType() == HitResult.Type.MISS)
+			return null;
+		boolean shouldDiscard = false;
+		if(hitResult instanceof EntityHitResult entityHitResult)
+			shouldDiscard = !isProjectileEntityHitAllowed(entity, entityHitResult);
+		else if(hitResult instanceof BlockHitResult blockHitResult)
+			shouldDiscard = !isProjectileBlockHitAllowed(entity, blockHitResult);
+		if(shouldDiscard) {
+			entity.discard();
+			return ProjectileDeflection.NONE;
+		}
+		return null;
 	}
 
 	private static Level CREATE_DISASSEMBLE_SUPER_GLUE_LEVEL;
