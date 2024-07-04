@@ -292,11 +292,24 @@ function transformPrePostResourcesDrop(methodNode, entityParIndex){
     return methodNode
 }
 
-function transformProjectileHitCapture(methodNode, invokeTargetClass, preMethodName, postMethodName){
+function transformProjectileHitCapture(methodNode, projectileClass, preMethodName, postMethodName){
+    var MY_LABEL = new LabelNode(new Label())
+    var headPatch = new InsnList()
+    headPatch.add(new VarInsnNode(Opcodes.ALOAD, 1))
+    headPatch.add(new VarInsnNode(Opcodes.ALOAD, 0))
+    headPatch.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'checkProjectileHit', '(Lnet/minecraft/world/phys/HitResult;Lnet/minecraft/world/entity/projectile/Projectile;)Lnet/minecraft/world/entity/projectile/ProjectileDeflection;'))
+    headPatch.add(new InsnNode(Opcodes.DUP))
+    headPatch.add(new JumpInsnNode(Opcodes.IFNULL, MY_LABEL))
+    headPatch.add(new InsnNode(Opcodes.ARETURN))
+    headPatch.add(MY_LABEL)
+    headPatch.add(new InsnNode(Opcodes.POP))
+    methodNode.instructions.insert(methodNode.instructions.get(0), headPatch)
+
+    var invokeTargetClass = projectileClass
     var invokeTargetName = 'onHit'
     var invokeTargetNameObf = 'm_6532_'
     var invokeTargetDesc = '(Lnet/minecraft/world/phys/HitResult;)V'
-    var insnToInsertGetter = function() {
+    insnToInsertGetter = function() {
         var insnToInsert = new InsnList()
         insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
         insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', preMethodName, '(Lnet/minecraft/world/entity/projectile/Projectile;)V'))
@@ -338,15 +351,9 @@ function initializeCoreMod() {
 			'transformer' : function(classNode){
 				var fields = classNode.fields
 				classNode.interfaces.add("xaero/pac/common/entity/IEntity")
-				fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "xaero_OPAC_lootOwner", "Ljava/util/UUID;", null, null))
-				addGetter(classNode, "xaero_OPAC_lootOwner", "Ljava/util/UUID;")
-				addSetter(classNode, "xaero_OPAC_lootOwner", "Ljava/util/UUID;")
-				fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "xaero_OPAC_deadPlayer", "Ljava/util/UUID;", null, null))
-				addGetter(classNode, "xaero_OPAC_deadPlayer", "Ljava/util/UUID;")
-				addSetter(classNode, "xaero_OPAC_deadPlayer", "Ljava/util/UUID;")
-				fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "xaero_OPAC_lastChunkEntryDimension", "Lnet/minecraft/resources/ResourceKey;", null, null))
-				addGetter(classNode, "xaero_OPAC_lastChunkEntryDimension", "Lnet/minecraft/resources/ResourceKey;")
-				addSetter(classNode, "xaero_OPAC_lastChunkEntryDimension", "Lnet/minecraft/resources/ResourceKey;")
+				fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "xaero_OPAC_data", "Lxaero/pac/common/entity/EntityData;", null, null))
+				addGetter(classNode, "xaero_OPAC_data", "Lxaero/pac/common/entity/EntityData;")
+				addSetter(classNode, "xaero_OPAC_data", "Lxaero/pac/common/entity/EntityData;")
 				return classNode
 			}
 		},
@@ -963,26 +970,6 @@ function initializeCoreMod() {
                 return methodNode
             }
         },
-        'xaero_pac_create_potatoprojectileentity_onhitentity': {
-            'target' : {
-                'type': 'METHOD',
-                'class': 'com.simibubi.create.content.equipment.potatoCannon.PotatoProjectileEntity',
-                'methodName': 'onHitEntity',
-                'methodDesc' : '(Lnet/minecraft/world/phys/EntityHitResult;)V'
-            },
-            'transformer' : function(methodNode){
-                var MY_LABEL = new LabelNode(new Label())
-                var insnToInsert = new InsnList()
-                insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
-                insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
-                insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'isProjectileHitAllowed', '(Lnet/minecraft/world/entity/projectile/Projectile;Lnet/minecraft/world/phys/EntityHitResult;)Z'))
-                insnToInsert.add(new JumpInsnNode(Opcodes.IFNE, MY_LABEL))
-                insnToInsert.add(new InsnNode(Opcodes.RETURN))
-                insnToInsert.add(MY_LABEL)
-                methodNode.instructions.insert(methodNode.instructions.get(0), insnToInsert)
-                return methodNode
-            }
-        },
         'xaero_pac_create_openendedpipe_providefluidtospace': {
             'target' : {
                 'type': 'METHOD',
@@ -1149,34 +1136,6 @@ function initializeCoreMod() {
                 insnToInsert.add(MY_LABEL)
                 insnToInsert.add(new InsnNode(Opcodes.POP))
                 methodNode.instructions.insert(methodNode.instructions.get(0), insnToInsert)
-                return methodNode
-            }
-        },
-        'xaero_pac_servergamepacketlistenerimpl_handleinteract': {
-            'target' : {
-                'type': 'METHOD',
-                'class': 'net.minecraft.server.network.ServerGamePacketListenerImpl',
-                'methodName': 'handleInteract',
-                'methodDesc' : '(Lnet/minecraft/network/protocol/game/ServerboundInteractPacket;)V'
-            },
-            'transformer' : function(methodNode){
-                var invokeTargetClass = 'net/minecraft/network/protocol/game/ServerboundInteractPacket'
-                var invokeTargetName = 'dispatch'
-                var invokeTargetNameObf = 'm_179617_'
-                var invokeTargetDesc = '(Lnet/minecraft/network/protocol/game/ServerboundInteractPacket\$Handler;)V'
-
-                var insnToInsertGetter = function() {
-                    var MY_LABEL = new LabelNode(new Label())
-                    var insnToInsert = new InsnList()
-                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
-                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
-                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'canInteract', '(Lnet/minecraft/server/network/ServerGamePacketListenerImpl;Lnet/minecraft/network/protocol/game/ServerboundInteractPacket;)Z'))
-                    insnToInsert.add(new JumpInsnNode(Opcodes.IFNE, MY_LABEL))
-                    insnToInsert.add(new InsnNode(Opcodes.RETURN))
-                    insnToInsert.add(MY_LABEL)
-                    return insnToInsert
-                }
-                insertOnInvoke2(methodNode, insnToInsertGetter, true/*before*/, invokeTargetClass, invokeTargetName, invokeTargetNameObf, invokeTargetDesc, false)
                 return methodNode
             }
         },
