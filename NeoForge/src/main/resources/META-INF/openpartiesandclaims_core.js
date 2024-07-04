@@ -1169,34 +1169,6 @@ function initializeCoreMod() {
                 return methodNode
             }
         },
-        'xaero_pac_servergamepacketlistenerimpl_handleinteract': {//still here on 1.20.2 because NeoForge doesn't fire the server entity interact specific event
-            'target' : {
-                'type': 'METHOD',
-                'class': 'net.minecraft.server.network.ServerGamePacketListenerImpl',
-                'methodName': 'handleInteract',
-                'methodDesc' : '(Lnet/minecraft/network/protocol/game/ServerboundInteractPacket;)V'
-            },
-            'transformer' : function(methodNode){
-                var invokeTargetClass = 'net/minecraft/network/protocol/game/ServerboundInteractPacket'
-                var invokeTargetName = 'dispatch'
-                var invokeTargetNameObf = 'm_179617_'
-                var invokeTargetDesc = '(Lnet/minecraft/network/protocol/game/ServerboundInteractPacket$Handler;)V'
-
-                var insnToInsertGetter = function() {
-                    var MY_LABEL = new LabelNode(new Label())
-                    var insnToInsert = new InsnList()
-                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
-                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
-                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'canInteract', '(Lnet/minecraft/server/network/ServerGamePacketListenerImpl;Lnet/minecraft/network/protocol/game/ServerboundInteractPacket;)Z'))
-                    insnToInsert.add(new JumpInsnNode(Opcodes.IFNE, MY_LABEL))
-                    insnToInsert.add(new InsnNode(Opcodes.RETURN))
-                    insnToInsert.add(MY_LABEL)
-                    return insnToInsert
-                }
-                insertOnInvoke2(methodNode, insnToInsertGetter, true/*before*/, invokeTargetClass, invokeTargetName, invokeTargetNameObf, invokeTargetDesc, false)
-                return methodNode
-            }
-        },
         'xaero_pac_entity_isinvulnerable': {
             'target' : {
                 'type': 'METHOD',
