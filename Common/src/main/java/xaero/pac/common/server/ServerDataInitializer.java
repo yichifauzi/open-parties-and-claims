@@ -23,6 +23,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.chunk.LevelChunk;
 import xaero.pac.OpenPartiesAndClaims;
 import xaero.pac.common.server.claims.ServerClaimsManager;
 import xaero.pac.common.server.claims.ServerClaimsPermissionHandler;
@@ -39,6 +40,7 @@ import xaero.pac.common.server.claims.protection.group.ChunkProtectionExceptionG
 import xaero.pac.common.server.claims.protection.group.ChunkProtectionExceptionGroupLoader;
 import xaero.pac.common.server.claims.sync.ClaimsManagerSynchronizer;
 import xaero.pac.common.server.config.ServerConfig;
+import xaero.pac.common.server.config.ServerConfigUpdater;
 import xaero.pac.common.server.expiration.task.ObjectExpirationCheckSpreadoutTask;
 import xaero.pac.common.server.info.ServerInfo;
 import xaero.pac.common.server.info.ServerInfoHolder;
@@ -92,11 +94,13 @@ public class ServerDataInitializer {
 			serverInfoIO.load();
 			ServerInfo serverInfo;
 			if(serverInfoHolder.getServerInfo() == null) {
-				serverInfoHolder.setObject(serverInfo = new ServerInfo(0));
+				serverInfoHolder.setObject(serverInfo = new ServerInfo(0, ServerInfo.CURRENT_VERSION));
 				serverInfo.setDirty(true);
 				serverInfoIO.save();
 			} else
 				serverInfo = serverInfoHolder.getServerInfo();
+			if(serverInfo.getLoadedVersion() < ServerInfo.CURRENT_VERSION)
+				new ServerConfigUpdater().update(serverInfo);
 
 			ServerTickHandler serverTickHandler = ServerTickHandler.Builder.begin().setServer(server).build();
 
@@ -175,13 +179,13 @@ public class ServerDataInitializer {
 			Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> droppedItemAccessEntityGroups = new LinkedHashMap<>();
 			ChunkProtectionExceptionGroupLoader exceptionGroupLoader = new ChunkProtectionExceptionGroupLoader();
 			ExceptionElementType.updateAllIterables(server);
-			exceptionGroupLoader.load(server, ServerConfig.CONFIG.blockProtectionOptionalExceptionGroups, ExceptionElementType.BLOCK, wildcardResolver, blockExceptionGroups, ChunkProtectionExceptionType.INTERACTION, t -> t != ChunkProtectionExceptionType.BARRIER, PlayerConfigOptionCategory.BLOCK_PROTECTION);
-			exceptionGroupLoader.load(server, ServerConfig.CONFIG.entityProtectionOptionalExceptionGroups, ExceptionElementType.ENTITY_TYPE, wildcardResolver, entityExceptionGroups, ChunkProtectionExceptionType.INTERACTION, t -> t != ChunkProtectionExceptionType.BARRIER, PlayerConfigOptionCategory.ENTITY_PROTECTION);
-			exceptionGroupLoader.load(server, ServerConfig.CONFIG.itemUseProtectionOptionalExceptionGroups, ExceptionElementType.ITEM, wildcardResolver, itemExceptionGroups, ChunkProtectionExceptionType.INTERACTION, t -> t == ChunkProtectionExceptionType.INTERACTION, PlayerConfigOptionCategory.PROTECTION_FROM_ITEMS);
-			exceptionGroupLoader.load(server, ServerConfig.CONFIG.entityClaimBarrierOptionalGroups, ExceptionElementType.ENTITY_TYPE, wildcardResolver, entityBarrierGroups, ChunkProtectionExceptionType.BARRIER, t -> t == ChunkProtectionExceptionType.BARRIER, PlayerConfigOptionCategory.MOVEMENT);
-			exceptionGroupLoader.load(server, ServerConfig.CONFIG.blockAccessEntityGroups, ExceptionElementType.ENTITY_TYPE, wildcardResolver, blockAccessEntityGroups, ChunkProtectionExceptionType.BLOCK_ACCESS, t -> t == ChunkProtectionExceptionType.BLOCK_ACCESS, PlayerConfigOptionCategory.BLOCK_PROTECTION);
-			exceptionGroupLoader.load(server, ServerConfig.CONFIG.entityAccessEntityGroups, ExceptionElementType.ENTITY_TYPE, wildcardResolver, entityAccessEntityGroups, ChunkProtectionExceptionType.ENTITY_ACCESS, t -> t == ChunkProtectionExceptionType.ENTITY_ACCESS, PlayerConfigOptionCategory.ENTITY_PROTECTION);
-			exceptionGroupLoader.load(server, ServerConfig.CONFIG.droppedItemAccessEntityGroups, ExceptionElementType.ENTITY_TYPE, wildcardResolver, droppedItemAccessEntityGroups, ChunkProtectionExceptionType.DROPPED_ITEM_ACCESS, t -> t == ChunkProtectionExceptionType.DROPPED_ITEM_ACCESS, PlayerConfigOptionCategory.PICKUP_PROTECTION);
+			exceptionGroupLoader.load(server, ServerConfig.CONFIG.blockProtectionOptionalExceptionGroups, ExceptionElementType.BLOCK, Block.class, true, wildcardResolver, blockExceptionGroups, ChunkProtectionExceptionType.INTERACTION, t -> t != ChunkProtectionExceptionType.BARRIER, PlayerConfigOptionCategory.BLOCK_PROTECTION);
+			exceptionGroupLoader.load(server, ServerConfig.CONFIG.entityProtectionOptionalExceptionGroups, ExceptionElementType.ENTITY_TYPE, EntityType.class, true, wildcardResolver, entityExceptionGroups, ChunkProtectionExceptionType.INTERACTION, t -> t != ChunkProtectionExceptionType.BARRIER, PlayerConfigOptionCategory.ENTITY_PROTECTION);
+			exceptionGroupLoader.load(server, ServerConfig.CONFIG.itemUseProtectionOptionalExceptionGroups, ExceptionElementType.ITEM, Item.class, true, wildcardResolver, itemExceptionGroups, ChunkProtectionExceptionType.INTERACTION, t -> t == ChunkProtectionExceptionType.INTERACTION, PlayerConfigOptionCategory.PROTECTION_FROM_ITEMS);
+			exceptionGroupLoader.load(server, ServerConfig.CONFIG.entityClaimBarrierOptionalGroups, ExceptionElementType.ENTITY_TYPE, LevelChunk.class, false, wildcardResolver, entityBarrierGroups, ChunkProtectionExceptionType.BARRIER, t -> t == ChunkProtectionExceptionType.BARRIER, PlayerConfigOptionCategory.MOVEMENT);
+			exceptionGroupLoader.load(server, ServerConfig.CONFIG.blockAccessEntityGroups, ExceptionElementType.ENTITY_TYPE, Block.class, false, wildcardResolver, blockAccessEntityGroups, ChunkProtectionExceptionType.FULL, t -> t != ChunkProtectionExceptionType.BARRIER, PlayerConfigOptionCategory.BLOCK_PROTECTION);
+			exceptionGroupLoader.load(server, ServerConfig.CONFIG.entityAccessEntityGroups, ExceptionElementType.ENTITY_TYPE, EntityType.class, false, wildcardResolver, entityAccessEntityGroups, ChunkProtectionExceptionType.FULL, t -> t != ChunkProtectionExceptionType.BARRIER, PlayerConfigOptionCategory.ENTITY_PROTECTION);
+			exceptionGroupLoader.load(server, ServerConfig.CONFIG.droppedItemAccessEntityGroups, ExceptionElementType.ENTITY_TYPE, Item.class, false, wildcardResolver, droppedItemAccessEntityGroups, ChunkProtectionExceptionType.FULL, t -> t == ChunkProtectionExceptionType.FULL, PlayerConfigOptionCategory.PICKUP_PROTECTION);
 
 			PlayerConfigManager<ServerParty, ServerClaimsManager> playerConfigs = PlayerConfigManager.Builder.<ServerParty, ServerClaimsManager>begin()
 					.setServer(server)

@@ -41,7 +41,7 @@ public final class ServerParty extends Party implements IServerParty<PartyMember
 
 	private final PartyManager managedBy;
 	private boolean dirty;
-	private long lastConfirmedActivity;
+	private long confirmedActivity;
 	private boolean hasBeenActive;
 	private ServerParty nextInChain;
 	private ServerParty prevInChain;
@@ -278,12 +278,12 @@ public final class ServerParty extends Party implements IServerParty<PartyMember
 
 	@Override
 	public void confirmActivity(ServerInfo serverInfo) {
-		lastConfirmedActivity = serverInfo.getUseTime();
+		confirmedActivity = serverInfo.getTotalUseTime();
 		hasBeenActive = false;
 	}
 	
-	public void setLastConfirmedActivity(long lastActiveTime) {
-		this.lastConfirmedActivity = lastActiveTime;
+	public void setConfirmedActivity(long lastActiveTime) {
+		this.confirmedActivity = lastActiveTime;
 	}
 	
 	public boolean hasBeenActive() {
@@ -295,8 +295,8 @@ public final class ServerParty extends Party implements IServerParty<PartyMember
 	}
 	
 	@Override
-	public long getLastConfirmedActivity() {
-		return lastConfirmedActivity;
+	public long getConfirmedActivity() {
+		return confirmedActivity;
 	}
 
 	@Override

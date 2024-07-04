@@ -150,6 +150,7 @@ public final class ServerData implements IServerData<ServerClaimsManager, Server
 		while(!partyManagerIO.save());
 		while(!playerConfigsIO.save());
 		while(!playerClaimInfoManagerIO.save());
+		serverInfoIO.save();
 		OpenPartiesAndClaims.LOGGER.info("Stopping IO worker...");
 		ioThreadWorker.stop();
 		OpenPartiesAndClaims.LOGGER.info("Stopped IO worker!");

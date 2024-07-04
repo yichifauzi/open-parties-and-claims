@@ -80,6 +80,8 @@ public final class ForceLoadTicketManager {
 
 		ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, ticket.getDimension());
 		ServerLevel world = server.getLevel(levelKey);
+		if(world == null)//can happen when a dimension is removed from a server
+			return false;
 		Services.PLATFORM.getServerChunkCacheAccess().addRegionTicket(world.getChunkSource(), OPAC_TICKET, pos, 2, pos, true);
 		ticket.setEnabled(true);
 		countEnabled(ticket.getDimension(), 1);
@@ -91,6 +93,8 @@ public final class ForceLoadTicketManager {
 		ChunkPos pos = new ChunkPos(ticket.getX(), ticket.getZ());
 		ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, ticket.getDimension());
 		ServerLevel world = server.getLevel(levelKey);
+		if(world == null)//can happen when a dimension is removed from a server
+			return;
 		Services.PLATFORM.getServerChunkCacheAccess().removeRegionTicket(world.getChunkSource(), OPAC_TICKET, pos, 2, pos, true);
 		ticket.setEnabled(false);
 		countEnabled(ticket.getDimension(), -1);
