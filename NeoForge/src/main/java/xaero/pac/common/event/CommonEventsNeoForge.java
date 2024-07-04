@@ -34,6 +34,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityMobGriefingEvent;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.*;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -161,6 +162,18 @@ public class CommonEventsNeoForge extends CommonEvents {
 			event.setCanceled(true);
 	}
 
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onItemUseTick(LivingEntityUseItemEvent.Tick event) {
+		if(super.onItemUseTick(event.getEntity(), event.getItem()))
+			event.setCanceled(true);
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onItemUseTick(LivingEntityUseItemEvent.Stop event) {
+		if(super.onItemUseStop(event.getEntity(), event.getItem()))
+			event.setCanceled(true);
+	}
+
 	@SubscribeEvent
 	public void onMobGrief(EntityMobGriefingEvent event) {
 		if(event.getEntity() == null)
@@ -189,6 +202,12 @@ public class CommonEventsNeoForge extends CommonEvents {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
 		if(super.onEntityInteract(event.getEntity(), event.getTarget(), event.getHand()))
+			event.setCanceled(true);
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onInteractEntitySpecific(PlayerInteractEvent.EntityInteractSpecific event) {
+		if(super.onInteractEntitySpecific(event.getEntity(), event.getTarget(), event.getHand()))
 			event.setCanceled(true);
 	}
 	
