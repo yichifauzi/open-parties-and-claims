@@ -34,15 +34,17 @@ import java.util.List;
 public class ExceptionElementType<T> {
 
 	private static final List<ExceptionElementType<?>> TYPES = new ArrayList<>();
-	public static final ExceptionElementType<Block> BLOCK = new ExceptionElementType<>(Registries.BLOCK);
-	public static final ExceptionElementType<EntityType<?>> ENTITY_TYPE = new ExceptionElementType<>(Registries.ENTITY_TYPE);
-	public static final ExceptionElementType<Item> ITEM = new ExceptionElementType<>(Registries.ITEM);
+	public static final ExceptionElementType<Block> BLOCK = new ExceptionElementType<>(Registries.BLOCK, Block.class);
+	public static final ExceptionElementType<EntityType<?>> ENTITY_TYPE = new ExceptionElementType<>(Registries.ENTITY_TYPE, EntityType.class);
+	public static final ExceptionElementType<Item> ITEM = new ExceptionElementType<>(Registries.ITEM, Item.class);
 	private final ResourceKey<Registry<T>> registryResourceKey;
 	private Iterable<T> iterable;
 	private Iterable<TagKey<T>> tagIterable;
+	private Class<?> type;
 
-	public ExceptionElementType(ResourceKey<Registry<T>> registryResourceKey) {
+	public ExceptionElementType(ResourceKey<Registry<T>> registryResourceKey, Class<?> type) {
 		this.registryResourceKey = registryResourceKey;
+		this.type = type;
 		TYPES.add(this);
 	}
 
@@ -60,6 +62,10 @@ public class ExceptionElementType<T> {
 
 	public static void updateAllIterables(MinecraftServer server){
 		TYPES.forEach(type -> type.updateIterables(server));
+	}
+
+	public Class<?> getType() {
+		return type;
 	}
 
 	public static void clearAllIterables(){

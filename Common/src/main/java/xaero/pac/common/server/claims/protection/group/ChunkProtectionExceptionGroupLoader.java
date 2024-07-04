@@ -39,7 +39,7 @@ import java.util.function.Predicate;
 public class ChunkProtectionExceptionGroupLoader {
 
 	public <T> void load(MinecraftServer server, ModConfigSpec.ConfigValue<List<? extends String>> configOption,
-						 ExceptionElementType<T> elementType, WildcardResolver wildcardResolver,
+						 ExceptionElementType<T> elementType, Class<?> subjectType, boolean ofSubjects, WildcardResolver wildcardResolver,
 						 Map<String, ChunkProtectionExceptionGroup<T>> destination, ChunkProtectionExceptionType defaultType,
 						 Predicate<ChunkProtectionExceptionType> typeFilter, PlayerConfigOptionCategory optionCategory){
 		Registry<T> elementRegistry = elementType.getRegistry(server);
@@ -82,6 +82,8 @@ public class ChunkProtectionExceptionGroupLoader {
 
 			ChunkProtectionExceptionGroup.Builder<T> builder = ChunkProtectionExceptionGroup.Builder.begin(elementType)
 				.setName(name)
+				.setSubjectType(subjectType)
+				.setOfSubjects(ofSubjects)
 				.setType(type);
 
 			String groupContent = stringEntry.substring(listStartIndex + 1, listEndIndex).trim();
