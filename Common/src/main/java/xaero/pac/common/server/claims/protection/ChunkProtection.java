@@ -2046,7 +2046,7 @@ public class ChunkProtection
 	}
 
 	public boolean onProjectileBlockImpact(IServerData<CM, ?> serverData, Projectile projectile, BlockHitResult hitResult){
-		ServerLevel world = ServerLevelHelper.getServerLevel(projectile.level);
+		ServerLevel world = ServerLevelHelper.getServerLevel(projectile.level());
 		if(world == null)
 			return false;
 		//null block state so that block exceptions don't affect this

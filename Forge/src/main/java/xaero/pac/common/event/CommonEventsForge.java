@@ -276,7 +276,7 @@ public class CommonEventsForge extends CommonEvents {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onProjectileImpact(ProjectileImpactEvent event){
 		if(super.onProjectileImpact(event.getRayTraceResult(), event.getProjectile()))
-			event.setCanceled(true);
+			event.setImpactResult(ProjectileImpactEvent.ImpactResult.STOP_AT_CURRENT_NO_DAMAGE);
 	}
 
 	@SubscribeEvent
