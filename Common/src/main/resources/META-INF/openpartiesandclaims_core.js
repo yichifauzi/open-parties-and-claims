@@ -293,23 +293,11 @@ function transformPrePostResourcesDrop(methodNode, entityParIndex){
 }
 
 function transformProjectileHitCapture(methodNode, projectileClass, preMethodName, postMethodName){
-    var MY_LABEL = new LabelNode(new Label())
-    var headPatch = new InsnList()
-    headPatch.add(new VarInsnNode(Opcodes.ALOAD, 1))
-    headPatch.add(new VarInsnNode(Opcodes.ALOAD, 0))
-    headPatch.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'checkProjectileHit', '(Lnet/minecraft/world/phys/HitResult;Lnet/minecraft/world/entity/projectile/Projectile;)Lnet/minecraft/world/entity/projectile/ProjectileDeflection;'))
-    headPatch.add(new InsnNode(Opcodes.DUP))
-    headPatch.add(new JumpInsnNode(Opcodes.IFNULL, MY_LABEL))
-    headPatch.add(new InsnNode(Opcodes.ARETURN))
-    headPatch.add(MY_LABEL)
-    headPatch.add(new InsnNode(Opcodes.POP))
-    methodNode.instructions.insert(methodNode.instructions.get(0), headPatch)
-
     var invokeTargetClass = projectileClass
     var invokeTargetName = 'onHit'
     var invokeTargetNameObf = 'm_6532_'
     var invokeTargetDesc = '(Lnet/minecraft/world/phys/HitResult;)V'
-    insnToInsertGetter = function() {
+    var insnToInsertGetter = function() {
         var insnToInsert = new InsnList()
         insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
         insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', preMethodName, '(Lnet/minecraft/world/entity/projectile/Projectile;)V'))

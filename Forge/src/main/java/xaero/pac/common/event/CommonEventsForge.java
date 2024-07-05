@@ -27,10 +27,7 @@ import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
-import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.EntityMobGriefingEvent;
-import net.minecraftforge.event.entity.EntityTeleportEvent;
+import net.minecraftforge.event.entity.*;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
@@ -274,6 +271,12 @@ public class CommonEventsForge extends CommonEvents {
 			event.setSpawnCancelled(true);//won't be spawned
 			event.setCanceled(true);//won't call finalizeSpawn
 		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onProjectileImpact(ProjectileImpactEvent event){
+		if(super.onProjectileImpact(event.getRayTraceResult(), event.getProjectile()))
+			event.setImpactResult(ProjectileImpactEvent.ImpactResult.STOP_AT_CURRENT_NO_DAMAGE);
 	}
 
 	@SubscribeEvent

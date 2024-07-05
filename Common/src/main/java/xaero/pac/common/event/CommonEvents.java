@@ -538,6 +538,16 @@ public abstract class CommonEvents {
 		return serverData.getChunkProtection().onMobSpawn(serverData, entity, x, y, z, spawnReason);
 	}
 
+	public boolean onProjectileImpact(HitResult hitResult, Projectile entity){
+		if(entity.getServer() == null)
+			return false;
+		if(hitResult == null || hitResult.getType() == HitResult.Type.MISS)
+			return false;
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(entity.getServer());
+		return serverData.getChunkProtection().onProjectileImpact(serverData, entity, hitResult);
+	}
+
 	public void onServerDataReload(ResourceManager resourceManager){
 		//TODO should properly get the server instance that data is reloaded for
 		if(lastServerStarted != null && lastServerStarted.isSameThread()){
