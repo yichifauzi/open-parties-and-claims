@@ -27,14 +27,10 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
-import net.neoforged.neoforge.event.entity.EntityEvent;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.EntityMobGriefingEvent;
-import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.event.entity.*;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
-import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.*;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ExplosionEvent;
@@ -287,6 +283,12 @@ public class CommonEventsNeoForge extends CommonEvents {
 			event.setSpawnCancelled(true);//won't be spawned
 			event.setCanceled(true);//won't call finalizeSpawn
 		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onProjectileImpact(ProjectileImpactEvent event){
+		if(super.onProjectileImpact(event.getRayTraceResult(), event.getProjectile()))
+			event.setCanceled(true);
 	}
 
 	@SubscribeEvent
