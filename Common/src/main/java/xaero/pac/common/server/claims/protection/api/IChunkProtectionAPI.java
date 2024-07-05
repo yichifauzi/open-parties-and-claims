@@ -55,6 +55,22 @@ public interface IChunkProtectionAPI {
 
 	/**
 	 * @deprecated Use {@link #onBlockInteraction(Entity, InteractionHand, ItemStack, ServerLevel, BlockPos, Direction, boolean, boolean, boolean)} instead.
+	 * <p>
+	 * Checks whether a specified block interaction should be protected against.
+	 * <p>
+	 * Whenever possible, use the built-in block interaction events provided by the mod loader (Fabric/Forge)
+	 * instead of this method, unless they aren't specific enough, or the entity has a full protection
+	 * pass ({@link #giveFullPass(UUID)}).
+	 *
+	 * @param entity  the entity to interact with the block, can be null
+	 * @param hand  the hand that the entity is to interact with, can be null
+	 * @param heldItem  the item stack that the entity is to interact with, null to fetch it from the hand
+	 * @param world  the world that the entity is to interact with, not null
+	 * @param pos  the block position that the entity is to interact with, not null
+	 * @param direction  the direction which the entity is to interact from, not null
+	 * @param breaking  whether the interaction is to break the block
+	 * @param messages  whether to send the player system chat messages on protection
+	 * @return true if the block interaction should be protected against, otherwise false
 	 */
 	@Deprecated
 	boolean onBlockInteraction(@Nullable Entity entity, @Nullable InteractionHand hand, @Nullable ItemStack heldItem, @Nonnull ServerLevel world, @Nonnull BlockPos pos, @Nonnull Direction direction, boolean breaking, boolean messages);
@@ -95,6 +111,21 @@ public interface IChunkProtectionAPI {
 
 	/**
 	 * @deprecated Use {@link #onEntityInteraction(Entity, Entity, Entity, ItemStack, InteractionHand, boolean, boolean, boolean)} instead.
+	 * <p>
+	 * Checks whether an entity interaction should be protected against.
+	 * <p>
+	 * Whenever possible, use the built-in entity interaction event provided by Forge instead of this method,
+	 * unless it isn't specific enough, you're on Fabric, or the interacting entity has a full protection pass
+	 * ({@link #giveFullPass(UUID)}).
+	 *
+	 * @param interactingEntityIndirect  the entity that is to interact indirectly, can be null
+	 * @param interactingEntity  the directly interacting entity, can be null
+	 * @param targetEntity  the entity to interact with, not null
+	 * @param heldItem  the item stack to interact with, null to fetch it from the hand
+	 * @param hand  the hand to interact with, can be null
+	 * @param attack  whether the interaction is to attack the target entity
+	 * @param messages  whether to send the player system chat messages on protection
+	 * @return true if the entity interaction should be protected against, otherwise false
 	 */
 	@Deprecated
 	boolean onEntityInteraction(@Nullable Entity interactingEntityIndirect, @Nullable Entity interactingEntity, @Nonnull Entity targetEntity, @Nullable ItemStack heldItem, @Nullable InteractionHand hand, boolean attack, boolean messages);
