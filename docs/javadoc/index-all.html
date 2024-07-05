@@ -31,6 +31,7 @@ loadScripts(document, 'script');</script>
 <li>Package</li>
 <li>Class</li>
 <li><a href="overview-tree.html">Tree</a></li>
+<li><a href="deprecated-list.html">Deprecated</a></li>
 <li class="nav-bar-cell1-rev">Index</li>
 <li><a href="help-doc.html#index">Help</a></li>
 </ul>
@@ -1557,6 +1558,18 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="xaero/pac/common/server/claims/protection/api/IChunkProtectionAPI.html#onBlockInteraction(net.minecraft.world.entity.Entity,net.minecraft.world.InteractionHand,net.minecraft.world.item.ItemStack,net.minecraft.server.level.ServerLevel,net.minecraft.core.BlockPos,net.minecraft.core.Direction,boolean,boolean)" class="member-name-link">onBlockInteraction(Entity, InteractionHand, ItemStack, ServerLevel, BlockPos, Direction, boolean, boolean)</a> - Method in interface xaero.pac.common.server.claims.protection.api.<a href="xaero/pac/common/server/claims/protection/api/IChunkProtectionAPI.html" title="interface in xaero.pac.common.server.claims.protection.api">IChunkProtectionAPI</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="xaero/pac/common/server/claims/protection/api/IChunkProtectionAPI.html#onBlockInteraction(net.minecraft.world.entity.Entity,net.minecraft.world.InteractionHand,net.minecraft.world.item.ItemStack,net.minecraft.server.level.ServerLevel,net.minecraft.core.BlockPos,net.minecraft.core.Direction,boolean,boolean,boolean)"><code>IChunkProtectionAPI.onBlockInteraction(Entity, InteractionHand, ItemStack, ServerLevel, BlockPos, Direction, boolean, boolean, boolean)</code></a> instead.
+ <p>
+ Checks whether a specified block interaction should be protected against.
+ <p>
+ Whenever possible, use the built-in block interaction events provided by the mod loader (Fabric/Forge)
+ instead of this method, unless they aren't specific enough, or the entity has a full protection
+ pass (<a href="xaero/pac/common/server/claims/protection/api/IChunkProtectionAPI.html#giveFullPass(java.util.UUID)"><code>IChunkProtectionAPI.giveFullPass(UUID)</code></a>).</div>
+</div>
+</dd>
+<dt><a href="xaero/pac/common/server/claims/protection/api/IChunkProtectionAPI.html#onBlockInteraction(net.minecraft.world.entity.Entity,net.minecraft.world.InteractionHand,net.minecraft.world.item.ItemStack,net.minecraft.server.level.ServerLevel,net.minecraft.core.BlockPos,net.minecraft.core.Direction,boolean,boolean,boolean)" class="member-name-link">onBlockInteraction(Entity, InteractionHand, ItemStack, ServerLevel, BlockPos, Direction, boolean, boolean, boolean)</a> - Method in interface xaero.pac.common.server.claims.protection.api.<a href="xaero/pac/common/server/claims/protection/api/IChunkProtectionAPI.html" title="interface in xaero.pac.common.server.claims.protection.api">IChunkProtectionAPI</a></dt>
+<dd>
 <div class="block">Checks whether a specified block interaction should be protected against.</div>
 </dd>
 <dt><a href="xaero/pac/common/claims/tracker/api/IClaimsManagerListenerAPI.html#onChunkChange(net.minecraft.resources.ResourceLocation,int,int,xaero.pac.common.claims.player.api.IPlayerChunkClaimAPI)" class="member-name-link">onChunkChange(ResourceLocation, int, int, IPlayerChunkClaimAPI)</a> - Method in interface xaero.pac.common.claims.tracker.api.<a href="xaero/pac/common/claims/tracker/api/IClaimsManagerListenerAPI.html" title="interface in xaero.pac.common.claims.tracker.api">IClaimsManagerListenerAPI</a></dt>
@@ -1572,6 +1585,18 @@ loadScripts(document, 'script');</script>
 <div class="block">Called after claim changes are made throughout a dimension.</div>
 </dd>
 <dt><a href="xaero/pac/common/server/claims/protection/api/IChunkProtectionAPI.html#onEntityInteraction(net.minecraft.world.entity.Entity,net.minecraft.world.entity.Entity,net.minecraft.world.entity.Entity,net.minecraft.world.item.ItemStack,net.minecraft.world.InteractionHand,boolean,boolean)" class="member-name-link">onEntityInteraction(Entity, Entity, Entity, ItemStack, InteractionHand, boolean, boolean)</a> - Method in interface xaero.pac.common.server.claims.protection.api.<a href="xaero/pac/common/server/claims/protection/api/IChunkProtectionAPI.html" title="interface in xaero.pac.common.server.claims.protection.api">IChunkProtectionAPI</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use <a href="xaero/pac/common/server/claims/protection/api/IChunkProtectionAPI.html#onEntityInteraction(net.minecraft.world.entity.Entity,net.minecraft.world.entity.Entity,net.minecraft.world.entity.Entity,net.minecraft.world.item.ItemStack,net.minecraft.world.InteractionHand,boolean,boolean,boolean)"><code>IChunkProtectionAPI.onEntityInteraction(Entity, Entity, Entity, ItemStack, InteractionHand, boolean, boolean, boolean)</code></a> instead.
+ <p>
+ Checks whether an entity interaction should be protected against.
+ <p>
+ Whenever possible, use the built-in entity interaction event provided by Forge instead of this method,
+ unless it isn't specific enough, you're on Fabric, or the interacting entity has a full protection pass
+ (<a href="xaero/pac/common/server/claims/protection/api/IChunkProtectionAPI.html#giveFullPass(java.util.UUID)"><code>IChunkProtectionAPI.giveFullPass(UUID)</code></a>).</div>
+</div>
+</dd>
+<dt><a href="xaero/pac/common/server/claims/protection/api/IChunkProtectionAPI.html#onEntityInteraction(net.minecraft.world.entity.Entity,net.minecraft.world.entity.Entity,net.minecraft.world.entity.Entity,net.minecraft.world.item.ItemStack,net.minecraft.world.InteractionHand,boolean,boolean,boolean)" class="member-name-link">onEntityInteraction(Entity, Entity, Entity, ItemStack, InteractionHand, boolean, boolean, boolean)</a> - Method in interface xaero.pac.common.server.claims.protection.api.<a href="xaero/pac/common/server/claims/protection/api/IChunkProtectionAPI.html" title="interface in xaero.pac.common.server.claims.protection.api">IChunkProtectionAPI</a></dt>
 <dd>
 <div class="block">Checks whether an entity interaction should be protected against.</div>
 </dd>
