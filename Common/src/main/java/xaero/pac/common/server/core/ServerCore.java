@@ -364,42 +364,7 @@ public class ServerCore {
 	}
 
 	public static boolean isProjectileHitAllowed(Projectile entity, EntityHitResult hitResult){
-		return isProjectileEntityHitAllowed(entity, hitResult);
-	}
-
-	public static boolean isProjectileEntityHitAllowed(Projectile projectile, EntityHitResult hitResult){
-		Entity target = hitResult.getEntity();
-		if(target.getServer() == null)
-			return true;
-		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
-				serverData = ServerData.from(target.getServer());
-		if(serverData == null)
-			return true;
-		boolean shouldProtect = serverData.getChunkProtection().onEntityInteraction(serverData, projectile.getOwner(), projectile, target, null, null, false, false, false);
-		if(shouldProtect && projectile.getOwner() instanceof ServerPlayer player)
-			player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(player, serverData.getChunkProtection().PROJECTILE_HIT_ENTITY));
-		return !shouldProtect;
-	}
-
-	public static boolean isProjectileBlockHitAllowed(Projectile projectile, BlockHitResult hitResult){
-		if(projectile.getServer() == null)
-			return true;
-		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
-				serverData = ServerData.from(projectile.getServer());
-		if(serverData == null)
-			return true;
-		ServerLevel world = ServerLevelHelper.getServerLevel(projectile.level);
-		if(world == null)
-			return true;
-		//null block state so that block exceptions don't affect this
-		boolean shouldProtect = serverData.getChunkProtection().onBlockInteraction(serverData, null, projectile, null, null, world, hitResult.getBlockPos(), null, false, false);
-		if(!shouldProtect) {
-			BlockPos offPos = hitResult.getBlockPos().offset(hitResult.getDirection().getNormal());
-			shouldProtect = serverData.getChunkProtection().onBlockInteraction(serverData, null, projectile, null, null, world, offPos, null, false, false);
-		}
-		if(shouldProtect && projectile.getOwner() instanceof ServerPlayer player)
-			player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(player, serverData.getChunkProtection().PROJECTILE_HIT_BLOCK));
-		return !shouldProtect;
+		return !OpenPartiesAndClaims.INSTANCE.getCommonEvents().onProjectileImpact(hitResult, entity);
 	}
 
 	public static HitResult checkProjectileHit(HitResult hitResult, Projectile entity){
@@ -407,12 +372,13 @@ public class ServerCore {
 			return hitResult;
 		if(hitResult == null || hitResult.getType() == HitResult.Type.MISS)
 			return hitResult;
-		if(hitResult instanceof EntityHitResult entityHitResult && !isProjectileEntityHitAllowed(entity, entityHitResult))
-			hitResult = BlockHitResult.miss(hitResult.getLocation(), Direction.UP, entity.blockPosition());
-		else if(hitResult instanceof BlockHitResult blockHitResult && !isProjectileBlockHitAllowed(entity, blockHitResult))
-			hitResult = BlockHitResult.miss(hitResult.getLocation(), blockHitResult.getDirection(), blockHitResult.getBlockPos());
-		if(hitResult.getType() == HitResult.Type.MISS)
+		if(OpenPartiesAndClaims.INSTANCE.getCommonEvents().onProjectileImpact(hitResult, entity)) {
+			if(hitResult instanceof BlockHitResult blockHitResult)
+				hitResult = BlockHitResult.miss(hitResult.getLocation(), blockHitResult.getDirection(), blockHitResult.getBlockPos());
+			else
+				hitResult = BlockHitResult.miss(hitResult.getLocation(), Direction.UP, entity.blockPosition());
 			entity.discard();
+		}
 		return hitResult;
 	}
 
