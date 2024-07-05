@@ -51,10 +51,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.function.TriFunction;
 import xaero.pac.common.claims.player.IPlayerChunkClaim;
@@ -109,7 +106,7 @@ public class ChunkProtection
 	private final Component CANT_INTERACT_BLOCK_MAIN = Component.translatable("gui.xaero_claims_protection_interact_block", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component BLOCK_TRY_EMPTY_MAIN = Component.translatable("gui.xaero_claims_protection_interact_block_try_empty", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component BLOCK_DISABLED = Component.translatable("gui.xaero_claims_protection_block_disabled").withStyle(s -> s.withColor(ChatFormatting.RED));
-	public final Component PROJECTILE_HIT_BLOCK = Component.translatable("gui.xaero_claims_protection_projectile_hit_block").withStyle(s -> s.withColor(ChatFormatting.RED));
+	private final Component PROJECTILE_HIT_BLOCK = Component.translatable("gui.xaero_claims_protection_projectile_hit_block").withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component USE_ITEM_ANY = Component.translatable("gui.xaero_claims_protection_use_item_any").withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component USE_ITEM_MAIN = Component.translatable("gui.xaero_claims_protection_use_item", MAIN_HAND).withStyle(s -> s.withColor(ChatFormatting.RED));
 	private final Component CANT_INTERACT_ENTITY = Component.translatable("gui.xaero_claims_protection_interact_entity_any").withStyle(s -> s.withColor(ChatFormatting.RED));
@@ -2039,6 +2036,39 @@ public class ChunkProtection
 
 	public boolean onExperienceMerge(IServerData<CM, ?> serverData, ExperienceOrb from, ExperienceOrb into) {
 		return onEntityMerge(serverData, into, null, null, from, null, null, PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_XP_PICKUP, null, null);
+	}
+
+	public boolean onProjectileEntityImpact(IServerData<CM, ?> serverData, Projectile projectile, EntityHitResult hitResult){
+		boolean shouldProtect = onEntityInteraction(serverData, projectile.getOwner(), projectile, hitResult.getEntity(), null, null, false, false, false);
+		if(shouldProtect && projectile.getOwner() instanceof ServerPlayer player)
+			player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(player, serverData.getChunkProtection().PROJECTILE_HIT_ENTITY));
+		return shouldProtect;
+	}
+
+	public boolean onProjectileBlockImpact(IServerData<CM, ?> serverData, Projectile projectile, BlockHitResult hitResult){
+		ServerLevel world = ServerLevelHelper.getServerLevel(projectile.level());
+		if(world == null)
+			return false;
+		//null block state so that block exceptions don't affect this
+		boolean shouldProtect = onBlockInteraction(serverData, null, projectile, null, null, world, hitResult.getBlockPos(), null, false, false);
+		if(!shouldProtect) {
+			BlockPos offPos = hitResult.getBlockPos().offset(hitResult.getDirection().getNormal());
+			shouldProtect = onBlockInteraction(serverData, null, projectile, null, null, world, offPos, null, false, false);
+		}
+		if(shouldProtect && projectile.getOwner() instanceof ServerPlayer player)
+			player.sendSystemMessage(serverData.getAdaptiveLocalizer().getFor(player, PROJECTILE_HIT_BLOCK));
+		return shouldProtect;
+	}
+
+	public boolean onProjectileImpact(IServerData<CM, ?> serverData, Projectile projectile, HitResult hitResult) {
+		boolean result = false;
+		if(hitResult instanceof EntityHitResult entityHitResult)
+			result = onProjectileEntityImpact(serverData, projectile, entityHitResult);
+		else if(hitResult instanceof BlockHitResult blockHitResult)
+			result = onProjectileBlockImpact(serverData, projectile, blockHitResult);
+		if(result)
+			projectile.discard();
+		return result;
 	}
 
 	public void setThrowerAccessor(ItemEntity itemEntity) {
