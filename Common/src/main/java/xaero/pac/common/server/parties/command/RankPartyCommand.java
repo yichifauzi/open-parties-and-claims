@@ -96,7 +96,7 @@ public class RankPartyCommand {
 								return 0;
 							}
 							
-							playerParty.setRank(targetMember, targetRank);
+							playerParty.setRankTyped(targetMember, targetRank);
 
 							UUID targetPlayerId = targetMember.getUUID();
 							ServerPlayer rankedPlayer = server.getPlayerList().getPlayer(targetPlayerId);

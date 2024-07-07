@@ -29,11 +29,23 @@ import javax.annotation.Nonnull;
 
 public interface IClientData
 <
-	PCSM extends IPlayerConfigClientStorageManagerAPI<?>, 
-	CPS extends IClientPartyStorageAPI<?, ?>,
+	PCSM extends IPlayerConfigClientStorageManagerAPI,
+	CPS extends IClientPartyStorageAPI,
 	CM extends IClientClaimsManager<?, ?, ?>
-> extends IClientDataAPI<PCSM, CPS, CM> {
+> extends IClientDataAPI {
 	//internal api
+
+	@Nonnull
+	@Override
+	public PCSM getPlayerConfigStorageManager();
+
+	@Nonnull
+	@Override
+	public CPS getClientPartyStorage();
+
+	@Nonnull
+	@Override
+	public CM getClaimsManager();
 
 	@Nonnull
 	@Override

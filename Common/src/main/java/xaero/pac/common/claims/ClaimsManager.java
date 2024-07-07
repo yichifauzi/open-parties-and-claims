@@ -97,7 +97,7 @@ public abstract class ClaimsManager
 
 	@Nonnull
 	@Override
-	public Stream<WCM> getDimensionStream(){
+	public Stream<WCM> getTypedDimensionStream(){
 		return dimensions.values().stream();
 	}
 	
@@ -153,7 +153,7 @@ public abstract class ClaimsManager
 
 	@Nonnull
 	@Override
-	public Stream<PCI> getPlayerInfoStream() {
+	public Stream<PCI> getTypedPlayerInfoStream() {
 		return playerClaimInfoManager.getInfoStream();
 	}
 

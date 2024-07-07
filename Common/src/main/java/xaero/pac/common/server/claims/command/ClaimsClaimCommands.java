@@ -95,7 +95,7 @@ public class ClaimsClaimCommands {
 						IPlayerConfig playerConfig = serverData.getPlayerConfigs().getLoadedConfig(player.getUUID());
 						IPlayerConfig usedSubConfig = shouldServerClaim ? playerConfig.getUsedServerSubConfig() : playerConfig.getUsedSubConfig();
 						int subConfigIndex = usedSubConfig.getSubIndex();
-						result = claimsManager.tryToClaim(world.dimension().location(), playerId, subConfigIndex, player.chunkPosition().x, player.chunkPosition().z, chunkX, chunkZ, shouldReplace);
+						result = claimsManager.tryToClaimTyped(world.dimension().location(), playerId, subConfigIndex, player.chunkPosition().x, player.chunkPosition().z, chunkX, chunkZ, shouldReplace);
 						
 						if(result.getResultType() == ClaimResult.Type.ALREADY_CLAIMED) {
 							IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>> claimOwnerInfo = claimsManager.getPlayerInfo(result.getClaimResult().getPlayerId());
@@ -103,7 +103,7 @@ public class ClaimsClaimCommands {
 							return 0;
 						}
 					} else {
-						result = claimsManager.tryToUnclaim(world.dimension().location(), playerId, player.chunkPosition().x, player.chunkPosition().z, chunkX, chunkZ, shouldReplace);
+						result = claimsManager.tryToUnclaimTyped(world.dimension().location(), playerId, player.chunkPosition().x, player.chunkPosition().z, chunkX, chunkZ, shouldReplace);
 						if(!result.getResultType().success) {
 							context.getSource().sendFailure(adaptiveLocalizer.getFor(player, result.getResultType().message));
 							return 0;

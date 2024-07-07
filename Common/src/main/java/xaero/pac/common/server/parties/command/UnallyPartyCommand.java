@@ -71,7 +71,7 @@ public class UnallyPartyCommand {
 								IPartyAlly exactAlly = playerParty.getAlly(lowercaseInput);
 								partyAllyStream = Stream.ofNullable(exactAlly);
 							} else
-								partyAllyStream = playerParty.getAllyPartiesStream();
+								partyAllyStream = playerParty.getTypedAllyPartiesStream();
 							//probably not a good idea to let players spam something like this somewhat easily, so it's limited at 1024
 							return SharedSuggestionProvider.suggest(partyAllyStream
 									.map(IPartyAlly::getPartyId)

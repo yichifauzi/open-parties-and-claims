@@ -69,7 +69,7 @@ public class DestroyPartyConfirmCommand {
 					IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(server);
 					IPartyManager<IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> partyManager = serverData.getPartyManager();
 					IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly> playerParty = partyManager.getPartyByMember(playerId);
-					partyManager.removeParty(playerParty);
+					partyManager.removeTypedParty(playerParty);
 					new PartyOnCommandUpdater().update(playerId, serverData, playerParty, serverData.getPlayerConfigs(), mi -> true, new TranslatableComponent("gui.xaero_parties_party_destroy_members_info", new TextComponent(playerParty.getOwner().getUsername()).withStyle(s -> s.withColor(ChatFormatting.YELLOW))));
 					return 1;
 				})));

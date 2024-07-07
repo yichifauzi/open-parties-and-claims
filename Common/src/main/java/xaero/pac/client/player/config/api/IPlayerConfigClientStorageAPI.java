@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 /**
  * API for a player config storage on the client side
  */
-public interface IPlayerConfigClientStorageAPI<OS extends IPlayerConfigStringableOptionClientStorageAPI<?>> {
+public interface IPlayerConfigClientStorageAPI {
 
 	/**
 	 * Gets the config option value storage for a specified config option in this config.
@@ -43,7 +43,7 @@ public interface IPlayerConfigClientStorageAPI<OS extends IPlayerConfigStringabl
 	 * @param <T>  the type of the option value
 	 */
 	@Nonnull
-	public <T extends Comparable<T>> OS getOptionStorage(@Nonnull IPlayerConfigOptionSpecAPI<T> option);
+	public <T extends Comparable<T>> IPlayerConfigStringableOptionClientStorageAPI<?> getOptionStorage(@Nonnull IPlayerConfigOptionSpecAPI<T> option);
 
 	/**
 	 * Gets the type {@link PlayerConfigType} of this config.
@@ -67,7 +67,7 @@ public interface IPlayerConfigClientStorageAPI<OS extends IPlayerConfigStringabl
 	 * @return the {@link Stream} of all config option value storages, not null
 	 */
 	@Nonnull
-	public Stream<OS> optionStream();
+	public Stream<IPlayerConfigStringableOptionClientStorageAPI<?>> optionStream();
 
 	/**
 	 * Gets an unmodifiable list of all string IDs of this config's sub-configs.
@@ -86,7 +86,7 @@ public interface IPlayerConfigClientStorageAPI<OS extends IPlayerConfigStringabl
 	 * @return the sub-config, null if it doesn't exist
 	 */
 	@Nullable
-	public IPlayerConfigClientStorageAPI<OS> getSubConfig(@Nonnull String id);
+	public IPlayerConfigClientStorageAPI getSubConfig(@Nonnull String id);
 
 	/**
 	 * Gets a sub-config of this config from a specified sub-config ID.
@@ -97,7 +97,7 @@ public interface IPlayerConfigClientStorageAPI<OS extends IPlayerConfigStringabl
 	 * @return the effective sub-config, not null
 	 */
 	@Nonnull
-	public IPlayerConfigClientStorageAPI<OS> getEffectiveSubConfig(@Nonnull String id);
+	public IPlayerConfigClientStorageAPI getEffectiveSubConfig(@Nonnull String id);
 
 	/**
 	 * Checks whether a sub-config with a specified string ID exists.
@@ -124,7 +124,7 @@ public interface IPlayerConfigClientStorageAPI<OS extends IPlayerConfigStringabl
 	 * @return a stream of all sub-configs, not null
 	 */
 	@Nonnull
-	public Stream<IPlayerConfigClientStorageAPI<OS>> getSubConfigAPIStream();
+	public Stream<IPlayerConfigClientStorageAPI> getSubConfigAPIStream();
 
 	/**
 	 * Checks whether this player (sub-)config is in the process of being deleted.

@@ -123,7 +123,7 @@ public final class PlayerClaimInfoManagerIO<S>
 						serverClaimsManager.claim(dim, loadedObject.getPlayerId(), claim.getSubConfigIndex(), pos.x,
 								pos.z, claim.isForceloadable());
 					};
-					dimensionClaims.getStream().forEach(posList -> {
+					dimensionClaims.getTypedStream().forEach(posList -> {
 						PlayerChunkClaim claim = posList.getClaimState();
 						if(claim.getSubConfigIndex() != -1 && !playerConfig.subConfigExists(claim.getSubConfigIndex()))
 							claim = new PlayerChunkClaim(claim.getPlayerId(), -1, claim.isForceloadable(), 0);//converting sub-claim to main claim
