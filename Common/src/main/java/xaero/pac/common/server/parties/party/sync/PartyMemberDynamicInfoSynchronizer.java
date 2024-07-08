@@ -68,7 +68,7 @@ public class PartyMemberDynamicInfoSynchronizer extends AbstractPartySynchronize
 			return;
 		if(syncedInfo.isActive() && syncedInfo.getPartyId() == null)
 			return;
-		Iterator<PartyAlly> allyIterator = party.getAllyPartiesStream().iterator();
+		Iterator<PartyAlly> allyIterator = party.getTypedAllyPartiesStream().iterator();
 		while(allyIterator.hasNext()){
 			ServerParty allyParty = partyManager.getPartyById(allyIterator.next().getPartyId());
 			if(allyParty != null && allyParty.isAlly(party.getId()))
@@ -105,7 +105,7 @@ public class PartyMemberDynamicInfoSynchronizer extends AbstractPartySynchronize
 	@Override
 	public void syncToClientMutualAlliesDynamicInfo(ServerPlayer player, ServerParty party, boolean removers) {
 		IPlayerConfigManager configManager = partyManager.getPlayerConfigs();
-		party.getAllyPartiesStream().forEach(ally -> {
+		party.getTypedAllyPartiesStream().forEach(ally -> {
 			ServerParty allyParty = partyManager.getPartyById(ally.getPartyId());
 			if(allyParty != null && allyParty.isAlly(party.getId()))
 				syncToClientAllDynamicInfo(configManager, player, allyParty, party, removers);

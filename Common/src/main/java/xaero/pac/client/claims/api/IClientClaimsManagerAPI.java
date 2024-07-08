@@ -36,21 +36,22 @@ import java.util.stream.Stream;
  * API for the claims manager on the client side
  */
 public interface IClientClaimsManagerAPI
-<
-	PCI extends IClientPlayerClaimInfoAPI<?>,
-	WCM extends IClientDimensionClaimsManagerAPI<?>
-> extends IClaimsManagerAPI<PCI, WCM>{
+		extends IClaimsManagerAPI {
 
 	@Override
 	public boolean hasPlayerInfo(@Nonnull UUID playerId);
 
 	@Nonnull
 	@Override
-	public PCI getPlayerInfo(@Nonnull UUID playerId);
-	
+	public IClientPlayerClaimInfoAPI getPlayerInfo(@Nonnull UUID playerId);
+
+	/**
+	 * Gets a stream of all player claim info.
+	 *
+	 * @return a {@code Stream} of all player claim info
+	 */
 	@Nonnull
-	@Override
-	public Stream<PCI> getPlayerInfoStream();
+	public Stream<IClientPlayerClaimInfoAPI> getPlayerInfoStream();
 	
 	@Nullable
 	@Override
@@ -66,11 +67,15 @@ public interface IClientClaimsManagerAPI
 
 	@Nullable
 	@Override
-	public WCM getDimension(@Nonnull ResourceLocation dimension);
+	public IClientDimensionClaimsManagerAPI getDimension(@Nonnull ResourceLocation dimension);
 
+	/**
+	 * Gets a stream of all read-only dimension claims managers.
+	 *
+	 * @return a {@code Stream} of all read-only dimension claims managers
+	 */
 	@Nonnull
-	@Override
-	public Stream<WCM> getDimensionStream();
+	public Stream<IClientDimensionClaimsManagerAPI> getDimensionStream();
 
 	@Nonnull
 	@Override

@@ -185,11 +185,6 @@ implements IPlayerConfigManager, ObjectManagerIOManager<PlayerConfig<P>, PlayerC
 		return server;
 	}
 
-	@Override
-	public Stream<PlayerConfig<P>> getAllStream() {
-		return configs.values().stream();
-	}
-
 	public void onSubConfigRemoved(PlayerSubConfig<P> subConfig) {
 		configsToSave.remove(subConfig);
 		if(loaded) {

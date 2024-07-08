@@ -69,15 +69,15 @@ loadScripts(document, 'script');</script>
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">xaero.pac.common.claims.player.api</a></div>
-<h1 title="Interface IPlayerClaimInfoAPI" class="title">Interface IPlayerClaimInfoAPI&lt;DC extends <a href="IPlayerDimensionClaimsAPI.html" title="interface in xaero.pac.common.claims.player.api">IPlayerDimensionClaimsAPI</a>&lt;?&gt;&gt;</h1>
+<h1 title="Interface IPlayerClaimInfoAPI" class="title">Interface IPlayerClaimInfoAPI</h1>
 </div>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Known Subinterfaces:</dt>
-<dd><code><a href="../../../../client/claims/player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&lt;DC&gt;</code>, <code><a href="../../../server/claims/player/api/IServerPlayerClaimInfoAPI.html" title="interface in xaero.pac.common.server.claims.player.api">IServerPlayerClaimInfoAPI</a>&lt;DC&gt;</code></dd>
+<dd><code><a href="../../../../client/claims/player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a></code>, <code><a href="../../../server/claims/player/api/IServerPlayerClaimInfoAPI.html" title="interface in xaero.pac.common.server.claims.player.api">IServerPlayerClaimInfoAPI</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">IPlayerClaimInfoAPI&lt;DC extends <a href="IPlayerDimensionClaimsAPI.html" title="interface in xaero.pac.common.claims.player.api">IPlayerDimensionClaimsAPI</a>&lt;?&gt;&gt;</span></div>
+<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">IPlayerClaimInfoAPI</span></div>
 <div class="block">API for claim info of a player</div>
 </section>
 <section class="summary">
@@ -120,7 +120,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets the currently configured custom name of the player's sub-claim
  with a specified index.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="IPlayerClaimInfoAPI.html" title="type parameter in IPlayerClaimInfoAPI">DC</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="IPlayerDimensionClaimsAPI.html" title="interface in xaero.pac.common.claims.player.api">IPlayerDimensionClaimsAPI</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getDimension(net.minecraft.resources.ResourceLocation)" class="member-name-link">getDimension</a><wbr>(net.minecraft.resources.ResourceLocation&nbsp;id)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets claim info for a dimension with a specified ID.</div>
@@ -139,11 +139,6 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getPlayerUsername()" class="member-name-link">getPlayerUsername</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the username of the player.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.Entry.html" title="class or interface in java.util" class="external-link">Map.Entry</a>&lt;net.minecraft.resources.ResourceLocation,<wbr><a href="IPlayerClaimInfoAPI.html" title="type parameter in IPlayerClaimInfoAPI">DC</a>&gt;&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getStream()" class="member-name-link">getStream</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Gets a stream of all dimension claim info entries for the player.</div>
 </div>
 </div>
 </div>
@@ -272,22 +267,10 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="getStream()">
-<h3>getStream</h3>
-<div class="member-signature"><span class="annotations">@Nonnull
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.Entry.html" title="class or interface in java.util" class="external-link">Map.Entry</a>&lt;net.minecraft.resources.ResourceLocation,<wbr><a href="IPlayerClaimInfoAPI.html" title="type parameter in IPlayerClaimInfoAPI">DC</a>&gt;&gt;</span>&nbsp;<span class="element-name">getStream</span>()</div>
-<div class="block">Gets a stream of all dimension claim info entries for the player.</div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dd>the stream of all dimension claim info entries, not null</dd>
-</dl>
-</section>
-</li>
-<li>
 <section class="detail" id="getDimension(net.minecraft.resources.ResourceLocation)">
 <h3>getDimension</h3>
 <div class="member-signature"><span class="annotations">@Nullable
-</span><span class="return-type"><a href="IPlayerClaimInfoAPI.html" title="type parameter in IPlayerClaimInfoAPI">DC</a></span>&nbsp;<span class="element-name">getDimension</span><wbr><span class="parameters">(@Nonnull
+</span><span class="return-type"><a href="IPlayerDimensionClaimsAPI.html" title="interface in xaero.pac.common.claims.player.api">IPlayerDimensionClaimsAPI</a></span>&nbsp;<span class="element-name">getDimension</span><wbr><span class="parameters">(@Nonnull
  net.minecraft.resources.ResourceLocation&nbsp;id)</span></div>
 <div class="block">Gets claim info for a dimension with a specified ID.</div>
 <dl class="notes">

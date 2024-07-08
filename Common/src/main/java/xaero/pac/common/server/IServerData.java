@@ -52,7 +52,7 @@ public interface IServerData
 	CM extends IServerClaimsManager<?, ?, ?>,
 	P extends IServerParty<?, ?, ?>
 >
-extends IServerDataAPI<CM,P> {
+extends IServerDataAPI {
 	
 	//internal API
 

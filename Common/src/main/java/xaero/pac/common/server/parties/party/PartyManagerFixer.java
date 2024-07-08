@@ -30,11 +30,11 @@ public final class PartyManagerFixer {
 	public void fix(PartyManager partyManager) {
 		OpenPartiesAndClaims.LOGGER.info("Fixing party inconsistencies...");
 		List<ServerParty> partiesToRemove = new ArrayList<>();
-		partyManager.getAllStream().forEach(party -> {
-			party.getMemberInfoStream().forEach(p -> fixPlayer((ServerParty)party, partyManager, (PartyMember) p, partiesToRemove));
+		partyManager.getTypedAllStream().forEach(party -> {
+			party.getTypedMemberInfoStream().forEach(p -> fixPlayer((ServerParty)party, partyManager, (PartyMember) p, partiesToRemove));
 		});
 		partiesToRemove.forEach(party -> {
-			partyManager.removeParty(party);
+			partyManager.removeTypedParty(party);
 		});
 	}
 	

@@ -28,10 +28,7 @@ import java.util.stream.Stream;
 /**
  * API for the party manager on the server side
  */
-public interface IPartyManagerAPI
-<
-	P extends IServerPartyAPI<?, ?, ?>
-> {
+public interface IPartyManagerAPI {
 
 	/**
 	 * Gets the owned party from the UUID of a party's owner.
@@ -40,7 +37,7 @@ public interface IPartyManagerAPI
 	 * @return the party, null if doesn't exist
 	 */
 	@Nullable
-	public P getPartyByOwner(@Nonnull UUID owner);
+	public IServerPartyAPI getPartyByOwner(@Nonnull UUID owner);
 
 	/**
 	 * Gets the party of a specified UUID.
@@ -49,7 +46,7 @@ public interface IPartyManagerAPI
 	 * @return the party, null if doesn't exist
 	 */
 	@Nullable
-	public P getPartyById(@Nonnull UUID id);
+	public IServerPartyAPI getPartyById(@Nonnull UUID id);
 
 	/**
 	 * Gets the party from the UUID of a party member.
@@ -58,7 +55,7 @@ public interface IPartyManagerAPI
 	 * @return the party, null if doesn't exist
 	 */
 	@Nullable
-	public P getPartyByMember(@Nonnull UUID member);
+	public IServerPartyAPI getPartyByMember(@Nonnull UUID member);
 
 	/**
 	 * Checks whether the player with a specified UUID owns a party.
@@ -76,7 +73,7 @@ public interface IPartyManagerAPI
 	 *         or the party wasn't created for another reason
 	 */
 	@Nullable
-	public P createPartyForOwner(@Nonnull Player owner);
+	public IServerPartyAPI createPartyForOwner(@Nonnull Player owner);
 
 	/**
 	 * Removes the party owned by the player with a specified UUID.
@@ -97,7 +94,7 @@ public interface IPartyManagerAPI
 	 *
 	 * @param party  the party instance, not null
 	 */
-	public void removeParty(@Nonnull P party);
+	public void removeParty(@Nonnull IServerPartyAPI party);
 
 	/**
 	 * Gets a stream of all parties.
@@ -105,7 +102,7 @@ public interface IPartyManagerAPI
 	 * @return the stream of all parties, not null
 	 */
 	@Nonnull
-	public Stream<P> getAllStream();
+	public Stream<IServerPartyAPI> getAllStream();
 
 	/**
 	 * Gets a stream of all parties that ally a party with a specified UUID.
@@ -114,6 +111,6 @@ public interface IPartyManagerAPI
 	 * @return the stream of parties that ally the party, not null
 	 */
 	@Nonnull
-	public Stream<P> getPartiesThatAlly(@Nonnull UUID allyId);
+	public Stream<IServerPartyAPI> getPartiesThatAlly(@Nonnull UUID allyId);
 	
 }
