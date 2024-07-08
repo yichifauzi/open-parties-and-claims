@@ -25,7 +25,6 @@ import xaero.pac.common.claims.player.IPlayerDimensionClaims;
 import xaero.pac.common.parties.party.IPartyPlayerInfo;
 import xaero.pac.common.parties.party.ally.IPartyAlly;
 import xaero.pac.common.parties.party.member.IPartyMember;
-import xaero.pac.common.parties.party.member.PartyMember;
 import xaero.pac.common.server.IServerData;
 import xaero.pac.common.server.claims.IServerClaimsManager;
 import xaero.pac.common.server.claims.IServerDimensionClaimsManager;
@@ -37,8 +36,6 @@ import xaero.pac.common.server.info.ServerInfo;
 import xaero.pac.common.server.parties.party.IServerParty;
 import xaero.pac.common.server.parties.party.PartyManager;
 import xaero.pac.common.server.parties.party.ServerParty;
-
-import java.util.Iterator;
 
 public final class PartyExpirationHandler extends ObjectExpirationHandler<ServerParty, PartyManager>{
 	
@@ -68,7 +65,7 @@ public final class PartyExpirationHandler extends ObjectExpirationHandler<Server
 
 	@Override
 	public boolean expire(ServerParty party, IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData) {
-		manager.removeParty(party);
+		manager.removeTypedParty(party);
 		onElementExpirationDone();
 		return false;
 	}

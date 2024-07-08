@@ -28,16 +28,11 @@ import xaero.pac.common.claims.tracker.api.IClaimsManagerTrackerAPI;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * API for a claims manager
  */
-public interface IClaimsManagerAPI
-<
-	PCI extends IPlayerClaimInfoAPI<?>,
-	WCM extends IDimensionClaimsManagerAPI<?>
-> {
+public interface IClaimsManagerAPI {
 
 	/**
 	 * Checks whether a player has claim info.
@@ -54,15 +49,7 @@ public interface IClaimsManagerAPI
 	 * @return the player claim info, not null
 	 */
 	@Nonnull
-	public PCI getPlayerInfo(@Nonnull UUID playerId);
-
-	/**
-	 * Gets a stream of all player claim info.
-	 *
-	 * @return a {@code Stream} of all player claim info
-	 */
-	@Nonnull
-	public Stream<PCI> getPlayerInfoStream();
+	public IPlayerClaimInfoAPI getPlayerInfo(@Nonnull UUID playerId);
 
 	/**
 	 * Gets the claim state for a specified chunk.
@@ -102,15 +89,7 @@ public interface IClaimsManagerAPI
 	 * @return the dimension claims manager, null if no claim data exists for the specified dimension
 	 */
 	@Nullable
-	public WCM getDimension(@Nonnull ResourceLocation dimension);
-
-	/**
-	 * Gets a stream of all read-only dimension claims managers.
-	 *
-	 * @return a {@code Stream} of all read-only dimension claims managers
-	 */
-	@Nonnull
-	public Stream<WCM> getDimensionStream();
+	public IDimensionClaimsManagerAPI getDimension(@Nonnull ResourceLocation dimension);
 
 	/**
 	 * Gets the claim change tracker that lets you register claim change listeners.

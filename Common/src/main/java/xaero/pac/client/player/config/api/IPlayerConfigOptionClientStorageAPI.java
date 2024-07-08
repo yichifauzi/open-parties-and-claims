@@ -106,7 +106,7 @@ public interface IPlayerConfigOptionClientStorageAPI<T extends Comparable<T>> {
 	 * @return the option value validator, not null
 	 */
 	@Nonnull
-	public BiPredicate<IPlayerConfigClientStorageAPI<?>, T> getValidator();
+	public BiPredicate<IPlayerConfigClientStorageAPI, T> getValidator();
 
 	/**
 	 * Gets the text prefix for the option tooltip on the UI screens.

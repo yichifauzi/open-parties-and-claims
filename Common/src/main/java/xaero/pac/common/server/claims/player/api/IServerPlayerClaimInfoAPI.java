@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 /**
  * API for claim info of a player on the server side
  */
-public interface IServerPlayerClaimInfoAPI<DC extends IPlayerDimensionClaimsAPI<?>> extends IPlayerClaimInfoAPI<DC> {
+public interface IServerPlayerClaimInfoAPI extends IPlayerClaimInfoAPI {
 	
 	@Override
 	public int getClaimCount();
@@ -61,12 +61,17 @@ public interface IServerPlayerClaimInfoAPI<DC extends IPlayerDimensionClaimsAPI<
 	@Override
 	Integer getClaimsColor(int subConfigIndex);
 
+	/**
+	 * Gets a stream of all dimension claim info entries for the player.
+	 *
+	 * @return the stream of all dimension claim info entries, not null
+	 */
 	@Nonnull
-	@Override
-	public Stream<Entry<ResourceLocation, DC>> getStream();
+	public Stream<Entry<ResourceLocation, IPlayerDimensionClaimsAPI>> getStream();
 
+	@Override
 	@Nullable
-	public DC getDimension(@Nonnull ResourceLocation id);
+	public IPlayerDimensionClaimsAPI getDimension(@Nonnull ResourceLocation id);
 
 	/**
 	 * Gets the currently configured custom name of the player's sub-claim
