@@ -56,7 +56,7 @@ public abstract class DimensionClaimsManager
 	
 	@Nonnull
 	@Override
-	public Stream<WRC> getRegionStream(){
+	public Stream<WRC> getTypedRegionStream(){
 		return linkedRegions.stream();
 	}
 	

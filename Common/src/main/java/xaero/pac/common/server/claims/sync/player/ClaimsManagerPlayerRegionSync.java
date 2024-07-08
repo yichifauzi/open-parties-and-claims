@@ -138,7 +138,7 @@ public final class ClaimsManagerPlayerRegionSync extends ClaimsManagerPlayerLazy
 			if(ServerConfig.CONFIG.claimsSynchronization.get() != ServerConfig.ClaimsSyncType.NOT_SYNCED) {
 				boolean ownedOnly = ServerConfig.CONFIG.claimsSynchronization.get() == ServerConfig.ClaimsSyncType.OWNED_ONLY;
 				boolean allowExistingUnclaimableClaims = ServerConfig.CONFIG.allowExistingClaimsInUnclaimableDimensions.get();
-				((ServerClaimsManager) (Object) claimsManager).getDimensionStream().forEach(dim -> {
+				((ServerClaimsManager) (Object) claimsManager).getTypedDimensionStream().forEach(dim -> {
 						boolean serverOnly = !allowExistingUnclaimableClaims && !claimsManager.isClaimable(dim.getDimension());
 						dimsToSync.add(new ClaimsManagerPlayerDimensionRegionSync(dim, ownedOnly, serverOnly));
 					}

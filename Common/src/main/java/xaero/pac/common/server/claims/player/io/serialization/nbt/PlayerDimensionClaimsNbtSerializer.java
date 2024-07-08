@@ -60,7 +60,7 @@ public class PlayerDimensionClaimsNbtSerializer {
 	public CompoundTag serialize(PlayerDimensionClaims data) {
 		CompoundTag nbt = new CompoundTag();
 		ListTag claims = new ListTag();
-		data.getStream().forEach(posList -> {
+		data.getTypedStream().forEach(posList -> {
 			CompoundTag posListTag = new CompoundTag();
 			PlayerChunkClaim claim = posList.getClaimState();
 			CompoundTag stateTag = playerChunkClaimDataNbtSerializer.serialize(claim);

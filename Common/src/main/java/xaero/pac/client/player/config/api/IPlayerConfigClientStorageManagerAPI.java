@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 /**
  * API for the player config storage manager on the client side
  */
-public interface IPlayerConfigClientStorageManagerAPI<CS extends IPlayerConfigClientStorageAPI<?>> {
+public interface IPlayerConfigClientStorageManagerAPI {
 
 	/**
 	 * Gets the read-only "player config" storage for the server claims.
@@ -36,7 +36,7 @@ public interface IPlayerConfigClientStorageManagerAPI<CS extends IPlayerConfigCl
 	 * @return the server claims config, not null
 	 */
 	@Nonnull
-	public CS getServerClaimsConfig();
+	public IPlayerConfigClientStorageAPI getServerClaimsConfig();
 
 	/**
 	 * Gets the read-only "player config" storage for the expired claims.
@@ -44,7 +44,7 @@ public interface IPlayerConfigClientStorageManagerAPI<CS extends IPlayerConfigCl
 	 * @return the expired claims config, not null
 	 */
 	@Nonnull
-	public CS getExpiredClaimsConfig();
+	public IPlayerConfigClientStorageAPI getExpiredClaimsConfig();
 
 	/**
 	 * Gets the read-only "player config" storage for the wilderness.
@@ -52,7 +52,7 @@ public interface IPlayerConfigClientStorageManagerAPI<CS extends IPlayerConfigCl
 	 * @return the wilderness config, not null
 	 */
 	@Nonnull
-	public CS getWildernessConfig();
+	public IPlayerConfigClientStorageAPI getWildernessConfig();
 
 	/**
 	 * Gets the read-only storage for the default player config.
@@ -60,7 +60,7 @@ public interface IPlayerConfigClientStorageManagerAPI<CS extends IPlayerConfigCl
 	 * @return the default player config, not null
 	 */
 	@Nonnull
-	public CS getDefaultPlayerConfig();
+	public IPlayerConfigClientStorageAPI getDefaultPlayerConfig();
 
 	/**
 	 * Gets the read-only storage for the local client player's config.
@@ -68,7 +68,7 @@ public interface IPlayerConfigClientStorageManagerAPI<CS extends IPlayerConfigCl
 	 * @return the local player's config, not null
 	 */
 	@Nonnull
-	public CS getMyPlayerConfig();
+	public IPlayerConfigClientStorageAPI getMyPlayerConfig();
 
 	/**
 	 * Opens the config GUI screen for the server claims "player config".

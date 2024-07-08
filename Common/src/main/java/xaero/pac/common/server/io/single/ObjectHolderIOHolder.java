@@ -23,7 +23,6 @@ import xaero.pac.common.server.io.ObjectManagerIOManager;
 import xaero.pac.common.server.io.ObjectManagerIOObject;
 
 import java.util.ArrayList;
-import java.util.stream.Stream;
 
 public abstract class ObjectHolderIOHolder
 <
@@ -45,10 +44,5 @@ public abstract class ObjectHolderIOHolder
 		if(object != null && object.isDirty())
 			return Lists.newArrayList(object);
 		return new ArrayList<>();
-	}
-
-	@Override
-	public Stream<T> getAllStream() {
-		return Stream.of(getObject());
 	}
 }

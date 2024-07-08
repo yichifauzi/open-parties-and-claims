@@ -23,25 +23,12 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import xaero.pac.OpenPartiesAndClaims;
 import xaero.pac.client.IClientDataAPI;
 import xaero.pac.client.claims.api.IClientClaimsManagerAPI;
-import xaero.pac.client.claims.api.IClientDimensionClaimsManagerAPI;
-import xaero.pac.client.claims.api.IClientRegionClaimsAPI;
-import xaero.pac.client.claims.player.api.IClientPlayerClaimInfoAPI;
 import xaero.pac.client.controls.api.OPACKeyBindingsAPI;
-import xaero.pac.client.parties.party.api.IClientPartyAPI;
-import xaero.pac.client.parties.party.api.IClientPartyMemberDynamicInfoSyncableStorageAPI;
 import xaero.pac.client.parties.party.api.IClientPartyStorageAPI;
-import xaero.pac.client.player.config.api.IPlayerConfigClientStorageAPI;
 import xaero.pac.client.player.config.api.IPlayerConfigClientStorageManagerAPI;
-import xaero.pac.client.player.config.api.IPlayerConfigStringableOptionClientStorageAPI;
 import xaero.pac.client.world.api.IClientWorldDataAPI;
 import xaero.pac.client.world.capability.api.ClientWorldCapabilityTypes;
 import xaero.pac.common.capability.api.ICapabilityHelperAPI;
-import xaero.pac.common.claims.player.api.IPlayerClaimPosListAPI;
-import xaero.pac.common.claims.player.api.IPlayerDimensionClaimsAPI;
-import xaero.pac.common.parties.party.ally.api.IPartyAllyAPI;
-import xaero.pac.common.parties.party.api.IPartyMemberDynamicInfoSyncableAPI;
-import xaero.pac.common.parties.party.api.IPartyPlayerInfoAPI;
-import xaero.pac.common.parties.party.member.api.IPartyMemberAPI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -64,19 +51,8 @@ import javax.annotation.Nullable;
  */
 public final class OpenPACClientAPI {
 
-	@SuppressWarnings("unchecked")
-	private IClientDataAPI
-			<
-			IPlayerConfigClientStorageManagerAPI<IPlayerConfigClientStorageAPI<IPlayerConfigStringableOptionClientStorageAPI<?>>>,
-			IClientPartyStorageAPI<IClientPartyAPI<IPartyMemberAPI, IPartyPlayerInfoAPI, IPartyAllyAPI>, IClientPartyMemberDynamicInfoSyncableStorageAPI<IPartyMemberDynamicInfoSyncableAPI>>,
-			IClientClaimsManagerAPI<IClientPlayerClaimInfoAPI<IPlayerDimensionClaimsAPI<IPlayerClaimPosListAPI>>, IClientDimensionClaimsManagerAPI<IClientRegionClaimsAPI>>
-		> getClientData() {
-		return (IClientDataAPI<
-				IPlayerConfigClientStorageManagerAPI<IPlayerConfigClientStorageAPI<IPlayerConfigStringableOptionClientStorageAPI<?>>>,
-				IClientPartyStorageAPI<IClientPartyAPI<IPartyMemberAPI, IPartyPlayerInfoAPI, IPartyAllyAPI>, IClientPartyMemberDynamicInfoSyncableStorageAPI<IPartyMemberDynamicInfoSyncableAPI>>,
-				IClientClaimsManagerAPI<IClientPlayerClaimInfoAPI<IPlayerDimensionClaimsAPI<IPlayerClaimPosListAPI>>, IClientDimensionClaimsManagerAPI<IClientRegionClaimsAPI>>>
-		)
-				(Object) OpenPartiesAndClaims.INSTANCE.getClientDataInternal();
+	private IClientDataAPI getClientData() {
+		return OpenPartiesAndClaims.INSTANCE.getClientDataInternal();
 	}
 
 	/**
@@ -85,8 +61,7 @@ public final class OpenPACClientAPI {
 	 * @return instance of the client-side player config API, not null
 	 */
 	@Nonnull
-	public IPlayerConfigClientStorageManagerAPI<IPlayerConfigClientStorageAPI<IPlayerConfigStringableOptionClientStorageAPI<?>>>
-	getPlayerConfigClientStorageManager(){
+	public IPlayerConfigClientStorageManagerAPI getPlayerConfigClientStorageManager(){
 		return getClientData().getPlayerConfigStorageManager();
 	}
 
@@ -96,8 +71,7 @@ public final class OpenPACClientAPI {
 	 * @return instance of the client-side party API, not null
 	 */
 	@Nonnull
-	public IClientPartyStorageAPI<IClientPartyAPI<IPartyMemberAPI, IPartyPlayerInfoAPI, IPartyAllyAPI>, IClientPartyMemberDynamicInfoSyncableStorageAPI<IPartyMemberDynamicInfoSyncableAPI>>
-	getClientPartyStorage(){
+	public IClientPartyStorageAPI getClientPartyStorage(){
 		return getClientData().getClientPartyStorage();
 	}
 
@@ -107,8 +81,7 @@ public final class OpenPACClientAPI {
 	 * @return instance of the client-side claims manager API, not null
 	 */
 	@Nonnull
-	public IClientClaimsManagerAPI<IClientPlayerClaimInfoAPI<IPlayerDimensionClaimsAPI<IPlayerClaimPosListAPI>>, IClientDimensionClaimsManagerAPI<IClientRegionClaimsAPI>>
-	getClaimsManager(){
+	public IClientClaimsManagerAPI getClaimsManager(){
 		return getClientData().getClaimsManager();
 	}
 

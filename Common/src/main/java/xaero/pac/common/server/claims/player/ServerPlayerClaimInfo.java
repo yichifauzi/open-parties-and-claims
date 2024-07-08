@@ -120,7 +120,7 @@ public final class ServerPlayerClaimInfo extends PlayerClaimInfo<ServerPlayerCla
 
 	@Override
 	protected Stream<Entry<ResourceLocation, PlayerDimensionClaims>> getDimensionClaimCountStream() {
-		return getStream();
+		return this.getTypedStream();
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public final class ServerPlayerClaimInfo extends PlayerClaimInfo<ServerPlayerCla
 
 	@Nonnull
 	@Override
-	public Stream<Entry<ResourceLocation, PlayerDimensionClaims>> getStream() {
+	public Stream<Entry<ResourceLocation, PlayerDimensionClaims>> getTypedStream() {
 		boolean unclaimableClaimsAllowed = Objects.equals(playerId, PlayerConfig.SERVER_CLAIM_UUID) || ServerConfig.CONFIG.allowExistingClaimsInUnclaimableDimensions.get();
 		return claims.entrySet().stream().filter(e -> unclaimableClaimsAllowed || manager.isClaimable(e.getKey()));
 	}
