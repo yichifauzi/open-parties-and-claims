@@ -91,7 +91,7 @@ public class PlayerConfigClientStorage implements IPlayerConfigClientStorage<Pla
 
 	@Nonnull
 	@Override
-	public Stream<PlayerConfigStringableOptionClientStorage<?>> optionStream(){
+	public Stream<PlayerConfigStringableOptionClientStorage<?>> typedOptionStream(){
 		return manager.getAllOptionsStream().map(this::getOptionStorage);
 	}
 
@@ -150,7 +150,7 @@ public class PlayerConfigClientStorage implements IPlayerConfigClientStorage<Pla
 	}
 
 	@Nonnull
-	public Stream<IPlayerConfigClientStorageAPI<PlayerConfigStringableOptionClientStorage<?>>> getSubConfigAPIStream(){
+	public Stream<IPlayerConfigClientStorageAPI> getSubConfigAPIStream(){
 		return getSubConfigStream().map(Function.identity());
 	}
 

@@ -38,42 +38,46 @@ import java.util.stream.Stream;
  * API for the claims manager on the server side
  */
 public interface IServerClaimsManagerAPI
-<
-	C extends IPlayerChunkClaimAPI,
-	PCI extends IServerPlayerClaimInfoAPI<?>,
-	WCM extends IServerDimensionClaimsManagerAPI<?>
-> extends IClaimsManagerAPI<PCI, WCM>{
+		extends IClaimsManagerAPI {
 
 	@Override
 	public boolean hasPlayerInfo(@Nonnull UUID playerId);
 	
 	@Nonnull
 	@Override
-	public PCI getPlayerInfo(@Nonnull UUID playerId);
-	
+	public IServerPlayerClaimInfoAPI getPlayerInfo(@Nonnull UUID playerId);
+
+	/**
+	 * Gets a stream of all player claim info.
+	 *
+	 * @return a {@code Stream} of all player claim info
+	 */
 	@Nonnull
-	@Override
-	public Stream<PCI> getPlayerInfoStream();
+	public Stream<IServerPlayerClaimInfoAPI> getPlayerInfoStream();
 	
 	@Nullable
 	@Override
-	public C get(@Nonnull ResourceLocation dimension, int x, int z);
+	public IPlayerChunkClaimAPI get(@Nonnull ResourceLocation dimension, int x, int z);
 	
 	@Nullable
 	@Override
-	public C get(@Nonnull ResourceLocation dimension, @Nonnull ChunkPos chunkPos);
+	public IPlayerChunkClaimAPI get(@Nonnull ResourceLocation dimension, @Nonnull ChunkPos chunkPos);
 	
 	@Nullable
 	@Override
-	public C get(@Nonnull ResourceLocation dimension, @Nonnull BlockPos blockPos);
+	public IPlayerChunkClaimAPI get(@Nonnull ResourceLocation dimension, @Nonnull BlockPos blockPos);
 
 	@Nullable
 	@Override
-	public WCM getDimension(@Nonnull ResourceLocation dimension);
+	public IServerDimensionClaimsManagerAPI getDimension(@Nonnull ResourceLocation dimension);
 
+	/**
+	 * Gets a stream of all read-only dimension claims managers.
+	 *
+	 * @return a {@code Stream} of all read-only dimension claims managers
+	 */
 	@Nonnull
-	@Override
-	public Stream<WCM> getDimensionStream();
+	public Stream<IServerDimensionClaimsManagerAPI> getDimensionStream();
 
 	@Nonnull
 	@Override
@@ -105,7 +109,7 @@ public interface IServerClaimsManagerAPI
 	 * @return the new claim state, null if claims are disabled
 	 */
 	@Nullable
-	public C claim(@Nonnull ResourceLocation dimension, @Nonnull UUID id, int subConfigIndex, int x, int z, boolean forceload);
+	public IPlayerChunkClaimAPI claim(@Nonnull ResourceLocation dimension, @Nonnull UUID id, int subConfigIndex, int x, int z, boolean forceload);
 
 	/**
 	 * Directly removes the current claim state of a chunk.
@@ -140,7 +144,7 @@ public interface IServerClaimsManagerAPI
 	 * @return the result, not null
 	 */
 	@Nonnull
-	public ClaimResult<C> tryToClaim(@Nonnull ResourceLocation dimension, @Nonnull UUID playerId, int subConfigIndex, int fromX, int fromZ, int x, int z, boolean replace);
+	public ClaimResult<IPlayerChunkClaimAPI> tryToClaim(@Nonnull ResourceLocation dimension, @Nonnull UUID playerId, int subConfigIndex, int fromX, int fromZ, int x, int z, boolean replace);
 
 	/**
 	 * Tries to unclaim a chunk by a specified player.
@@ -161,7 +165,7 @@ public interface IServerClaimsManagerAPI
 	 * @return the result, not null
 	 */
 	@Nonnull
-	public ClaimResult<C> tryToUnclaim(@Nonnull ResourceLocation dimension, @Nonnull UUID playerId, int fromX, int fromZ, int x, int z, boolean replace);
+	public ClaimResult<IPlayerChunkClaimAPI> tryToUnclaim(@Nonnull ResourceLocation dimension, @Nonnull UUID playerId, int fromX, int fromZ, int x, int z, boolean replace);
 
 	/**
 	 * Tries to (un)mark a chunk for forceloading by a specified player.
@@ -183,7 +187,7 @@ public interface IServerClaimsManagerAPI
 	 * @return the result, not null
 	 */
 	@Nonnull
-	public ClaimResult<C> tryToForceload(@Nonnull ResourceLocation dimension, @Nonnull UUID playerId, int fromX, int fromZ, int x, int z, boolean enable, boolean replace);
+	public ClaimResult<IPlayerChunkClaimAPI> tryToForceload(@Nonnull ResourceLocation dimension, @Nonnull UUID playerId, int fromX, int fromZ, int x, int z, boolean enable, boolean replace);
 
 	/**
 	 * Tries to claim chunks over a specified area by a specified player.

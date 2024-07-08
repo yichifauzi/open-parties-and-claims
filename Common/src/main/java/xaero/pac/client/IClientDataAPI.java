@@ -27,21 +27,16 @@ import xaero.pac.client.player.config.api.IPlayerConfigClientStorageManagerAPI;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface IClientDataAPI
-<
-	PCSM extends IPlayerConfigClientStorageManagerAPI<?>, 
-	CPS extends IClientPartyStorageAPI<?, ?>,
-	CM extends IClientClaimsManagerAPI<?, ?>
-> {
+public interface IClientDataAPI {
 
 	@Nonnull
-	public PCSM getPlayerConfigStorageManager();
+	public IPlayerConfigClientStorageManagerAPI getPlayerConfigStorageManager();
 
 	@Nonnull
-	public CPS getClientPartyStorage();
+	public IClientPartyStorageAPI getClientPartyStorage();
 
 	@Nonnull
-	public CM getClaimsManager();
+	public IClientClaimsManagerAPI getClaimsManager();
 
 	@Nonnull
 	public OPACKeyBindingsAPI getKeyBindings();

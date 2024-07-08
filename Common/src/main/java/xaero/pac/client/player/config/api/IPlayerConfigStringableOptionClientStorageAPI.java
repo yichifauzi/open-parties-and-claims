@@ -57,7 +57,7 @@ public interface IPlayerConfigStringableOptionClientStorageAPI<T extends Compara
 
 	@Override
 	@Nonnull
-	public BiPredicate<IPlayerConfigClientStorageAPI<?>, T> getValidator();
+	public BiPredicate<IPlayerConfigClientStorageAPI, T> getValidator();
 
 	@Nullable
 	@Override
@@ -97,6 +97,6 @@ public interface IPlayerConfigStringableOptionClientStorageAPI<T extends Compara
 	 * @return the string value input validator function, not null
 	 */
 	@Nonnull
-	public BiPredicate<IPlayerConfigClientStorageAPI<?>, String> getStringValidator();
+	public BiPredicate<IPlayerConfigClientStorageAPI, String> getStringValidator();
 	
 }

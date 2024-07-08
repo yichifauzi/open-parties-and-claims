@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 /**
  * API for dimension claims of a player
  */
-public interface IPlayerDimensionClaimsAPI<L extends IPlayerClaimPosListAPI> {
+public interface IPlayerDimensionClaimsAPI {
 
 	/**
 	 * Gets a stream of all claim position lists in this dimension for this player.
@@ -32,6 +32,6 @@ public interface IPlayerDimensionClaimsAPI<L extends IPlayerClaimPosListAPI> {
 	 * @return the stream of all claim position lists, not null
 	 */
 	@Nonnull
-	public Stream<L> getStream();
+	public Stream<IPlayerClaimPosListAPI> getStream();
 
 }

@@ -50,7 +50,7 @@ public class ClientPartyMemberDynamicInfoSyncableStorage implements IClientParty
 	}
 
 	@Override
-	public Stream<PartyMemberDynamicInfoSyncable> getAllStream() {
+	public Stream<PartyMemberDynamicInfoSyncable> getTypedAllStream() {
 		return storage.values().stream();
 	}
 

@@ -33,14 +33,14 @@ import java.util.stream.Stream;
 /**
  * API for a party on the server side
  */
-public interface IServerPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlayerInfoAPI, A extends IPartyAllyAPI> extends IPartyAPI<M, I, A> {
+public interface IServerPartyAPI extends IPartyAPI {
 
 	@Override
 	public int getMemberCount();
 
 	@Override
 	@Nullable
-	public M getMemberInfo(@Nonnull UUID memberUUID);
+	public IPartyMemberAPI getMemberInfo(@Nonnull UUID memberUUID);
 
 	@Override
 	public int getAllyCount();
@@ -56,27 +56,27 @@ public interface IServerPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlay
 
 	@Nonnull
 	@Override
-	public Stream<M> getMemberInfoStream();
+	public Stream<IPartyMemberAPI> getMemberInfoStream();
 
 	@Nonnull
 	@Override
-	public Stream<M> getStaffInfoStream();
+	public Stream<IPartyMemberAPI> getStaffInfoStream();
 
 	@Nonnull
 	@Override
-	public Stream<M> getNonStaffInfoStream();
+	public Stream<IPartyMemberAPI> getNonStaffInfoStream();
 
 	@Nonnull
 	@Override
-	public Stream<I> getInvitedPlayersStream();
+	public Stream<IPartyPlayerInfoAPI> getInvitedPlayersStream();
 
 	@Nonnull
 	@Override
-	public Stream<A> getAllyPartiesStream();
+	public Stream<IPartyAllyAPI> getAllyPartiesStream();
 
 	@Nonnull
 	@Override
-	public M getOwner();
+	public IPartyMemberAPI getOwner();
 
 	@Nonnull
 	@Override
@@ -87,7 +87,7 @@ public interface IServerPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlay
 	public String getDefaultName();
 	
 	@Override
-	public boolean setRank(@Nonnull M member, @Nonnull PartyMemberRank rank);
+	public boolean setRank(@Nonnull IPartyMemberAPI member, @Nonnull PartyMemberRank rank);
 
 	/**
 	 * Adds a new party member with specified player UUID, rank and username.
@@ -98,7 +98,7 @@ public interface IServerPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlay
 	 * @return the created party member info, null if the player is already in a party
 	 */
 	@Nullable
-	public M addMember(@Nonnull UUID playerUUID, @Nullable PartyMemberRank rank, @Nonnull String playerUsername);
+	public IPartyMemberAPI addMember(@Nonnull UUID playerUUID, @Nullable PartyMemberRank rank, @Nonnull String playerUsername);
 
 	/**
 	 * Removes the party member with a specified player UUID, unless the player is the owner of this party.
@@ -108,7 +108,7 @@ public interface IServerPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlay
 	 *         or if the player isn't in the party
 	 */
 	@Nullable
-	public M removeMember(@Nonnull UUID playerUUID);
+	public IPartyMemberAPI removeMember(@Nonnull UUID playerUUID);
 
 	/**
 	 * Gets info about the party member with a specified username.
@@ -117,7 +117,7 @@ public interface IServerPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlay
 	 * @return the member info, null if doesn't exist
 	 */
 	@Nullable
-	public M getMemberInfo(@Nonnull String username);
+	public IPartyMemberAPI getMemberInfo(@Nonnull String username);
 
 	/**
 	 * Adds a new ally party to this party.
@@ -141,7 +141,7 @@ public interface IServerPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlay
 	 * @return the invitation info, null if the player is already invited to this party
 	 */
 	@Nullable
-	public I invitePlayer(@Nonnull UUID playerUUID, @Nonnull String playerUsername);
+	public IPartyPlayerInfoAPI invitePlayer(@Nonnull UUID playerUUID, @Nonnull String playerUsername);
 
 	/**
 	 * Removes the player invitation for a specified player UUID.
@@ -150,7 +150,7 @@ public interface IServerPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlay
 	 * @return the removed invitation info, null if the player has not been invited
 	 */
 	@Nullable
-	public I uninvitePlayer(@Nonnull UUID playerUUID);
+	public IPartyPlayerInfoAPI uninvitePlayer(@Nonnull UUID playerUUID);
 
 	/**
 	 * Gets a stream of all currently online members of this party.

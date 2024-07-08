@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 /**
  * API for a party
  */
-public interface IPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlayerInfoAPI, A extends IPartyAllyAPI> {
+public interface IPartyAPI {
 
 	/**
 	 * Gets the number of members in this party.
@@ -46,7 +46,7 @@ public interface IPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlayerInfo
 	 * @return the member info, null if doesn't exist
 	 */
 	@Nullable
-	public M getMemberInfo(@Nonnull UUID memberUUID);
+	public IPartyMemberAPI getMemberInfo(@Nonnull UUID memberUUID);
 
 	/**
 	 * Gets the number of parties allied by this one.
@@ -76,7 +76,7 @@ public interface IPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlayerInfo
 	 * @param playerId the UUID of the player, not null
 	 * @return true if there is a active invitation, otherwise false
 	 */
-	public boolean isInvited(@Nonnull  UUID playerId);
+	public boolean isInvited(@Nonnull UUID playerId);
 
 	/**
 	 * Gets a stream of all member info for this party.
@@ -84,7 +84,7 @@ public interface IPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlayerInfo
 	 * @return a {@link Stream} of all member info, not null
 	 */
 	@Nonnull
-	public Stream<M> getMemberInfoStream();
+	public Stream<IPartyMemberAPI> getMemberInfoStream();
 
 	/**
 	 * Gets a stream of all member info for the staff members of this party.
@@ -92,7 +92,7 @@ public interface IPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlayerInfo
 	 * @return a {@link Stream} of all staff member info, not null
 	 */
 	@Nonnull
-	public Stream<M> getStaffInfoStream();
+	public Stream<IPartyMemberAPI> getStaffInfoStream();
 
 	/**
 	 * Gets a stream of all member info for the regular (non-staff) members of this party.
@@ -100,7 +100,7 @@ public interface IPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlayerInfo
 	 * @return a {@link Stream} of all regular member info, not null
 	 */
 	@Nonnull
-	public Stream<M> getNonStaffInfoStream();
+	public Stream<IPartyMemberAPI> getNonStaffInfoStream();
 
 	/**
 	 * Gets a stream of all active invitations for this party.
@@ -108,7 +108,7 @@ public interface IPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlayerInfo
 	 * @return a {@link Stream} of all active invitations, not null
 	 */
 	@Nonnull
-	public Stream<I> getInvitedPlayersStream();
+	public Stream<IPartyPlayerInfoAPI> getInvitedPlayersStream();
 
 	/**
 	 * Gets a stream of UUIDs of all parties allied by this party.
@@ -116,7 +116,7 @@ public interface IPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlayerInfo
 	 * @return a {@link Stream} of all allies, not null
 	 */
 	@Nonnull
-	public Stream<A> getAllyPartiesStream();
+	public Stream<IPartyAllyAPI> getAllyPartiesStream();
 
 	/**
 	 * Gets the member info for the owner of this party.
@@ -124,7 +124,7 @@ public interface IPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlayerInfo
 	 * @return the party owner
 	 */
 	@Nonnull
-	public M getOwner();
+	public IPartyMemberAPI getOwner();
 
 	/**
 	 * Gets the UUID of this party.
@@ -151,6 +151,6 @@ public interface IPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlayerInfo
 	 * @param rank  the rank to set the party member to, not null
 	 * @return true if the rank is successfully set, otherwise false
 	 */
-	public boolean setRank(@Nonnull M member, @Nonnull PartyMemberRank rank);
+	public boolean setRank(@Nonnull IPartyMemberAPI member, @Nonnull PartyMemberRank rank);
 
 }
