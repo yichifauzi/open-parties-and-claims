@@ -56,9 +56,9 @@ public final class PartyNbtSerializer implements SimpleSerializer<CompoundTag, S
 		ListTag invitesTag = new ListTag();
 		ListTag alliesTag = new ListTag();
 		
-		party.getInvitedPlayersStream().forEach(p -> invitesTag.add(partyInviteNbtSerializer.serialize(p)));
-		party.getAllyPartiesStream().forEach(a -> alliesTag.add(NbtUtils.createUUID(a.getPartyId())));
-		party.getMemberInfoStream().filter(mi -> mi != party.getOwner()).forEach(mi -> membersTag.add(partyMemberNbtSerializer.serialize((PartyMember) mi)));
+		party.getTypedInvitedPlayersStream().forEach(p -> invitesTag.add(partyInviteNbtSerializer.serialize(p)));
+		party.getTypedAllyPartiesStream().forEach(a -> alliesTag.add(NbtUtils.createUUID(a.getPartyId())));
+		party.getTypedMemberInfoStream().filter(mi -> mi != party.getOwner()).forEach(mi -> membersTag.add(partyMemberNbtSerializer.serialize((PartyMember) mi)));
 
 		result.put("invites", invitesTag);
 		result.put("allies", alliesTag);

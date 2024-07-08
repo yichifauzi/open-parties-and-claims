@@ -71,9 +71,9 @@ public class PartySnapshotConverter extends SnapshotConverter<PartySnapshot, Str
 	public PartySnapshot convert(ServerParty party) {
 		PartySnapshot result = new PartySnapshot(partyMemberSnapshotConverter.convert(party.getOwner()));
 		result.setConfirmedActivity(party.getConfirmedActivity());
-		party.getInvitedPlayersStream().forEach(p -> result.addInvitedPlayer(partyInviteSnapshotConverter.convert(p)));
-		party.getAllyPartiesStream().forEach(a -> result.addAllyParty(a.toString()));
-		party.getMemberInfoStream().filter(mi -> mi != party.getOwner()).forEach(mi -> result.addMember(partyMemberSnapshotConverter.convert((PartyMember) mi)));
+		party.getTypedInvitedPlayersStream().forEach(p -> result.addInvitedPlayer(partyInviteSnapshotConverter.convert(p)));
+		party.getTypedAllyPartiesStream().forEach(a -> result.addAllyParty(a.toString()));
+		party.getTypedMemberInfoStream().filter(mi -> mi != party.getOwner()).forEach(mi -> result.addMember(partyMemberSnapshotConverter.convert((PartyMember) mi)));
 		return result;
 	}
 

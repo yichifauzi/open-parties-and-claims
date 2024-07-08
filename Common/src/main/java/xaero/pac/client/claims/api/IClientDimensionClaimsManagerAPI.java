@@ -29,9 +29,7 @@ import java.util.stream.Stream;
  * API for a dimension claims manager on the client side
  */
 public interface IClientDimensionClaimsManagerAPI
-<
-	WRC extends IClientRegionClaimsAPI
-> extends IDimensionClaimsManagerAPI<WRC>{
+		extends IDimensionClaimsManagerAPI {
 	
 	@Nonnull
 	@Override
@@ -39,13 +37,17 @@ public interface IClientDimensionClaimsManagerAPI
 
 	@Override
 	public int getCount();
-	
+
+	/**
+	 * Gets a {@link Stream} of all 512x512 regions that contain claims in this dimension.
+	 *
+	 * @return a stream of all regions, not null
+	 */
 	@Nonnull
-	@Override
-	public Stream<WRC> getRegionStream();
+	public Stream<IClientRegionClaimsAPI> getRegionStream();
 	
 	@Nullable
 	@Override
-	public WRC getRegion(int x, int z);
+	public IClientRegionClaimsAPI getRegion(int x, int z);
 
 }

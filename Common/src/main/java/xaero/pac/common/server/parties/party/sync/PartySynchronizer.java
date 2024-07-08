@@ -134,7 +134,7 @@ public class PartySynchronizer extends AbstractPartySynchronizer implements IPar
 	@Override
 	public void syncToPartyAndAlliersUpdateName(ServerParty party, String name) {
 		syncToParty(party, mi -> false, new ClientboundPartyNamePacket(name), false);
-		partyManager.getPartiesThatAlly(party.getId()).forEach(allier -> syncToPartyAllyUpdate(allier, party, name));
+		partyManager.getTypedPartiesThatAlly(party.getId()).forEach(allier -> syncToPartyAllyUpdate(allier, party, name));
 	}
 	
 	public void syncToPartyAllyAdd(ServerParty party, ServerParty ally) {

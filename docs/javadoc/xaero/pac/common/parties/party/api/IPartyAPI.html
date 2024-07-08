@@ -69,15 +69,15 @@ loadScripts(document, 'script');</script>
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">xaero.pac.common.parties.party.api</a></div>
-<h1 title="Interface IPartyAPI" class="title">Interface IPartyAPI&lt;M extends <a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a>,<wbr>I extends <a href="IPartyPlayerInfoAPI.html" title="interface in xaero.pac.common.parties.party.api">IPartyPlayerInfoAPI</a>,<wbr>A extends <a href="../ally/api/IPartyAllyAPI.html" title="interface in xaero.pac.common.parties.party.ally.api">IPartyAllyAPI</a>&gt;</h1>
+<h1 title="Interface IPartyAPI" class="title">Interface IPartyAPI</h1>
 </div>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Known Subinterfaces:</dt>
-<dd><code><a href="../../../../client/parties/party/api/IClientPartyAPI.html" title="interface in xaero.pac.client.parties.party.api">IClientPartyAPI</a>&lt;M,<wbr>I,<wbr>A&gt;</code>, <code><a href="../../../server/parties/party/api/IServerPartyAPI.html" title="interface in xaero.pac.common.server.parties.party.api">IServerPartyAPI</a>&lt;M,<wbr>I,<wbr>A&gt;</code></dd>
+<dd><code><a href="../../../../client/parties/party/api/IClientPartyAPI.html" title="interface in xaero.pac.client.parties.party.api">IClientPartyAPI</a></code>, <code><a href="../../../server/parties/party/api/IServerPartyAPI.html" title="interface in xaero.pac.common.server.parties.party.api">IServerPartyAPI</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">IPartyAPI&lt;M extends <a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a>,<wbr>I extends <a href="IPartyPlayerInfoAPI.html" title="interface in xaero.pac.common.parties.party.api">IPartyPlayerInfoAPI</a>,<wbr>A extends <a href="../ally/api/IPartyAllyAPI.html" title="interface in xaero.pac.common.parties.party.ally.api">IPartyAllyAPI</a>&gt;</span></div>
+<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">IPartyAPI</span></div>
 <div class="block">API for a party</div>
 </section>
 <section class="summary">
@@ -98,7 +98,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the number of parties allied by this one.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IPartyAPI.html" title="type parameter in IPartyAPI">A</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="../ally/api/IPartyAllyAPI.html" title="interface in xaero.pac.common.parties.party.ally.api">IPartyAllyAPI</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getAllyPartiesStream()" class="member-name-link">getAllyPartiesStream</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets a stream of UUIDs of all parties allied by this party.</div>
@@ -118,7 +118,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the number of active invitation to this party.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IPartyAPI.html" title="type parameter in IPartyAPI">I</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IPartyPlayerInfoAPI.html" title="interface in xaero.pac.common.parties.party.api">IPartyPlayerInfoAPI</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getInvitedPlayersStream()" class="member-name-link">getInvitedPlayersStream</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets a stream of all active invitations for this party.</div>
@@ -128,27 +128,27 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the number of members in this party.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="IPartyAPI.html" title="type parameter in IPartyAPI">M</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getMemberInfo(java.util.UUID)" class="member-name-link">getMemberInfo</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;memberUUID)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets info about the party member with a specified UUID.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IPartyAPI.html" title="type parameter in IPartyAPI">M</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getMemberInfoStream()" class="member-name-link">getMemberInfoStream</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets a stream of all member info for this party.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IPartyAPI.html" title="type parameter in IPartyAPI">M</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getNonStaffInfoStream()" class="member-name-link">getNonStaffInfoStream</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets a stream of all member info for the regular (non-staff) members of this party.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="IPartyAPI.html" title="type parameter in IPartyAPI">M</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getOwner()" class="member-name-link">getOwner</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the member info for the owner of this party.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IPartyAPI.html" title="type parameter in IPartyAPI">M</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getStaffInfoStream()" class="member-name-link">getStaffInfoStream</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets a stream of all member info for the staff members of this party.</div>
@@ -164,7 +164,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Checks whether the player with a specified UUID has an active invitation to this party.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setRank(M,xaero.pac.common.parties.party.member.PartyMemberRank)" class="member-name-link">setRank</a><wbr>(<a href="IPartyAPI.html" title="type parameter in IPartyAPI">M</a>&nbsp;member,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#setRank(xaero.pac.common.parties.party.member.api.IPartyMemberAPI,xaero.pac.common.parties.party.member.PartyMemberRank)" class="member-name-link">setRank</a><wbr>(<a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a>&nbsp;member,
  xaero.pac.common.parties.party.member.PartyMemberRank&nbsp;rank)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Sets the rank of a specified party member.</div>
@@ -198,7 +198,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getMemberInfo(java.util.UUID)">
 <h3>getMemberInfo</h3>
 <div class="member-signature"><span class="annotations">@Nullable
-</span><span class="return-type"><a href="IPartyAPI.html" title="type parameter in IPartyAPI">M</a></span>&nbsp;<span class="element-name">getMemberInfo</span><wbr><span class="parameters">(@Nonnull
+</span><span class="return-type"><a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a></span>&nbsp;<span class="element-name">getMemberInfo</span><wbr><span class="parameters">(@Nonnull
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;memberUUID)</span></div>
 <div class="block">Gets info about the party member with a specified UUID.</div>
 <dl class="notes">
@@ -263,7 +263,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getMemberInfoStream()">
 <h3>getMemberInfoStream</h3>
 <div class="member-signature"><span class="annotations">@Nonnull
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IPartyAPI.html" title="type parameter in IPartyAPI">M</a>&gt;</span>&nbsp;<span class="element-name">getMemberInfoStream</span>()</div>
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a>&gt;</span>&nbsp;<span class="element-name">getMemberInfoStream</span>()</div>
 <div class="block">Gets a stream of all member info for this party.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -275,7 +275,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getStaffInfoStream()">
 <h3>getStaffInfoStream</h3>
 <div class="member-signature"><span class="annotations">@Nonnull
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IPartyAPI.html" title="type parameter in IPartyAPI">M</a>&gt;</span>&nbsp;<span class="element-name">getStaffInfoStream</span>()</div>
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a>&gt;</span>&nbsp;<span class="element-name">getStaffInfoStream</span>()</div>
 <div class="block">Gets a stream of all member info for the staff members of this party.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -287,7 +287,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getNonStaffInfoStream()">
 <h3>getNonStaffInfoStream</h3>
 <div class="member-signature"><span class="annotations">@Nonnull
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IPartyAPI.html" title="type parameter in IPartyAPI">M</a>&gt;</span>&nbsp;<span class="element-name">getNonStaffInfoStream</span>()</div>
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a>&gt;</span>&nbsp;<span class="element-name">getNonStaffInfoStream</span>()</div>
 <div class="block">Gets a stream of all member info for the regular (non-staff) members of this party.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -299,7 +299,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getInvitedPlayersStream()">
 <h3>getInvitedPlayersStream</h3>
 <div class="member-signature"><span class="annotations">@Nonnull
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IPartyAPI.html" title="type parameter in IPartyAPI">I</a>&gt;</span>&nbsp;<span class="element-name">getInvitedPlayersStream</span>()</div>
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IPartyPlayerInfoAPI.html" title="interface in xaero.pac.common.parties.party.api">IPartyPlayerInfoAPI</a>&gt;</span>&nbsp;<span class="element-name">getInvitedPlayersStream</span>()</div>
 <div class="block">Gets a stream of all active invitations for this party.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -311,7 +311,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getAllyPartiesStream()">
 <h3>getAllyPartiesStream</h3>
 <div class="member-signature"><span class="annotations">@Nonnull
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IPartyAPI.html" title="type parameter in IPartyAPI">A</a>&gt;</span>&nbsp;<span class="element-name">getAllyPartiesStream</span>()</div>
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="../ally/api/IPartyAllyAPI.html" title="interface in xaero.pac.common.parties.party.ally.api">IPartyAllyAPI</a>&gt;</span>&nbsp;<span class="element-name">getAllyPartiesStream</span>()</div>
 <div class="block">Gets a stream of UUIDs of all parties allied by this party.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -323,7 +323,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getOwner()">
 <h3>getOwner</h3>
 <div class="member-signature"><span class="annotations">@Nonnull
-</span><span class="return-type"><a href="IPartyAPI.html" title="type parameter in IPartyAPI">M</a></span>&nbsp;<span class="element-name">getOwner</span>()</div>
+</span><span class="return-type"><a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a></span>&nbsp;<span class="element-name">getOwner</span>()</div>
 <div class="block">Gets the member info for the owner of this party.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -356,10 +356,10 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="setRank(M,xaero.pac.common.parties.party.member.PartyMemberRank)">
-<h3 id="setRank(xaero.pac.common.parties.party.member.api.IPartyMemberAPI,xaero.pac.common.parties.party.member.PartyMemberRank)">setRank</h3>
+<section class="detail" id="setRank(xaero.pac.common.parties.party.member.api.IPartyMemberAPI,xaero.pac.common.parties.party.member.PartyMemberRank)">
+<h3>setRank</h3>
 <div class="member-signature"><span class="return-type">boolean</span>&nbsp;<span class="element-name">setRank</span><wbr><span class="parameters">(@Nonnull
- <a href="IPartyAPI.html" title="type parameter in IPartyAPI">M</a>&nbsp;member,
+ <a href="../member/api/IPartyMemberAPI.html" title="interface in xaero.pac.common.parties.party.member.api">IPartyMemberAPI</a>&nbsp;member,
  @Nonnull
  xaero.pac.common.parties.party.member.PartyMemberRank&nbsp;rank)</span></div>
 <div class="block">Sets the rank of a specified party member.

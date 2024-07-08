@@ -32,14 +32,14 @@ import java.util.stream.Stream;
 /**
  * API for a party on the client side
  */
-public interface IClientPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlayerInfoAPI, A extends IPartyAllyAPI> extends IPartyAPI<M, I, A> {
+public interface IClientPartyAPI extends IPartyAPI {
 
 	@Override
 	public int getMemberCount();
 
 	@Override
 	@Nullable
-	public M getMemberInfo(@Nonnull UUID memberUUID);
+	public IPartyMemberAPI getMemberInfo(@Nonnull UUID memberUUID);
 
 	@Override
 	public int getAllyCount();
@@ -55,27 +55,27 @@ public interface IClientPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlay
 
 	@Nonnull
 	@Override
-	public Stream<M> getMemberInfoStream();
+	public Stream<IPartyMemberAPI> getMemberInfoStream();
 
 	@Nonnull
 	@Override
-	public Stream<M> getStaffInfoStream();
+	public Stream<IPartyMemberAPI> getStaffInfoStream();
 
 	@Nonnull
 	@Override
-	public Stream<M> getNonStaffInfoStream();
+	public Stream<IPartyMemberAPI> getNonStaffInfoStream();
 
 	@Nonnull
 	@Override
-	public Stream<I> getInvitedPlayersStream();
+	public Stream<IPartyPlayerInfoAPI> getInvitedPlayersStream();
 
 	@Nonnull
 	@Override
-	public Stream<A> getAllyPartiesStream();
+	public Stream<IPartyAllyAPI> getAllyPartiesStream();
 
 	@Nonnull
 	@Override
-	public M getOwner();
+	public IPartyMemberAPI getOwner();
 
 	@Nonnull
 	@Override
@@ -86,6 +86,6 @@ public interface IClientPartyAPI<M extends IPartyMemberAPI, I extends IPartyPlay
 	public String getDefaultName();
 
 	@Override
-	public boolean setRank(@Nonnull M member, @Nonnull PartyMemberRank rank);
+	public boolean setRank(@Nonnull IPartyMemberAPI member, @Nonnull PartyMemberRank rank);
 	
 }

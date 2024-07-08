@@ -62,7 +62,7 @@ public class PartyOnCommandUpdater {
 		AdaptiveLocalizer adaptiveLocalizer = serverData.getAdaptiveLocalizer();
 		PlayerList playerList = server.getPlayerList();
 		if(playerList.getPlayerCount() > party.getMemberCount()) {
-			Iterator<M> iterator = party.getMemberInfoStream().iterator();
+			Iterator<M> iterator = party.getTypedMemberInfoStream().iterator();
 			while(iterator.hasNext()) {
 				M memberInfo = iterator.next();
 				ServerPlayer onlinePlayer = playerList.getPlayer(memberInfo.getUUID());

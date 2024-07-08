@@ -62,7 +62,7 @@ public class PlayerConfigOptionSpec<T extends Comparable<T>> implements IPlayerC
 	private final BiPredicate<PlayerConfigClientStorage, T> clientSideValidator;
 
 	private final BiPredicate<IPlayerConfigAPI, T> serverSideValidatorAPI;
-	private final BiPredicate<IPlayerConfigClientStorageAPI<?>, T> clientSideValidatorAPI;
+	private final BiPredicate<IPlayerConfigClientStorageAPI, T> clientSideValidatorAPI;
 	private final String tooltipPrefix;
 	private final Predicate<PlayerConfigType> configTypeFilter;
 	private final ClientboundPlayerConfigDynamicOptionsPacket.OptionType syncOptionType;
@@ -186,7 +186,7 @@ public class PlayerConfigOptionSpec<T extends Comparable<T>> implements IPlayerC
 
 	@Nonnull
 	@Override
-	public BiPredicate<IPlayerConfigClientStorageAPI<?>, T> getClientSideValidator() {
+	public BiPredicate<IPlayerConfigClientStorageAPI, T> getClientSideValidator() {
 		return clientSideValidatorAPI;
 	}
 

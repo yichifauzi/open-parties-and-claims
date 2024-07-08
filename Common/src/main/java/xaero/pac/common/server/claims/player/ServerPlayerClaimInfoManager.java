@@ -38,7 +38,6 @@ import xaero.pac.common.server.player.permission.api.IPlayerPermissionSystemAPI;
 import xaero.pac.common.util.linked.LinkedChain;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 //only used by ServerClaimsManager
 public final class ServerPlayerClaimInfoManager extends PlayerClaimInfoManager<ServerPlayerClaimInfo, ServerPlayerClaimInfoManager> 
@@ -146,11 +145,6 @@ public final class ServerPlayerClaimInfoManager extends PlayerClaimInfoManager<S
 		if(player == null)
 			return defaultLimit;
 		return permissionSystem.getIntPermission(player, permissionNode).orElse(defaultLimit);
-	}
-
-	@Override
-	public Stream<ServerPlayerClaimInfo> getAllStream() {
-		return getInfoStream();
 	}
 	
 	public ServerPlayerClaimsExpirationHandler getExpirationHandler() {

@@ -18,8 +18,6 @@
 
 package xaero.pac.common.server.io;
 
-import java.util.stream.Stream;
-
 public interface ObjectManagerIOManager
 <
 	T extends ObjectManagerIOObject, 
@@ -28,6 +26,5 @@ public interface ObjectManagerIOManager
 	
 	public void addToSave(T object);
 	public Iterable<T> getToSave();
-	public Stream<T> getAllStream();
 
 }

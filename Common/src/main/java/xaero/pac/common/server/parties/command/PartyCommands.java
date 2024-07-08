@@ -56,7 +56,7 @@ public class PartyCommands {
 				return SharedSuggestionProvider.suggest(Stream.concat(Stream.ofNullable(exactMember), Stream.ofNullable(exactInvite)).map(IPartyPlayerInfo::getUsername), builder);
 			}
 			//probably not a good idea to let players spam something like this somewhat easily, so it's limited at 1024
-			stream = Stream.concat(members ? playerParty.getMemberInfoStream() : Stream.empty(), invites ? playerParty.getInvitedPlayersStream() : Stream.empty());
+			stream = Stream.concat(members ? playerParty.getTypedMemberInfoStream() : Stream.empty(), invites ? playerParty.getTypedInvitedPlayersStream() : Stream.empty());
 			return SharedSuggestionProvider.suggest(stream
 					.map(IPartyPlayerInfo::getUsername)
 					.filter(name -> name.toLowerCase().startsWith(lowercaseInput))

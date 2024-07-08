@@ -95,7 +95,7 @@ public class PlayerClaimReplaceSpreadoutTask implements IServerSpreadoutQueuedTa
 				Map.Entry<ResourceLocation, IPlayerDimensionClaims<IPlayerClaimPosList>> entry = dimensionIterator.next();
 				ResourceLocation dimId = entry.getKey();
 				IPlayerDimensionClaims<IPlayerClaimPosList> dim = entry.getValue();
-				claimPosListIterator = dim.getStream().iterator();
+				claimPosListIterator = dim.getTypedStream().iterator();
 				while (claimPosListIterator.hasNext() && locations.size() < perTick) {
 					IPlayerClaimPosList claimPosList = claimPosListIterator.next();
 					IPlayerChunkClaim claimState = claimPosList.getClaimState();

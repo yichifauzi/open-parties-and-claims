@@ -31,15 +31,15 @@ import xaero.pac.common.server.IServerDataAPI;
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer implements IOpenPACMinecraftServer {
 
-	private IServerDataAPI<?, ?> xaero_OPAC_ServerData;
+	private IServerDataAPI xaero_OPAC_ServerData;
 
 	@Override
-	public void setXaero_OPAC_ServerData(IServerDataAPI<?, ?> data) {
+	public void setXaero_OPAC_ServerData(IServerDataAPI data) {
 		xaero_OPAC_ServerData = data;
 	}
 
 	@Override
-	public IServerDataAPI<?, ?> getXaero_OPAC_ServerData() {
+	public IServerDataAPI getXaero_OPAC_ServerData() {
 		return xaero_OPAC_ServerData;
 	}
 

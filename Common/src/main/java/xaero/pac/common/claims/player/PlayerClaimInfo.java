@@ -104,7 +104,7 @@ public abstract class PlayerClaimInfo
 	
 	@Nonnull
 	@Override
-	public Stream<Entry<ResourceLocation, PlayerDimensionClaims>> getStream(){
+	public Stream<Entry<ResourceLocation, PlayerDimensionClaims>> getTypedStream(){
 		return claims.entrySet().stream();
 	}
 	
