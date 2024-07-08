@@ -222,8 +222,8 @@ public final class ServerParty extends Party implements IServerParty<PartyMember
 	}
 
 	@Override
-	public boolean setRank(@Nonnull PartyMember member, @Nonnull PartyMemberRank rank) {
-		if(!super.setRank(member, rank))
+	public boolean setRankTyped(@Nonnull PartyMember member, @Nonnull PartyMemberRank rank) {
+		if(!super.setRankTyped(member, rank))
 			return false;
 		setDirty(true);
 		if(managedBy.isLoaded())
@@ -245,7 +245,7 @@ public final class ServerParty extends Party implements IServerParty<PartyMember
 				managedBy.getPartySynchronizer().syncToPartyUpdateMember(this, member);
 			else {
 				UUID partyId = getId();
-				managedBy.getPartiesThatAlly(partyId).forEach(allier -> allier.updateAllyNameMap(partyId, username));
+				managedBy.getTypedPartiesThatAlly(partyId).forEach(allier -> allier.updateAllyNameMap(partyId, username));
 				managedBy.getPartySynchronizer().syncToPartyUpdateOwner(this);
 			}
 		}
@@ -271,7 +271,7 @@ public final class ServerParty extends Party implements IServerParty<PartyMember
 		PlayerList playerList = managedBy.getServer().getPlayerList();
 		//iterates over the smaller count
 		if(playerList.getPlayerCount() > getMemberCount())
-			return getMemberInfoStream().map(mi -> playerList.getPlayer(mi.getUUID())).filter(Objects::nonNull);
+			return getTypedMemberInfoStream().map(mi -> playerList.getPlayer(mi.getUUID())).filter(Objects::nonNull);
 		else
 			return playerList.getPlayers().stream().filter(p -> getMemberInfo(p.getUUID()) != null);
 	}

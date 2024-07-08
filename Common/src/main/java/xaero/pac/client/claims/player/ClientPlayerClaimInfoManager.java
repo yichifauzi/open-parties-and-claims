@@ -64,11 +64,11 @@ public final class ClientPlayerClaimInfoManager extends PlayerClaimInfoManager<C
 			boolean notManyClaims = playerInfo.getClaimCount() < 1024;
 			boolean isSub = subConfigIndex != -1;
 			ClaimsManagerTracker tracker = claimsManager.getTracker();
-			playerInfo.getStream().map(Entry::getValue).forEach(dim -> {
+			playerInfo.getTypedStream().map(Entry::getValue).forEach(dim -> {
 				ResourceLocation dimensionId = dim.getDimension();
 				if(notManyClaims) {
 					BiConsumer<PlayerChunkClaim, ChunkPos> claimConsumer = (claim, pos) -> tracker.onChunkChange(dimensionId, pos.x, pos.z, claim);
-					dim.getStream().forEach(posList -> {
+					dim.getTypedStream().forEach(posList -> {
 						PlayerChunkClaim state = posList.getClaimState();
 						int claimSubConfigIndex = state.getSubConfigIndex();
 						if(claimSubConfigIndex != subConfigIndex && (isSub || playerInfo.getClaimsColor(claimSubConfigIndex) != null))

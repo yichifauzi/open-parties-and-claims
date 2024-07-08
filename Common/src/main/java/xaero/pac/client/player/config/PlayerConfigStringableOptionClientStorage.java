@@ -28,9 +28,9 @@ import java.util.function.Function;
 
 public final class PlayerConfigStringableOptionClientStorage<T extends Comparable<T>> extends PlayerConfigOptionClientStorage<T> implements IPlayerConfigStringableOptionClientStorage<T> {
 	
-	private final BiPredicate<IPlayerConfigClientStorageAPI<?>, String> stringValidator;
+	private final BiPredicate<IPlayerConfigClientStorageAPI, String> stringValidator;
 	
-	private PlayerConfigStringableOptionClientStorage(PlayerConfigOptionSpec<T> option, T value, BiPredicate<IPlayerConfigClientStorageAPI<?>, String> stringValidator) {
+	private PlayerConfigStringableOptionClientStorage(PlayerConfigOptionSpec<T> option, T value, BiPredicate<IPlayerConfigClientStorageAPI, String> stringValidator) {
 		super(option, value);
 		this.stringValidator = stringValidator;
 	}
@@ -50,7 +50,7 @@ public final class PlayerConfigStringableOptionClientStorage<T extends Comparabl
 
 	@Nonnull
 	@Override
-	public BiPredicate<IPlayerConfigClientStorageAPI<?>, String> getStringValidator(){
+	public BiPredicate<IPlayerConfigClientStorageAPI, String> getStringValidator(){
 		return stringValidator;
 	}
 	
@@ -58,7 +58,7 @@ public final class PlayerConfigStringableOptionClientStorage<T extends Comparabl
 
 		@Override
 		protected PlayerConfigOptionClientStorage<T> buildInternally() {
-			BiPredicate<IPlayerConfigClientStorageAPI<?>, String> stringValidatorPredicate = (c, s) -> {
+			BiPredicate<IPlayerConfigClientStorageAPI, String> stringValidatorPredicate = (c, s) -> {
 				T parsedValue;
 				try {
 					parsedValue = option.getCommandInputParser().apply(s);

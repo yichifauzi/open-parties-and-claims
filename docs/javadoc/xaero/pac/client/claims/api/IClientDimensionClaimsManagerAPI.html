@@ -69,16 +69,16 @@ loadScripts(document, 'script');</script>
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">xaero.pac.client.claims.api</a></div>
-<h1 title="Interface IClientDimensionClaimsManagerAPI" class="title">Interface IClientDimensionClaimsManagerAPI&lt;WRC extends <a href="IClientRegionClaimsAPI.html" title="interface in xaero.pac.client.claims.api">IClientRegionClaimsAPI</a>&gt;</h1>
+<h1 title="Interface IClientDimensionClaimsManagerAPI" class="title">Interface IClientDimensionClaimsManagerAPI</h1>
 </div>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Superinterfaces:</dt>
-<dd><code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IDimensionClaimsManagerAPI</a>&lt;WRC&gt;</code></dd>
+<dd><code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IDimensionClaimsManagerAPI</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">IClientDimensionClaimsManagerAPI&lt;WRC extends <a href="IClientRegionClaimsAPI.html" title="interface in xaero.pac.client.claims.api">IClientRegionClaimsAPI</a>&gt;</span><span class="extends-implements">
-extends <a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IDimensionClaimsManagerAPI</a>&lt;WRC&gt;</span></div>
+<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">IClientDimensionClaimsManagerAPI</span><span class="extends-implements">
+extends <a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IDimensionClaimsManagerAPI</a></span></div>
 <div class="block">API for a dimension claims manager on the client side</div>
 </section>
 <section class="summary">
@@ -104,14 +104,14 @@ extends <a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" tit
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the dimension ID.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="IClientDimensionClaimsManagerAPI.html" title="type parameter in IClientDimensionClaimsManagerAPI">WRC</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="IClientRegionClaimsAPI.html" title="interface in xaero.pac.client.claims.api">IClientRegionClaimsAPI</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getRegion(int,int)" class="member-name-link">getRegion</a><wbr>(int&nbsp;x,
  int&nbsp;z)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets region claims at a specified 512x512 region location in this dimension,
  or null if there are no claims stored for the specified location.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IClientDimensionClaimsManagerAPI.html" title="type parameter in IClientDimensionClaimsManagerAPI">WRC</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IClientRegionClaimsAPI.html" title="interface in xaero.pac.client.claims.api">IClientRegionClaimsAPI</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getRegionStream()" class="member-name-link">getRegionStream</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link"><code>Stream</code></a> of all 512x512 regions that contain claims in this dimension.</div>
@@ -139,7 +139,7 @@ extends <a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" tit
 <div class="block">Gets the dimension ID.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html#getDimension()">getDimension</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IDimensionClaimsManagerAPI</a>&lt;<a href="IClientDimensionClaimsManagerAPI.html" title="type parameter in IClientDimensionClaimsManagerAPI">WRC</a> extends <a href="IClientRegionClaimsAPI.html" title="interface in xaero.pac.client.claims.api">IClientRegionClaimsAPI</a>&gt;</code></dd>
+<dd><code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html#getDimension()">getDimension</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IDimensionClaimsManagerAPI</a></code></dd>
 <dt>Returns:</dt>
 <dd>the dimension ID, not null</dd>
 </dl>
@@ -153,7 +153,7 @@ extends <a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" tit
 <div class="block">Gets the number of 512x512 regions that contain claims in this dimension.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html#getCount()">getCount</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IDimensionClaimsManagerAPI</a>&lt;<a href="IClientDimensionClaimsManagerAPI.html" title="type parameter in IClientDimensionClaimsManagerAPI">WRC</a> extends <a href="IClientRegionClaimsAPI.html" title="interface in xaero.pac.client.claims.api">IClientRegionClaimsAPI</a>&gt;</code></dd>
+<dd><code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html#getCount()">getCount</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IDimensionClaimsManagerAPI</a></code></dd>
 <dt>Returns:</dt>
 <dd>the region count</dd>
 </dl>
@@ -163,12 +163,9 @@ extends <a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" tit
 <section class="detail" id="getRegionStream()">
 <h3>getRegionStream</h3>
 <div class="member-signature"><span class="annotations">@Nonnull
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IClientDimensionClaimsManagerAPI.html" title="type parameter in IClientDimensionClaimsManagerAPI">WRC</a>&gt;</span>&nbsp;<span class="element-name">getRegionStream</span>()</div>
-<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html#getRegionStream()">IDimensionClaimsManagerAPI</a></code></span></div>
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IClientRegionClaimsAPI.html" title="interface in xaero.pac.client.claims.api">IClientRegionClaimsAPI</a>&gt;</span>&nbsp;<span class="element-name">getRegionStream</span>()</div>
 <div class="block">Gets a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link"><code>Stream</code></a> of all 512x512 regions that contain claims in this dimension.</div>
 <dl class="notes">
-<dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html#getRegionStream()">getRegionStream</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IDimensionClaimsManagerAPI</a>&lt;<a href="IClientDimensionClaimsManagerAPI.html" title="type parameter in IClientDimensionClaimsManagerAPI">WRC</a> extends <a href="IClientRegionClaimsAPI.html" title="interface in xaero.pac.client.claims.api">IClientRegionClaimsAPI</a>&gt;</code></dd>
 <dt>Returns:</dt>
 <dd>a stream of all regions, not null</dd>
 </dl>
@@ -178,14 +175,14 @@ extends <a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" tit
 <section class="detail" id="getRegion(int,int)">
 <h3>getRegion</h3>
 <div class="member-signature"><span class="annotations">@Nullable
-</span><span class="return-type"><a href="IClientDimensionClaimsManagerAPI.html" title="type parameter in IClientDimensionClaimsManagerAPI">WRC</a></span>&nbsp;<span class="element-name">getRegion</span><wbr><span class="parameters">(int&nbsp;x,
+</span><span class="return-type"><a href="IClientRegionClaimsAPI.html" title="interface in xaero.pac.client.claims.api">IClientRegionClaimsAPI</a></span>&nbsp;<span class="element-name">getRegion</span><wbr><span class="parameters">(int&nbsp;x,
  int&nbsp;z)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html#getRegion(int,int)">IDimensionClaimsManagerAPI</a></code></span></div>
 <div class="block">Gets region claims at a specified 512x512 region location in this dimension,
  or null if there are no claims stored for the specified location.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html#getRegion(int,int)">getRegion</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IDimensionClaimsManagerAPI</a>&lt;<a href="IClientDimensionClaimsManagerAPI.html" title="type parameter in IClientDimensionClaimsManagerAPI">WRC</a> extends <a href="IClientRegionClaimsAPI.html" title="interface in xaero.pac.client.claims.api">IClientRegionClaimsAPI</a>&gt;</code></dd>
+<dd><code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html#getRegion(int,int)">getRegion</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IDimensionClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IDimensionClaimsManagerAPI</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>x</code> - the X coordinate of the 512x512 region</dd>
 <dd><code>z</code> - the Z coordinate of the 512x512 region</dd>

@@ -102,7 +102,7 @@ public class PlayerConfigOptionClientStorage<T extends Comparable<T>> implements
 
 	@Nonnull
 	@Override
-	public BiPredicate<IPlayerConfigClientStorageAPI<?>, T> getValidator(){
+	public BiPredicate<IPlayerConfigClientStorageAPI, T> getValidator(){
 		return option.getClientSideValidator();
 	}
 

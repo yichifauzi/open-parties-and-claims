@@ -154,18 +154,18 @@ public final class PartyManager implements IPartyManager<ServerParty>, ObjectMan
 	public void removePartyByOwner(@Nonnull UUID owner) {
 		if(!ServerConfig.CONFIG.partiesEnabled.get())
 			return;
-		removeParty(getPartyByOwner(owner));
+		removeTypedParty(getPartyByOwner(owner));
 	}
 
 	@Override
 	public void removePartyById(@Nonnull UUID id) {
 		if(!ServerConfig.CONFIG.partiesEnabled.get())
 			return;
-		removeParty(getPartyById(id));
+		removeTypedParty(getPartyById(id));
 	}
 
 	@Override
-	public void removeParty(@Nonnull ServerParty party) {
+	public void removeTypedParty(@Nonnull ServerParty party) {
 		if(!ServerConfig.CONFIG.partiesEnabled.get())
 			return;
 		if(party == null)
@@ -186,11 +186,11 @@ public final class PartyManager implements IPartyManager<ServerParty>, ObjectMan
 		party.setDirty(true);
 		ServerParty currentOwnerParty = getPartyByOwner(party.getOwner().getUUID());
 		if(currentOwnerParty != null)
-			removeParty(currentOwnerParty);//it has a different ID and needs to be removed
+			removeTypedParty(currentOwnerParty);//it has a different ID and needs to be removed
 		partiesByOwner.put(party.getOwner().getUUID(), party);
 		partiesById.put(party.getId(), party);
-		party.getMemberInfoStream().forEach(mi -> onMemberAdded(party, mi));
-		party.getAllyPartiesStream().forEach(ally -> onAllyAdded(party, ally.getPartyId()));
+		party.getTypedMemberInfoStream().forEach(mi -> onMemberAdded(party, mi));
+		party.getTypedAllyPartiesStream().forEach(ally -> onAllyAdded(party, ally.getPartyId()));
 		partyChain.add(party);
 	}
 	
@@ -234,7 +234,7 @@ public final class PartyManager implements IPartyManager<ServerParty>, ObjectMan
 
 	@Nonnull
 	@Override
-	public Stream<ServerParty> getAllStream(){
+	public Stream<ServerParty> getTypedAllStream(){
 		return partyChain.stream();
 	}
 
@@ -245,7 +245,7 @@ public final class PartyManager implements IPartyManager<ServerParty>, ObjectMan
 
 	@Nonnull
 	@Override
-	public Stream<ServerParty> getPartiesThatAlly(@Nonnull UUID allyId) {
+	public Stream<ServerParty> getTypedPartiesThatAlly(@Nonnull UUID allyId) {
 		if(isAlliedByAnyone(allyId))
 			return getPartiesByAlly(allyId).stream().map(this::getPartyById).filter(Objects::nonNull);
 		return Stream.empty();

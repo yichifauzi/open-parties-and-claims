@@ -20,22 +20,16 @@ package xaero.pac.common.server;
 
 import xaero.pac.common.server.api.OpenPACServerAPI;
 import xaero.pac.common.server.claims.api.IServerClaimsManagerAPI;
-import xaero.pac.common.server.claims.protection.ChunkProtection;
 import xaero.pac.common.server.claims.protection.api.IChunkProtectionAPI;
 import xaero.pac.common.server.parties.party.api.IPartyManagerAPI;
-import xaero.pac.common.server.parties.party.api.IServerPartyAPI;
 import xaero.pac.common.server.player.config.api.IPlayerConfigManagerAPI;
 import xaero.pac.common.server.player.localization.api.IAdaptiveLocalizerAPI;
 
-public interface IServerDataAPI
-<
-	CM extends IServerClaimsManagerAPI<?, ?, ?>,
-	P extends IServerPartyAPI<?, ?, ?>
-> {
+public interface IServerDataAPI {
 	
-	public IPartyManagerAPI<P> getPartyManager();
+	public IPartyManagerAPI getPartyManager();
 
-	public CM getServerClaimsManager();
+	public IServerClaimsManagerAPI getServerClaimsManager();
 
 	public IPlayerConfigManagerAPI getPlayerConfigs();
 

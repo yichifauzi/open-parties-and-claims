@@ -62,7 +62,7 @@ public final class PartyManagerIO<S> extends ObjectManagerIO<S, String, ServerPa
 			return;
 		OpenPartiesAndClaims.LOGGER.info("Loading parties...");
 		super.load();
-		manager.getAllStream().forEach(p -> {
+		manager.getTypedAllStream().forEach(p -> {
 			Iterator<PartyAlly> allyPartyIterator = p.getAllyPartiesIterator();
 			List<UUID> alliesToRemove = null;
 			while(allyPartyIterator.hasNext()) {

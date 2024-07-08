@@ -24,11 +24,7 @@ import javax.annotation.Nullable;
 /**
  * API for the party storage on the client side
  */
-public interface IClientPartyStorageAPI
-<
-	P extends IClientPartyAPI<?,?,?>,
-		MISS extends IClientPartyMemberDynamicInfoSyncableStorageAPI<?>
-> {
+public interface IClientPartyStorageAPI {
 
 	/**
 	 * Gets the local client player's party.
@@ -36,7 +32,7 @@ public interface IClientPartyStorageAPI
 	 * @return the player's party, null if not in one
 	 */
 	@Nullable
-	public P getParty();
+	public IClientPartyAPI getParty();
 
 	/**
 	 * Gets the name of the local client player's party.
@@ -62,7 +58,7 @@ public interface IClientPartyStorageAPI
 	 * @return the party/ally player dynamic info storage, not null
 	 */
 	@Nonnull
-	public MISS getPartyMemberDynamicInfoSyncableStorage();
+	public IClientPartyMemberDynamicInfoSyncableStorageAPI getPartyMemberDynamicInfoSyncableStorage();
 
 	/**
 	 * Checks whether the party data sync is still in progress.

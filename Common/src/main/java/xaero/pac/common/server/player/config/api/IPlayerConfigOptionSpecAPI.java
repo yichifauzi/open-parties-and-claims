@@ -123,7 +123,7 @@ public interface IPlayerConfigOptionSpecAPI<T extends Comparable<T>> {
 	 * @return the client-side value validator, not null
 	 */
 	@Nonnull
-	public BiPredicate<IPlayerConfigClientStorageAPI<?>, T> getClientSideValidator();
+	public BiPredicate<IPlayerConfigClientStorageAPI, T> getClientSideValidator();
 
 	/**
 	 * Gets the server-side validator for potential values of this option.
