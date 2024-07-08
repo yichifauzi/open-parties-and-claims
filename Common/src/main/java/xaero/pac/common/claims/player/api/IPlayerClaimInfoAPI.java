@@ -22,14 +22,12 @@ import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * API for claim info of a player
  */
-public interface IPlayerClaimInfoAPI<DC extends IPlayerDimensionClaimsAPI<?>> {
+public interface IPlayerClaimInfoAPI {
 
 	/**
 	 * Gets the number of claims owned by the player.
@@ -110,20 +108,12 @@ public interface IPlayerClaimInfoAPI<DC extends IPlayerDimensionClaimsAPI<?>> {
 	public Integer getClaimsColor(int subConfigIndex);
 
 	/**
-	 * Gets a stream of all dimension claim info entries for the player.
-	 *
-	 * @return the stream of all dimension claim info entries, not null
-	 */
-	@Nonnull
-	public Stream<Entry<ResourceLocation, DC>> getStream();
-
-	/**
 	 * Gets claim info for a dimension with a specified ID.
 	 * @param id  the dimension ID, not null
 	 * @return  the claim info of the dimension, null if no claims exist for the specified dimension ID
 	 */
 	@Nullable
-	public DC getDimension(@Nonnull ResourceLocation id);
+	public IPlayerDimensionClaimsAPI getDimension(@Nonnull ResourceLocation id);
 	
 	
 }

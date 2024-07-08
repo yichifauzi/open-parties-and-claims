@@ -19,6 +19,8 @@
 package xaero.pac.client.player.config;
 
 import xaero.pac.client.player.config.api.IPlayerConfigClientStorageAPI;
+import xaero.pac.client.player.config.api.IPlayerConfigStringableOptionClientStorageAPI;
+import xaero.pac.common.server.player.config.api.IPlayerConfigOptionSpecAPI;
 import xaero.pac.common.server.player.config.api.PlayerConfigType;
 
 import javax.annotation.Nonnull;
@@ -27,9 +29,21 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public interface IPlayerConfigClientStorage<OS extends IPlayerConfigStringableOptionClientStorage<?>> extends IPlayerConfigClientStorageAPI<OS> {
+public interface IPlayerConfigClientStorage<OS extends IPlayerConfigStringableOptionClientStorage<?>> extends IPlayerConfigClientStorageAPI {
 
 	//internal api
+	@Nonnull
+	public <T extends Comparable<T>> OS getOptionStorage(@Nonnull IPlayerConfigOptionSpecAPI<T> option);
+
+	@Nonnull
+	public Stream<OS> typedOptionStream();
+
+	@Nonnull
+	@Override
+	@SuppressWarnings("unchecked")
+	default Stream<IPlayerConfigStringableOptionClientStorageAPI<?>> optionStream(){
+		return (Stream<IPlayerConfigStringableOptionClientStorageAPI<?>>)(Object)typedOptionStream();
+	}
 
 	public void reset();
 
@@ -51,7 +65,7 @@ public interface IPlayerConfigClientStorage<OS extends IPlayerConfigStringableOp
 
 	@Nonnull
 	@Override
-	public Stream<IPlayerConfigClientStorageAPI<OS>> getSubConfigAPIStream();
+	public Stream<IPlayerConfigClientStorageAPI> getSubConfigAPIStream();
 
 	@Override
 	boolean isBeingDeleted();

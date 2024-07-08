@@ -80,7 +80,7 @@ public abstract class AbstractPartySynchronizer {
 		PlayerList playerList = server.getPlayerList();
 		//iterates over the smaller count
 		if(playerList.getPlayerCount() > party.getMemberCount()) {
-			Iterator<PartyMember> iterator = party.getMemberInfoStream().iterator();
+			Iterator<PartyMember> iterator = party.getTypedMemberInfoStream().iterator();
 			while(iterator.hasNext())
 				sendToMember(iterator.next(), exception, playerList, packet, instant);
 		} else {

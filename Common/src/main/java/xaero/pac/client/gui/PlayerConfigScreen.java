@@ -431,7 +431,7 @@ public final class PlayerConfigScreen extends WidgetListScreen {
 			PlayerConfigClientStorage optionValueSourceData = subConfigSelected ? data.getOrCreateSubConfig(data.getSelectedSubConfig()) : data;
 			Stream<PlayerConfigStringableOptionClientStorage<?>> optionStream = syncInProgress || optionValueSourceData.isBeingDeleted() ?
 					Stream.empty() :
-					optionValueSourceData.optionStream();
+					optionValueSourceData.typedOptionStream();
 			optionStream.forEach(optionStorage -> {
 				if(!optionStorage.getOption().getConfigTypeFilter().test(optionValueSourceData.getType())
 						|| optionStorage.getOption() == PlayerConfigOptions.USED_SUBCLAIM

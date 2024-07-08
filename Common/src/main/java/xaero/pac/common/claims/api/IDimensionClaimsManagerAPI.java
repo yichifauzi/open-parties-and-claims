@@ -22,15 +22,11 @@ import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.stream.Stream;
 
 /**
  * API for a dimension claims manager
  */
-public interface IDimensionClaimsManagerAPI
-<
-	WRC extends IRegionClaimsAPI
-> {
+public interface IDimensionClaimsManagerAPI {
 
 	/**
 	 * Gets the dimension ID.
@@ -48,14 +44,6 @@ public interface IDimensionClaimsManagerAPI
 	public int getCount();
 
 	/**
-	 * Gets a {@link Stream} of all 512x512 regions that contain claims in this dimension.
-	 *
-	 * @return a stream of all regions, not null
-	 */
-	@Nonnull
-	public Stream<WRC> getRegionStream();
-
-	/**
 	 * Gets region claims at a specified 512x512 region location in this dimension,
 	 * or null if there are no claims stored for the specified location.
 	 *
@@ -64,6 +52,6 @@ public interface IDimensionClaimsManagerAPI
 	 * @return the read-only region claims manager, null if it doesn't exist
 	 */
 	@Nullable
-	public WRC getRegion(int x, int z);
+	public IRegionClaimsAPI getRegion(int x, int z);
 	
 }

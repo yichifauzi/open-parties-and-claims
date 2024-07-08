@@ -23,6 +23,7 @@ import xaero.pac.common.claims.player.IPlayerChunkClaim;
 import xaero.pac.common.claims.player.IPlayerClaimInfo;
 import xaero.pac.common.claims.player.IPlayerClaimPosList;
 import xaero.pac.common.claims.player.IPlayerDimensionClaims;
+import xaero.pac.common.claims.player.api.IPlayerDimensionClaimsAPI;
 import xaero.pac.common.parties.party.IPartyPlayerInfo;
 import xaero.pac.common.parties.party.ally.IPartyAlly;
 import xaero.pac.common.parties.party.member.IPartyMember;
@@ -40,7 +41,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public interface IServerPlayerClaimInfo<DC extends IPlayerDimensionClaims<?>> extends IServerPlayerClaimInfoAPI<DC>, IPlayerClaimInfo<DC>	 {
+public interface IServerPlayerClaimInfo<DC extends IPlayerDimensionClaims<?>> extends IServerPlayerClaimInfoAPI, IPlayerClaimInfo<DC>	 {
 	
 	//internal api
 	
@@ -60,7 +61,14 @@ public interface IServerPlayerClaimInfo<DC extends IPlayerDimensionClaims<?>> ex
 	
 	@Nonnull
 	@Override
-	public Stream<Entry<ResourceLocation, DC>> getStream();
+	public Stream<Entry<ResourceLocation, DC>> getTypedStream();
+
+	@Nonnull
+	@Override
+	@SuppressWarnings("unchecked")
+	default Stream<Entry<ResourceLocation, IPlayerDimensionClaimsAPI>> getStream(){
+		return (Stream<Entry<ResourceLocation, IPlayerDimensionClaimsAPI>>)(Object)getTypedStream();
+	}
 
 	public Stream<Entry<ResourceLocation, DC>> getFullStream();
 	

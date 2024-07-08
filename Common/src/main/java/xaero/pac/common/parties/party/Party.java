@@ -206,29 +206,29 @@ public abstract class Party implements IParty<PartyMember, PartyInvite, PartyAll
 
 	@Nonnull
 	@Override
-	public Stream<PartyMember> getMemberInfoStream(){
+	public Stream<PartyMember> getTypedMemberInfoStream(){
 		return Stream.concat(Stream.of(owner), memberInfo.values().stream());
 	}
 	
 	@Nonnull
-	public Stream<PartyMember> getStaffInfoStream(){
+	public Stream<PartyMember> getTypedStaffInfoStream(){
 		return sortedStaffInfo.stream();
 	}
 	
 	@Nonnull
-	public Stream<PartyMember> getNonStaffInfoStream(){
+	public Stream<PartyMember> getTypedNonStaffInfoStream(){
 		return memberInfo.values().stream().filter(mi -> mi.getRank() == PartyMemberRank.MEMBER);
 	}
 
 	@Nonnull
 	@Override
-	public Stream<PartyInvite> getInvitedPlayersStream() {
+	public Stream<PartyInvite> getTypedInvitedPlayersStream() {
 		return invitedPlayers.values().stream();
 	}
 
 	@Nonnull
 	@Override
-	public Stream<PartyAlly> getAllyPartiesStream(){
+	public Stream<PartyAlly> getTypedAllyPartiesStream(){
 		return allyParties.values().stream();
 	}
 
@@ -283,7 +283,7 @@ public abstract class Party implements IParty<PartyMember, PartyInvite, PartyAll
 	}
 
 	@Override
-	public boolean setRank(@Nonnull PartyMember member, @Nonnull PartyMemberRank rank) {
+	public boolean setRankTyped(@Nonnull PartyMember member, @Nonnull PartyMemberRank rank) {
 		if(member == null || memberInfo.get(member.getUUID()) != member)
 			return false;
 		if(member.getRank() != rank) {

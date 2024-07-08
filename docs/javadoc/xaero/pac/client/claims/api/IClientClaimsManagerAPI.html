@@ -69,16 +69,16 @@ loadScripts(document, 'script');</script>
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">xaero.pac.client.claims.api</a></div>
-<h1 title="Interface IClientClaimsManagerAPI" class="title">Interface IClientClaimsManagerAPI&lt;PCI extends <a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&lt;?&gt;,<wbr>WCM extends <a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&lt;?&gt;&gt;</h1>
+<h1 title="Interface IClientClaimsManagerAPI" class="title">Interface IClientClaimsManagerAPI</h1>
 </div>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Superinterfaces:</dt>
-<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a>&lt;PCI,<wbr>WCM&gt;</code></dd>
+<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">IClientClaimsManagerAPI&lt;PCI extends <a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&lt;?&gt;,<wbr>WCM extends <a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&lt;?&gt;&gt;</span><span class="extends-implements">
-extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a>&lt;PCI,<wbr>WCM&gt;</span></div>
+<div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">IClientClaimsManagerAPI</span><span class="extends-implements">
+extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a></span></div>
 <div class="block">API for the claims manager on the client side</div>
 </section>
 <section class="summary">
@@ -143,12 +143,12 @@ extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="inter
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the index of the sub-config currently used for new claims.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getDimension(net.minecraft.resources.ResourceLocation)" class="member-name-link">getDimension</a><wbr>(net.minecraft.resources.ResourceLocation&nbsp;dimension)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the read-only claims manager for a specified dimension ID.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getDimensionStream()" class="member-name-link">getDimensionStream</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets a stream of all read-only dimension claims managers.</div>
@@ -163,12 +163,12 @@ extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="inter
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the maximum distance for claiming/forceloading a chunk allowed by the server.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getPlayerInfo(java.util.UUID)" class="member-name-link">getPlayerInfo</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;playerId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets or creates the claim info instance for a player UUID.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getPlayerInfoStream()" class="member-name-link">getPlayerInfoStream</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets a stream of all player claim info.</div>
@@ -277,7 +277,7 @@ extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="inter
 <div class="block">Checks whether a player has claim info.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#hasPlayerInfo(java.util.UUID)">hasPlayerInfo</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a> extends <a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&lt;?&gt;,<wbr><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a> extends <a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&lt;?&gt;&gt;</code></dd>
+<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#hasPlayerInfo(java.util.UUID)">hasPlayerInfo</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>playerId</code> - UUID of the player, not null</dd>
 <dt>Returns:</dt>
@@ -289,13 +289,13 @@ extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="inter
 <section class="detail" id="getPlayerInfo(java.util.UUID)">
 <h3>getPlayerInfo</h3>
 <div class="member-signature"><span class="annotations">@Nonnull
-</span><span class="return-type"><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a></span>&nbsp;<span class="element-name">getPlayerInfo</span><wbr><span class="parameters">(@Nonnull
+</span><span class="return-type"><a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a></span>&nbsp;<span class="element-name">getPlayerInfo</span><wbr><span class="parameters">(@Nonnull
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;playerId)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html#getPlayerInfo(java.util.UUID)">IClaimsManagerAPI</a></code></span></div>
 <div class="block">Gets or creates the claim info instance for a player UUID.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#getPlayerInfo(java.util.UUID)">getPlayerInfo</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a> extends <a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&lt;?&gt;,<wbr><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a> extends <a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&lt;?&gt;&gt;</code></dd>
+<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#getPlayerInfo(java.util.UUID)">getPlayerInfo</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>playerId</code> - UUID of a player, not null</dd>
 <dt>Returns:</dt>
@@ -307,12 +307,9 @@ extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="inter
 <section class="detail" id="getPlayerInfoStream()">
 <h3>getPlayerInfoStream</h3>
 <div class="member-signature"><span class="annotations">@Nonnull
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a>&gt;</span>&nbsp;<span class="element-name">getPlayerInfoStream</span>()</div>
-<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html#getPlayerInfoStream()">IClaimsManagerAPI</a></code></span></div>
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&gt;</span>&nbsp;<span class="element-name">getPlayerInfoStream</span>()</div>
 <div class="block">Gets a stream of all player claim info.</div>
 <dl class="notes">
-<dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#getPlayerInfoStream()">getPlayerInfoStream</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a> extends <a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&lt;?&gt;,<wbr><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a> extends <a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&lt;?&gt;&gt;</code></dd>
 <dt>Returns:</dt>
 <dd>a <code>Stream</code> of all player claim info</dd>
 </dl>
@@ -330,7 +327,7 @@ extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="inter
 <div class="block">Gets the claim state for a specified chunk.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#get(net.minecraft.resources.ResourceLocation,int,int)">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a> extends <a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&lt;?&gt;,<wbr><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a> extends <a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&lt;?&gt;&gt;</code></dd>
+<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#get(net.minecraft.resources.ResourceLocation,int,int)">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>dimension</code> - the dimension ID of the chunk, not null</dd>
 <dd><code>x</code> - the X coordinate of the chunk</dd>
@@ -352,7 +349,7 @@ extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="inter
 <div class="block">Gets the claim state for a specified chunk.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#get(net.minecraft.resources.ResourceLocation,net.minecraft.world.level.ChunkPos)">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a> extends <a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&lt;?&gt;,<wbr><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a> extends <a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&lt;?&gt;&gt;</code></dd>
+<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#get(net.minecraft.resources.ResourceLocation,net.minecraft.world.level.ChunkPos)">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>dimension</code> - the dimension ID of the chunk, not null</dd>
 <dd><code>chunkPos</code> - the coordinates of the chunk, not null</dd>
@@ -373,7 +370,7 @@ extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="inter
 <div class="block">Gets the claim state for a specified chunk.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#get(net.minecraft.resources.ResourceLocation,net.minecraft.core.BlockPos)">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a> extends <a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&lt;?&gt;,<wbr><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a> extends <a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&lt;?&gt;&gt;</code></dd>
+<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#get(net.minecraft.resources.ResourceLocation,net.minecraft.core.BlockPos)">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>dimension</code> - the dimension ID of the chunk, not null</dd>
 <dd><code>blockPos</code> - the block coordinates of the chunk, not null</dd>
@@ -386,13 +383,13 @@ extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="inter
 <section class="detail" id="getDimension(net.minecraft.resources.ResourceLocation)">
 <h3>getDimension</h3>
 <div class="member-signature"><span class="annotations">@Nullable
-</span><span class="return-type"><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a></span>&nbsp;<span class="element-name">getDimension</span><wbr><span class="parameters">(@Nonnull
+</span><span class="return-type"><a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a></span>&nbsp;<span class="element-name">getDimension</span><wbr><span class="parameters">(@Nonnull
  net.minecraft.resources.ResourceLocation&nbsp;dimension)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html#getDimension(net.minecraft.resources.ResourceLocation)">IClaimsManagerAPI</a></code></span></div>
 <div class="block">Gets the read-only claims manager for a specified dimension ID.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#getDimension(net.minecraft.resources.ResourceLocation)">getDimension</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a> extends <a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&lt;?&gt;,<wbr><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a> extends <a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&lt;?&gt;&gt;</code></dd>
+<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#getDimension(net.minecraft.resources.ResourceLocation)">getDimension</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>dimension</code> - the dimension ID, not null</dd>
 <dt>Returns:</dt>
@@ -404,12 +401,9 @@ extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="inter
 <section class="detail" id="getDimensionStream()">
 <h3>getDimensionStream</h3>
 <div class="member-signature"><span class="annotations">@Nonnull
-</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a>&gt;</span>&nbsp;<span class="element-name">getDimensionStream</span>()</div>
-<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html#getDimensionStream()">IClaimsManagerAPI</a></code></span></div>
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Stream.html" title="class or interface in java.util.stream" class="external-link">Stream</a>&lt;<a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&gt;</span>&nbsp;<span class="element-name">getDimensionStream</span>()</div>
 <div class="block">Gets a stream of all read-only dimension claims managers.</div>
 <dl class="notes">
-<dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#getDimensionStream()">getDimensionStream</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a> extends <a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&lt;?&gt;,<wbr><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a> extends <a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&lt;?&gt;&gt;</code></dd>
 <dt>Returns:</dt>
 <dd>a <code>Stream</code> of all read-only dimension claims managers</dd>
 </dl>
@@ -426,7 +420,7 @@ extends <a href="../../../common/claims/api/IClaimsManagerAPI.html" title="inter
  The tracker notifies the registered listeners when claim changes occur.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#getTracker()">getTracker</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a>&lt;<a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">PCI</a> extends <a href="../player/api/IClientPlayerClaimInfoAPI.html" title="interface in xaero.pac.client.claims.player.api">IClientPlayerClaimInfoAPI</a>&lt;?&gt;,<wbr><a href="IClientClaimsManagerAPI.html" title="type parameter in IClientClaimsManagerAPI">WCM</a> extends <a href="IClientDimensionClaimsManagerAPI.html" title="interface in xaero.pac.client.claims.api">IClientDimensionClaimsManagerAPI</a>&lt;?&gt;&gt;</code></dd>
+<dd><code><a href="../../../common/claims/api/IClaimsManagerAPI.html#getTracker()">getTracker</a></code>&nbsp;in interface&nbsp;<code><a href="../../../common/claims/api/IClaimsManagerAPI.html" title="interface in xaero.pac.common.claims.api">IClaimsManagerAPI</a></code></dd>
 <dt>Returns:</dt>
 <dd>the claim change tracker</dd>
 </dl>

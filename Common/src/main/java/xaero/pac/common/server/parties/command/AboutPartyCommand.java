@@ -138,14 +138,14 @@ public class AboutPartyCommand {
 					partyMembersComponent.getSiblings().add(adaptiveLocalizer.getFor(casterPlayer, "[%s]", rankComponent));
 				}
 			};
-			int staffCount = createLimitedList(partyMembersComponent, MAX_MEMBER_COUNT, playerParty.getStaffInfoStream().iterator(), partyMemberConsumer);
+			int staffCount = createLimitedList(partyMembersComponent, MAX_MEMBER_COUNT, playerParty.getTypedStaffInfoStream().iterator(), partyMemberConsumer);
 			if(staffCount < MAX_MEMBER_COUNT)
-				createLimitedList(partyMembersComponent, MAX_MEMBER_COUNT - staffCount, playerParty.getNonStaffInfoStream().iterator(), partyMemberConsumer);
+				createLimitedList(partyMembersComponent, MAX_MEMBER_COUNT - staffCount, playerParty.getTypedNonStaffInfoStream().iterator(), partyMemberConsumer);
 			casterPlayer.sendSystemMessage(partyMembersComponent);
 			
 			casterPlayer.sendSystemMessage(adaptiveLocalizer.getFor(casterPlayer, "gui.xaero_parties_party_allies", playerParty.getAllyCount() + "/" + ServerConfig.CONFIG.maxPartyAllies.get()).withStyle(s -> s.withColor(ChatFormatting.GOLD)));
 			Component partyAlliesComponent = Component.literal("");
-			createLimitedList(partyAlliesComponent, MAX_ALLY_COUNT, playerParty.getAllyPartiesStream().iterator(), ally -> {
+			createLimitedList(partyAlliesComponent, MAX_ALLY_COUNT, playerParty.getTypedAllyPartiesStream().iterator(), ally -> {
 				IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly> allyParty = partyManager.getPartyById(ally.getPartyId());
 				if(allyParty != null) {
 					if(!partyAlliesComponent.getSiblings().isEmpty())
@@ -165,7 +165,7 @@ public class AboutPartyCommand {
 			casterPlayer.sendSystemMessage(adaptiveLocalizer.getFor(casterPlayer, "gui.xaero_parties_party_invited", playerParty.getInviteCount() + "/" + ServerConfig.CONFIG.maxPartyInvites.get()).withStyle(s -> s.withColor(ChatFormatting.GOLD)));
 			Component invitedComponent = Component.literal("");
 
-			createLimitedList(invitedComponent, MAX_INVITES_COUNT, playerParty.getInvitedPlayersStream().iterator(), pi -> {
+			createLimitedList(invitedComponent, MAX_INVITES_COUNT, playerParty.getTypedInvitedPlayersStream().iterator(), pi -> {
 				if(!invitedComponent.getSiblings().isEmpty())
 					invitedComponent.getSiblings().add(Component.literal(", "));
 				invitedComponent.getSiblings().add(Component.literal(pi.getUsername()).withStyle(s -> s.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(pi.getUUID().toString())))));

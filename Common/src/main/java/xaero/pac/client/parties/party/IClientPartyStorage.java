@@ -22,15 +22,20 @@ import xaero.pac.client.parties.party.api.IClientPartyStorageAPI;
 import xaero.pac.common.parties.party.IParty;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public interface IClientPartyStorage
 <
 	A extends IClientPartyAllyInfo, 
 	P extends IClientParty<?,?,?>,
 	MISS extends IClientPartyMemberDynamicInfoSyncableStorage<?>
-> extends IClientPartyStorageAPI<P, MISS> {
+> extends IClientPartyStorageAPI {
 	
 	//internal api
+
+	@Nullable
+	@Override
+	public P getParty();
 
 	public void setParty(P party);
 	
@@ -41,6 +46,10 @@ public interface IClientPartyStorage
 	@Nonnull
 	@Override
 	public IClientPartyAllyInfoStorage<A> getAllyInfoStorage();
+
+	@Nonnull
+	@Override
+	public MISS getPartyMemberDynamicInfoSyncableStorage();
 	
 	public void setLoading(boolean loading);
 	
