@@ -24,6 +24,7 @@ import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
@@ -67,13 +68,13 @@ public class CommonEventsNeoForge extends CommonEvents {
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onEntityPlaceBlock(BlockEvent.EntityPlaceEvent event) {
-		if(super.onEntityPlaceBlock(event.getLevel(), event.getPos(), event.getEntity(), event.getPlacedBlock(), event.getBlockSnapshot().getReplacedBlock()))
+		if(super.onEntityPlaceBlock(event.getLevel(), event.getPos(), event.getEntity(), event.getPlacedBlock(), event.getBlockSnapshot().getState()))
 			event.setCanceled(true);
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onEntityMultiPlaceBlock(BlockEvent.EntityMultiPlaceEvent event) {
-		if(super.onEntityMultiPlaceBlock(event.getLevel(), event.getReplacedBlockSnapshots().stream().map(s -> Pair.of(s.getPos(), s.getCurrentBlock())), event.getEntity()))
+		if(super.onEntityMultiPlaceBlock(event.getLevel(), event.getReplacedBlockSnapshots().stream().map(s -> Pair.of(s.getPos(), s.getCurrentState())), event.getEntity()))
 			event.setCanceled(true);
 	}
 
@@ -199,7 +200,7 @@ public class CommonEventsNeoForge extends CommonEvents {
 		if(ServerCore.isMobGriefingForItems(server.getTickCount()))//this means that the mob griefing rule is being checked for item pickup
 			return;
 		if(super.onMobGrief(event.getEntity()))
-			event.setResult(Event.Result.DENY);
+			event.setCanGrief(false);
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -260,21 +261,15 @@ public class CommonEventsNeoForge extends CommonEvents {
 			event.setCanceled(true);
 	}
 
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public void onBucketUse(FillBucketEvent event){
-		if(super.onBucketUse(event.getEntity(), event.getLevel(), event.getTarget(), event.getEmptyBucket()))
-			event.setCanceled(true);
-	}
-
 	@SubscribeEvent
 	public void onTagsUpdate(TagsUpdatedEvent event) {
 		super.onTagsUpdate();
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public void onItemPickup(EntityItemPickupEvent event){
-		if(super.onItemPickup(event.getEntity(), event.getItem()))
-			event.setCanceled(true);
+	public void onItemPickup(ItemEntityPickupEvent.Pre event){
+		if(super.onItemPickup(event.getPlayer(), event.getItemEntity()))
+			event.setCanPickup(TriState.FALSE);
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
