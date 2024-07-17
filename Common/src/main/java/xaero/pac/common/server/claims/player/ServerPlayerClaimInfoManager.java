@@ -62,7 +62,7 @@ public final class ServerPlayerClaimInfoManager extends PlayerClaimInfoManager<S
 		this.toSave = toSave;
 		claimableDimensionsSet = new HashSet<>();
 		for(String s : ServerConfig.CONFIG.claimableDimensionsList.get())
-			claimableDimensionsSet.add(new ResourceLocation(s));
+			claimableDimensionsSet.add(ResourceLocation.parse(s));
 	}
 	
 	public void setClaimsManager(ServerClaimsManager claimsManager) {

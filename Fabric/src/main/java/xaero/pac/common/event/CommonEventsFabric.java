@@ -79,7 +79,7 @@ import java.util.List;
 
 public class CommonEventsFabric extends CommonEvents {
 
-	private final ResourceLocation PROTECTION_PHASE = new ResourceLocation(OpenPartiesAndClaims.MOD_ID, "protection");
+	private final ResourceLocation PROTECTION_PHASE = ResourceLocation.fromNamespaceAndPath(OpenPartiesAndClaims.MOD_ID, "protection");
 
 	public CommonEventsFabric(OpenPartiesAndClaims modMain) {
 		super(modMain);

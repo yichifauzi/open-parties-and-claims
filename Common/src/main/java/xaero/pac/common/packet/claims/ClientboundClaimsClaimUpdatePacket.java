@@ -102,7 +102,7 @@ public class ClientboundClaimsClaimUpdatePacket extends LazyPacket<ClientboundCl
 					subConfigIndex = nbt.getInt("s");
 					forceload = nbt.getBoolean("f");
 				}
-				return new ClientboundClaimsClaimUpdatePacket(new ResourceLocation(dimensionString), x, z, playerId, subConfigIndex, forceload, claimStateIndex);
+				return new ClientboundClaimsClaimUpdatePacket(ResourceLocation.parse(dimensionString), x, z, playerId, subConfigIndex, forceload, claimStateIndex);
 			} catch(Throwable t) {
 				OpenPartiesAndClaims.LOGGER.error("invalid packet", t);
 				return null;

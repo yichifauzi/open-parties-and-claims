@@ -67,7 +67,7 @@ public abstract class OpenPartiesAndClaims {
 	private final IPacketHandler packetHandler;
 	private final IForgeConfigHelper forgeConfigHelper;
 	private final ModSupport modSupport;
-	public static final ResourceLocation MAIN_CHANNEL_LOCATION = new ResourceLocation(MOD_ID, "main");
+	public static final ResourceLocation MAIN_CHANNEL_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "main");
 
 	public OpenPartiesAndClaims(CapabilityHelper capabilityHelper, IPacketHandler packetHandler, IForgeConfigHelper forgeConfigHelper, ModSupport modSupport) {
 		this.capabilityHelper = capabilityHelper;

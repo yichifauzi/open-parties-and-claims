@@ -158,7 +158,7 @@ public class PartyMemberDynamicInfoSyncable implements IPartyMemberDynamicInfoSy
 					return new PartyMemberDynamicInfoSyncable(playerId, false);
 				String dimensionSpace = tag.getString("ds");
 				String dimensionPath = tag.getString("dp");
-				ResourceLocation dimension = new ResourceLocation(dimensionSpace, dimensionPath);
+				ResourceLocation dimension = ResourceLocation.fromNamespaceAndPath(dimensionSpace, dimensionPath);
 				double x = tag.getDouble("x");
 				double y = tag.getDouble("y");
 				double z = tag.getDouble("z");

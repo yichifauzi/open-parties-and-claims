@@ -259,10 +259,10 @@ function transformForEntitiesPushBlock(methodNode, includeClassFiltered, include
     return methodNode
 }
 
-function transformPrePostLivingDeath(methodNode, preMethodName, postMethodName){
+function transformPrePostLivingDeath(methodNode, preMethodName, postMethodName, damageSourceParameter){
     var insnToInsert = new InsnList()
     insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
-    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
+    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, damageSourceParameter))
     insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', preMethodName, "(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/damagesource/DamageSource;)V"))
     methodNode.instructions.insert(methodNode.instructions.get(0), insnToInsert)
 
@@ -311,6 +311,26 @@ function transformProjectileHitCapture(methodNode, projectileClass, preMethodNam
         return insnToInsert
     }
     insertOnInvoke2(methodNode, insnToInsertGetter, false/*after*/, invokeTargetClass, invokeTargetName, invokeTargetNameObf, invokeTargetDesc, false)
+    return methodNode
+}
+
+function transformEnchantmentEffectCommon(methodNode, postMethodName){
+    var insnToInsert = new InsnList()
+    var MY_LABEL = new LabelNode(new Label())
+    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
+    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 4))
+    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'captureEnchantmentEffectLevel', '(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/Entity;)Z'))
+    insnToInsert.add(new JumpInsnNode(Opcodes.IFEQ, MY_LABEL))
+    insnToInsert.add(new InsnNode(Opcodes.RETURN))
+    insnToInsert.add(MY_LABEL)
+    methodNode.instructions.insert(methodNode.instructions.get(0), insnToInsert)
+
+    insnToInsertGetter = function() {
+        var insnToInsert = new InsnList()
+        insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', postMethodName, '()V'))
+        return insnToInsert
+    }
+    insertBeforeReturn2(methodNode, insnToInsertGetter)
     return methodNode
 }
 
@@ -1259,53 +1279,97 @@ function initializeCoreMod() {
                 return methodNode
             }
         },
-        'xaero_pac_frostwalkerenchantment_onentitymove': {
+        'xaero_pac_replaceblock_apply': {
             'target' : {
                 'type': 'METHOD',
-                'class': 'net.minecraft.world.item.enchantment.FrostWalkerEnchantment',
-                'methodName': 'onEntityMoved',
-                'methodDesc' : '(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;I)V'
+                'class': 'net.minecraft.world.item.enchantment.effects.ReplaceBlock',
+                'methodName': 'apply',
+                'methodDesc' : '(Lnet/minecraft/server/level/ServerLevel;ILnet/minecraft/world/item/enchantment/EnchantedItemInUse;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;)V'
             },
             'transformer' : function(methodNode){
-                var insnToInsert = new InsnList()
-                var MY_LABEL = new LabelNode(new Label())
-                insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
-                insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
-                insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'preFrostWalkHandle', '(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;)Z'))
-                insnToInsert.add(new JumpInsnNode(Opcodes.IFEQ, MY_LABEL))
-                insnToInsert.add(new InsnNode(Opcodes.RETURN))
-                insnToInsert.add(MY_LABEL)
-                methodNode.instructions.insert(methodNode.instructions.get(0), insnToInsert)
+                transformEnchantmentEffectCommon(methodNode, 'postEnchantmentEffectOnBlock')
 
                 var insnToInsertGetter = function() {
                     var insnToInsert = new InsnList()
-                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'preBlockStateFetchOnFrostwalk', '(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/core/BlockPos;'))
+                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'enchantmentEffectStoreBlockState', '(Lnet/minecraft/world/level/block/state/BlockState;)V'))
+                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'replaceEnchantmentEffectBlockPos', '(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/core/BlockPos;'))
+                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'enchantmentEffectLoadBlockState', '()Lnet/minecraft/world/level/block/state/BlockState;'))
                     return insnToInsert
                 }
-                insertOnInvoke2(methodNode, insnToInsertGetter, true/*before*/, levelClass, getBlockStateName, getBlockStateNameObf, getBlockStateDesc, false)
-
-                insnToInsertGetter = function() {
-                    var insnToInsert = new InsnList()
-                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
-                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'postFrostWalkHandle', '(Lnet/minecraft/world/level/Level;)V'))
-                    return insnToInsert
-                }
-                insertBeforeReturn2(methodNode, insnToInsertGetter)
+                var invokeTargetClass = 'net/minecraft/server/level/ServerLevel'
+                var invokeTargetName = 'setBlockAndUpdate'
+                var invokeTargetNameObf = 'm_46597_'
+                var invokeTargetDesc = '(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z'
+                insertOnInvoke2(methodNode, insnToInsertGetter, true/*before*/, invokeTargetClass, invokeTargetName, invokeTargetNameObf, invokeTargetDesc, false)
                 return methodNode
             }
         },
-        'xaero_pac_entity_handlenetherportal': {
+        'xaero_pac_setblockproperties_apply': {
+            'target' : {
+                'type': 'METHOD',
+                'class': 'net.minecraft.world.item.enchantment.effects.SetBlockProperties',
+                'methodName': 'apply',
+                'methodDesc' : '(Lnet/minecraft/server/level/ServerLevel;ILnet/minecraft/world/item/enchantment/EnchantedItemInUse;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;)V'
+            },
+            'transformer' : function(methodNode){
+                transformEnchantmentEffectCommon(methodNode, 'postEnchantmentEffectOnBlock')
+
+                var insnToInsertGetter = function() {
+                    var insnToInsert = new InsnList()
+                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'enchantmentEffectStoreInt', '(I)V'))
+                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'enchantmentEffectStoreBlockState', '(Lnet/minecraft/world/level/block/state/BlockState;)V'))
+                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'replaceEnchantmentEffectBlockPos', '(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/core/BlockPos;'))
+                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'enchantmentEffectLoadBlockState', '()Lnet/minecraft/world/level/block/state/BlockState;'))
+                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'enchantmentEffectLoadInt', '()I'))
+                    return insnToInsert
+                }
+                var invokeTargetClass = 'net/minecraft/world/level/Level'
+                var invokeTargetName = 'setBlock'
+                var invokeTargetNameObf = 'm_138607_'
+                var invokeTargetDesc = '(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z'
+                insertOnInvoke2(methodNode, insnToInsertGetter, true/*before*/, invokeTargetClass, invokeTargetName, invokeTargetNameObf, invokeTargetDesc, false)
+                return methodNode
+            }
+        },
+        'xaero_pac_replacedisk_apply': {
+            'target' : {
+                'type': 'METHOD',
+                'class': 'net.minecraft.world.item.enchantment.effects.ReplaceDisk',
+                'methodName': 'apply',
+                'methodDesc' : '(Lnet/minecraft/server/level/ServerLevel;ILnet/minecraft/world/item/enchantment/EnchantedItemInUse;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;)V'
+            },
+            'transformer' : function(methodNode){
+                transformEnchantmentEffectCommon(methodNode, 'postEnchantmentEffectOnDisk')
+
+                var insnToInsertGetter = function() {
+                    var insnToInsert = new InsnList()
+                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 1))
+                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 4))
+                    insnToInsert.add(new VarInsnNode(Opcodes.ILOAD, 2))
+                    insnToInsert.add(new VarInsnNode(Opcodes.ALOAD, 0))
+                    insnToInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, 'xaero/pac/common/server/core/ServerCore', 'replaceEnchantmentEffectBlockPosDisk', '(Lnet/minecraft/core/BlockPos;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/Entity;ILnet/minecraft/world/item/enchantment/effects/ReplaceDisk;)Lnet/minecraft/core/BlockPos;'))
+                    return insnToInsert
+                }
+                var invokeTargetClass = 'net/minecraft/core/BlockPos'
+                var invokeTargetName = 'offset'
+                var invokeTargetNameObf = 'm_121910_'
+                var invokeTargetDesc = '(Lnet/minecraft/core/Vec3i;)Lnet/minecraft/core/BlockPos;'
+                insertOnInvoke2(methodNode, insnToInsertGetter, false/*after*/, invokeTargetClass, invokeTargetName, invokeTargetNameObf, invokeTargetDesc, false)
+                return methodNode
+            }
+        },
+        'xaero_pac_entity_handleportal': {
             'target' : {
                 'type': 'METHOD',
                 'class': 'net.minecraft.world.entity.Entity',
-                'methodName': 'handleNetherPortal',
+                'methodName': 'handlePortal',
                 'methodDesc' : '()V'
             },
             'transformer' : function(methodNode){
                 var invokeTargetClass = 'net/minecraft/world/entity/Entity'
                 var invokeTargetName = 'changeDimension'
                 var invokeTargetNameObf = 'm_5489_'
-                var invokeTargetDesc = '(Lnet/minecraft/server/level/ServerLevel;)Lnet/minecraft/world/entity/Entity;'
+                var invokeTargetDesc = '(Lnet/minecraft/world/level/portal/DimensionTransition;)Lnet/minecraft/world/entity/Entity;'
                 var insnToInsertGetter = function() {
                     var MY_LABEL = new LabelNode(new Label())
                     var insnToInsert = new InsnList()
@@ -1369,7 +1433,7 @@ function initializeCoreMod() {
                  'methodDesc' : '(Lnet/minecraft/world/damagesource/DamageSource;)V'
             },
             'transformer' : function(methodNode){
-                return transformPrePostLivingDeath(methodNode, "onLivingEntityDiePre", "onLivingEntityDiePost")
+                return transformPrePostLivingDeath(methodNode, "onLivingEntityDiePre", "onLivingEntityDiePost", 1)
             }
         },
         'xaero_pac_livingentity_dropalldeathloot': {
@@ -1377,10 +1441,10 @@ function initializeCoreMod() {
                  'type': 'METHOD',
                  'class': 'net.minecraft.world.entity.LivingEntity',
                  'methodName': 'dropAllDeathLoot',
-                 'methodDesc' : '(Lnet/minecraft/world/damagesource/DamageSource;)V'
+                 'methodDesc' : '(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;)V'
             },
             'transformer' : function(methodNode){
-                return transformPrePostLivingDeath(methodNode, "onLivingEntityDropDeathLootPre", "onLivingEntityDropDeathLootPost")
+                return transformPrePostLivingDeath(methodNode, "onLivingEntityDropDeathLootPre", "onLivingEntityDropDeathLootPost", 2)
             }
         },
         'xaero_pac_mob_aistep': {
@@ -1715,10 +1779,10 @@ function initializeCoreMod() {
                 return methodNode
             }
         },
-        'xaero_pac_hangingentity_move': {
+        'xaero_pac_blockattachedentity_move': {
             'target' : {
                 'type': 'METHOD',
-                'class': 'net.minecraft.world.entity.decoration.HangingEntity',
+                'class': 'net.minecraft.world.entity.decoration.BlockAttachedEntity',
                 'methodName': 'move',
                 'methodDesc' : '(Lnet/minecraft/world/entity/MoverType;Lnet/minecraft/world/phys/Vec3;)V'
             },

@@ -102,7 +102,7 @@ public class PlayerConfigOptions {
 	/**
 	 * Whether the claimed chunk protection includes protection from frost walking.
 	 */
-	public static final IPlayerConfigOptionSpecAPI<Integer> PROTECT_CLAIMED_CHUNKS_FROM_FROST_WALKING;
+	public static final IPlayerConfigOptionSpecAPI<Integer> PROTECT_CLAIMED_BLOCKS_FROM_ENCHANTMENTS;
 	/**
 	 * Whether the claimed chunk protection includes protection against explosions.
 	 */
@@ -502,12 +502,12 @@ public class PlayerConfigOptions {
 				.setComment("When enabled, claimed chunk protection includes protection against fire spread.")
 				.setCategory(PlayerConfigOptionCategory.BLOCK_PROTECTION)
 				.build(allOptions);
-		PROTECT_CLAIMED_CHUNKS_FROM_FROST_WALKING = PlayerConfigStaticListIterationOptionSpec.Builder.begin(Integer.class)
-				.setId(PlayerConfig.PLAYER_CONFIG_ROOT_DOT + "claims.protection.fromFrostWalking")
+		PROTECT_CLAIMED_BLOCKS_FROM_ENCHANTMENTS = PlayerConfigStaticListIterationOptionSpec.Builder.begin(Integer.class)
+				.setId(PlayerConfig.PLAYER_CONFIG_ROOT_DOT + "claims.protection.blocksFromEnchantments")
 				.setDefaultValue(1)
 				.setList(PlayerConfig.PROTECTION_LEVELS)
 				.setComment(
-						"When enabled, claimed chunk protection includes protection against frost walking by players/entities who don't have access to the chunks.\n\n"
+						"When enabled, claimed chunk protection includes block protection against enchantments such as frost walking applied by players/entities who don't have access to the chunks.\n\n"
 						+ PlayerConfig.PROTECTION_LEVELS_TOOLTIP
 				)
 				.setCategory(PlayerConfigOptionCategory.BLOCK_PROTECTION)

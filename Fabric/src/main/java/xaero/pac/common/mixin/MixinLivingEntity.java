@@ -18,6 +18,7 @@
 
 package xaero.pac.common.mixin;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -65,12 +66,12 @@ public class MixinLivingEntity {
 	}
 
 	@Inject(at = @At("HEAD"), method = "dropAllDeathLoot")
-	public void onDropAllDeathLoot(DamageSource source, CallbackInfo info) {
+	public void onDropAllDeathLoot(ServerLevel level, DamageSource source, CallbackInfo info) {
 		ServerCore.onLivingEntityDropDeathLootPre((LivingEntity) (Object)this, source);
 	}
 
 	@Inject(at = @At("RETURN"), method = "dropAllDeathLoot")
-	public void onDie(DamageSource source, CallbackInfo info) {
+	public void onDie(ServerLevel level, DamageSource source, CallbackInfo info) {
 		ServerCore.onLivingEntityDropDeathLootPost((LivingEntity) (Object)this);
 	}
 

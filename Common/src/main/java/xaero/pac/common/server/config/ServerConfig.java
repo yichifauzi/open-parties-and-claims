@@ -67,7 +67,7 @@ public class ServerConfig {
 	public final ModConfigSpec.ConfigValue<List<? extends String>> completelyDisabledItemInteractions;
 	public final ModConfigSpec.ConfigValue<List<? extends String>> completelyDisabledBlockInteractions;
 	public final ModConfigSpec.ConfigValue<List<? extends String>> completelyDisabledEntityInteractions;
-	public final ModConfigSpec.BooleanValue completelyDisableFrostWalking;
+	public final ModConfigSpec.BooleanValue alwaysProtectBlocksFromEnchantments;
 	public final ModConfigSpec.BooleanValue reducedBoatEntityCollisions;
 	public final ModConfigSpec.IntValue maxClaimDistance;
 	public final ModConfigSpec.ConfigValue<List<? extends String>> claimableDimensionsList;
@@ -659,11 +659,11 @@ public class ServerConfig {
 			.worldRestart()
 			.defineListAllowEmpty(Lists.newArrayList("completelyDisabledEntityInteractions"), Lists::newArrayList, s -> s instanceof String);
 
-		completelyDisableFrostWalking = builder
-			.comment("Whether to completely disable frost walking on the server. Use this if the regular frost walking protection doesn't work, since there is no game rule for it.")
-			.translation("gui.xaero_pac_config_completely_disable_frost_walking")
+		alwaysProtectBlocksFromEnchantments = builder
+			.comment("Whether to always protect blocks from enchantments such as frost walking across the server. Use this if the regular claim protection doesn't work, since there is no game rule for it.")
+			.translation("gui.xaero_pac_config_always_protect_blocks_enchantments")
 			.worldRestart()
-			.define("completelyDisableFrostWalking", false);
+			.define("alwaysProtectBlocksFromEnchantments", false);
 
 		reducedBoatEntityCollisions = builder
 			.comment("""
@@ -703,7 +703,7 @@ public class ServerConfig {
 							"claims.protection.tripwireFromOther",
 							"claims.protection.cropTrample",
 							"claims.protection.playerLightning",
-							"claims.protection.fromFrostWalking",
+							"claims.protection.blocksFromEnchantments",
 							"claims.protection.entitiesFromPlayers",
 							"claims.protection.entitiesFromMobs",
 							"claims.protection.entitiesFromOther",

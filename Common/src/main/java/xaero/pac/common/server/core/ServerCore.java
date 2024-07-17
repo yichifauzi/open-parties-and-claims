@@ -49,13 +49,13 @@ import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.effects.ReplaceDisk;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FrostedIceBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.piston.PistonStructureResolver;
 import net.minecraft.world.level.block.state.BlockState;
@@ -92,6 +92,7 @@ import xaero.pac.common.server.world.ServerLevelHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
@@ -461,7 +462,7 @@ public class ServerCore {
 		return contraption.getXaero_OPAC_placementPos();
 	}
 
-	private static final ResourceKey<Item> CREATE_COUPLING = ResourceKey.create(Registries.ITEM, new ResourceLocation("create", "minecart_coupling"));
+	private static final ResourceKey<Item> CREATE_COUPLING = ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("create", "minecart_coupling"));
 
 	public static boolean canCreateAddCoupling(Player player, Level world, int cartId1, int cartId2){
 		if(player == null)
@@ -538,57 +539,106 @@ public class ServerCore {
 		return helpList.isEmpty();
 	}
 
-	public static final BlockPos.MutableBlockPos FROSTWALK_BLOCKPOS = new BlockPos.MutableBlockPos();
-	private static LivingEntity FROSTWALK_ENTITY;
-	private static Level FROSTWALK_LEVEL;
-	private static boolean FROSTWALK_CAPTURE_USABLE = true;
+	public static final BlockPos.MutableBlockPos ENCHANTMENT_EFFECT_BLOCKPOS = new BlockPos.MutableBlockPos();
+	private static BlockState ENCHANTMENT_EFFECT_BLOCKSTATE = null;
+	private static WeakReference<ServerLevel> ENCHANTMENT_EFFECT_LEVEL = null;
+	private static WeakReference<Entity> ENCHANTMENT_EFFECT_ENTITY = null;
+	private static int ENCHANTMENT_EFFECT_I = 0;
+	private static int HANDLING_ENCHANTMENT_ON_BLOCK = -1;
+	private static int HANDLING_ENCHANTMENT_ON_DISK = -1;
+	private static boolean ENCHANTMENT_ON_BLOCK_USABLE = true;
+	private static boolean ENCHANTMENT_ON_DISK_USABLE = true;
 
-	public static boolean isHandlingFrostWalk(){
-		return FROSTWALK_ENTITY != null;
+	private static boolean checkEnchantmentOnBlockUsable(ServerLevel level){
+		if(ENCHANTMENT_ON_BLOCK_USABLE && HANDLING_ENCHANTMENT_ON_BLOCK != -1 && HANDLING_ENCHANTMENT_ON_BLOCK != level.getServer().getTickCount()){
+			OpenPartiesAndClaims.LOGGER.error("Enchantment effect on block capture isn't working properly. Likely a compatibility issue. Turning it off...");
+			ENCHANTMENT_ON_BLOCK_USABLE = false;
+		}
+		return ENCHANTMENT_ON_BLOCK_USABLE;
 	}
 
-	public static boolean preFrostWalkHandle(LivingEntity living, Level level){//returns whether to completely disable frostwalk (when capture isn't usable)
-		if(level.getServer() == null)
-			return false;
-		if(ServerConfig.CONFIG.completelyDisableFrostWalking.get())
-			return true;
-		if (!FROSTWALK_CAPTURE_USABLE)
-			return false;
-		if (FROSTWALK_ENTITY != null) {
-			OpenPartiesAndClaims.LOGGER.error("Frost walk capture isn't working properly. Likely a compatibility issue. Turning off frost walking protection... Please use the option in the main server config file to disable frost walking across the server.");
-			FROSTWALK_CAPTURE_USABLE = false;
-			postFrostWalkHandle(level);
-			return false;
+	private static boolean checkEnchantmentOnDiskUsable(ServerLevel level){
+		if(ENCHANTMENT_ON_DISK_USABLE && HANDLING_ENCHANTMENT_ON_DISK != -1 && HANDLING_ENCHANTMENT_ON_DISK != level.getServer().getTickCount()){
+			OpenPartiesAndClaims.LOGGER.error("Enchantment effect on disk capture isn't working properly. Likely a compatibility issue. Turning it off...");
+			ENCHANTMENT_ON_DISK_USABLE = false;
 		}
-		FROSTWALK_ENTITY = living;
-		FROSTWALK_LEVEL = level;
+		return ENCHANTMENT_ON_DISK_USABLE;
+	}
+
+	public static boolean captureEnchantmentEffectLevel(ServerLevel level, Entity entity) {
+		if(ServerConfig.CONFIG.alwaysProtectBlocksFromEnchantments.get())
+			return true;
+		ENCHANTMENT_EFFECT_LEVEL = new WeakReference<>(level);
+		ENCHANTMENT_EFFECT_ENTITY = new WeakReference<>(entity);
 		return false;
 	}
 
-	public static BlockPos preBlockStateFetchOnFrostwalk(BlockPos pos){
-		if(FROSTWALK_ENTITY == null || FROSTWALK_LEVEL.getServer() == null || !FROSTWALK_LEVEL.getServer().isSameThread())
-			return pos;
-		BlockState actualState = FROSTWALK_LEVEL.getBlockState(pos);
-		if(actualState != FrostedIceBlock.meltsInto())
-			return pos;
-		FROSTWALK_BLOCKPOS.set(pos);
-		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(FROSTWALK_LEVEL.getServer());
+	public static void enchantmentEffectStoreBlockState(BlockState state){
+		//using these store/load methods in the neo/forge coremod to get around BlockState arguments on the stack
+		ENCHANTMENT_EFFECT_BLOCKSTATE = state;
+	}
+
+	public static BlockState enchantmentEffectLoadBlockState(){
+		return ENCHANTMENT_EFFECT_BLOCKSTATE;
+	}
+
+	public static void enchantmentEffectStoreInt(int i){
+		//using these store/load methods in the neo/forge coremod to get around int arguments on the stack
+		ENCHANTMENT_EFFECT_I = i;
+	}
+
+	public static int enchantmentEffectLoadInt(){
+		return ENCHANTMENT_EFFECT_I;
+	}
+
+	public static BlockPos replaceEnchantmentEffectBlockPos(BlockPos actual) {
+		ServerLevel level = ENCHANTMENT_EFFECT_LEVEL == null ? null : ENCHANTMENT_EFFECT_LEVEL.get();
+		if(level == null)
+			return actual;
+		Entity entity = ENCHANTMENT_EFFECT_ENTITY == null ? null : ENCHANTMENT_EFFECT_ENTITY.get();
+		if(entity == null)
+			return actual;
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(level.getServer());
 		if(serverData == null)
-			return pos;
-		ServerLevel serverLevel = ServerLevelHelper.getServerLevel(FROSTWALK_LEVEL);
-		if(serverData.getChunkProtection().onFrostWalk(serverData, FROSTWALK_ENTITY, serverLevel, FROSTWALK_BLOCKPOS))
-			return FROSTWALK_BLOCKPOS.setY(FROSTWALK_LEVEL.getMaxBuildHeight());//won't be water here lol
-		return pos;
+			return actual;
+		checkEnchantmentOnBlockUsable(level);//checking but not using the value
+		HANDLING_ENCHANTMENT_ON_BLOCK = level.getServer().getTickCount();
+		if(serverData.getChunkProtection().onEnchantmentEffectOnBlock(serverData, entity, level, actual)) {
+			ENCHANTMENT_EFFECT_BLOCKPOS.set(actual.getX(), level.getMaxBuildHeight(), actual.getZ());
+			return ENCHANTMENT_EFFECT_BLOCKPOS;//outside build limit, so won't build
+		}
+		return actual;
 	}
 
-	public static void postFrostWalkHandle(Level level){
-		if(level.getServer() == null)
-			return;
-		FROSTWALK_ENTITY = null;
-		FROSTWALK_LEVEL = null;
+	public static BlockPos replaceEnchantmentEffectBlockPosDisk(BlockPos actual, ServerLevel level, Entity entity, int enchantmentLevel, ReplaceDisk effect) {
+		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+				serverData = ServerData.from(level.getServer());
+		if(serverData == null)
+			return actual;
+		checkEnchantmentOnDiskUsable(level);//checking but not using the value
+		HANDLING_ENCHANTMENT_ON_DISK = level.getServer().getTickCount();
+		if(serverData.getChunkProtection().onEnchantmentEffectOnBlockDisk(serverData, entity, level, actual, (int)effect.radius().calculate(enchantmentLevel))) {
+			ENCHANTMENT_EFFECT_BLOCKPOS.set(actual.getX(), level.getMaxBuildHeight(), actual.getZ());
+			return ENCHANTMENT_EFFECT_BLOCKPOS;//outside build limit, so won't build
+		}
+		return actual;
 	}
 
-	private static final Field ENTITY_INSIDE_PORTAL_FIELD = Reflection.getFieldReflection(Entity.class, "isInsidePortal", "f_19817_", "field_5963", "Z");
+	public static void postEnchantmentEffectOnBlock() {
+		HANDLING_ENCHANTMENT_ON_BLOCK = -1;
+	}
+
+	public static void postEnchantmentEffectOnDisk() {
+		HANDLING_ENCHANTMENT_ON_DISK = -1;
+	}
+
+	public static boolean isHandlingEnchantmentOnBlocks(ServerLevel level) {
+		return checkEnchantmentOnBlockUsable(level) && HANDLING_ENCHANTMENT_ON_BLOCK != -1
+				|| checkEnchantmentOnDiskUsable(level) && HANDLING_ENCHANTMENT_ON_DISK != -1;
+	}
+
+	private static final Field ENTITY_PORTAL_PROCESS_FIELD = Reflection.getFieldReflection(Entity.class, "portalProcess", "f_336952_", "field_51994", "Lnet/minecraft/class_9787;");
 
 	public static boolean onHandleNetherPortal(Entity entity) {
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
@@ -598,7 +648,7 @@ public class ServerCore {
 		ServerLevel serverLevel = ServerLevelHelper.getServerLevel(entity.level());
 		if(serverData.getChunkProtection().onNetherPortal(serverData, entity, serverLevel, entity.blockPosition())){
 			entity.level().getProfiler().pop();
-			Reflection.setReflectFieldValue(entity, ENTITY_INSIDE_PORTAL_FIELD, false);
+			Reflection.setReflectFieldValue(entity, ENTITY_PORTAL_PROCESS_FIELD, null);
 			return true;
 		}
 		return false;
@@ -1032,8 +1082,9 @@ public class ServerCore {
 		CAPTURED_TARGET_POS = null;
 		CAPTURED_POS_STATE_MAP = null;
 		ENTITY_INTERACTION_HAND = null;
-		FROSTWALK_ENTITY = null;
-		FROSTWALK_LEVEL = null;
+		ENCHANTMENT_EFFECT_BLOCKSTATE = null;
+		ENCHANTMENT_EFFECT_ENTITY = null;
+		ENCHANTMENT_EFFECT_LEVEL = null;
 		FINDING_RAID_SPAWN_POS = false;
 		DYING_LIVING = null;
 		DYING_LIVING_FROM = null;

@@ -65,7 +65,7 @@ public class ClientboundPlayerClaimsDimensionPacket extends LazyPacket<Clientbou
 				String dimensionString = nbt.contains("d") ? nbt.getString("d") : "";
 				if(dimensionString.length() > 2048)
 					return null;
-				return new ClientboundPlayerClaimsDimensionPacket(dimensionString.isEmpty() ? null : new ResourceLocation(dimensionString));
+				return new ClientboundPlayerClaimsDimensionPacket(dimensionString.isEmpty() ? null : ResourceLocation.parse(dimensionString));
 			} catch(Throwable t) {
 				OpenPartiesAndClaims.LOGGER.error("invalid packet", t);
 				return null;

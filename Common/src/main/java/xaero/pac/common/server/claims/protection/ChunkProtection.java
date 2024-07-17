@@ -173,6 +173,7 @@ public class ChunkProtection
 	private final Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> blockAccessEntityGroups;
 	private final Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> entityAccessEntityGroups;
 	private final Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> droppedItemAccessEntityGroups;
+	private final BlockPos.MutableBlockPos reusableBlockPos;
 
 	private boolean ignoreChunkEnter = false;
 	private final Map<Entity, Set<ChunkPos>> cantPickupItemsInTickCache;
@@ -216,7 +217,7 @@ public class ChunkProtection
 							Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> entityBarrierGroups,
 							Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> blockAccessEntityGroups,
 							Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> entityAccessEntityGroups,
-							Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> droppedItemAccessEntityGroups,
+							Map<String, ChunkProtectionExceptionGroup<EntityType<?>>> droppedItemAccessEntityGroups, BlockPos.MutableBlockPos reusableBlockPos,
 							Map<Entity, Set<ChunkPos>> cantPickItemsCache,
 							Map<Entity, Set<ChunkPos>> cantPickupXPInTickCache,
 							Set<UUID> fullPasses) {
@@ -257,6 +258,7 @@ public class ChunkProtection
 		this.blockAccessEntityGroups = blockAccessEntityGroups;
 		this.entityAccessEntityGroups = entityAccessEntityGroups;
 		this.droppedItemAccessEntityGroups = droppedItemAccessEntityGroups;
+		this.reusableBlockPos = reusableBlockPos;
 		this.cantPickupItemsInTickCache = cantPickItemsCache;
 		this.cantPickupXPInTickCache = cantPickupXPInTickCache;
 		this.fullPasses = fullPasses;
@@ -820,8 +822,26 @@ public class ChunkProtection
 		}
 	}
 
-	public boolean onFrostWalk(IServerData<CM, ?> serverData, LivingEntity living, ServerLevel world, BlockPos pos) {
-		return onEntityPlaceBlock(serverData, living, world, pos, PlayerConfigOptions.PROTECT_CLAIMED_CHUNKS_FROM_FROST_WALKING);
+	public boolean onEnchantmentEffectOnBlock(IServerData<CM, ?> serverData, Entity entity, ServerLevel world, BlockPos pos) {
+		return onEntityPlaceBlock(serverData, entity, world, pos, PlayerConfigOptions.PROTECT_CLAIMED_BLOCKS_FROM_ENCHANTMENTS);
+	}
+
+	public boolean onEnchantmentEffectOnBlockDisk(IServerData<CM, ?> serverData, Entity entity, ServerLevel world, BlockPos pos, int radius) {
+		int minBlockX = pos.getX() - radius;
+		int minBlockZ = pos.getZ() - radius;
+		int maxBlockX = pos.getX() + radius;
+		int maxBlockZ = pos.getZ() + radius;
+		int minChunkX = minBlockX >> 4;
+		int minChunkZ = minBlockZ >> 4;
+		int maxChunkX = maxBlockX >> 4;
+		int maxChunkZ = maxBlockZ >> 4;
+		for(int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++)
+			for(int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++){
+				reusableBlockPos.set(chunkX << 4, pos.getY(), chunkZ << 4);
+				if(onEntityPlaceBlock(serverData, entity, world, reusableBlockPos, PlayerConfigOptions.PROTECT_CLAIMED_BLOCKS_FROM_ENCHANTMENTS))
+					return true;
+			}
+		return false;
 	}
 
 	private boolean isItemUseRestricted(ItemStack itemStack){
@@ -2570,7 +2590,8 @@ public class ChunkProtection
 					staticFakePlayerClassExceptions, additionalBannedItems.build(), completelyDisabledItems.build(),
 					itemUseProtectionExceptions.build(), completelyDisabledEntities.build(), blockExceptionGroups,
 					entityExceptionGroups, itemExceptionGroups, entityBarrierGroups, blockAccessEntityGroups,
-					entityAccessEntityGroups, droppedItemAccessEntityGroups, new HashMap<>(), new HashMap<>(), fullPasses);
+					entityAccessEntityGroups, droppedItemAccessEntityGroups, new BlockPos.MutableBlockPos(),
+					new HashMap<>(), new HashMap<>(), fullPasses);
 		}
 
 

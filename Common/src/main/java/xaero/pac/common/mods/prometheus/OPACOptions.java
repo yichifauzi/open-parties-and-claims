@@ -41,7 +41,7 @@ import java.util.stream.Stream;
 
 public class OPACOptions implements RoleOption<OPACOptions> {
 
-	protected static final ResourceLocation resourceLocation = new ResourceLocation(OpenPartiesAndClaims.MOD_ID, "permissions");
+	protected static final ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(OpenPartiesAndClaims.MOD_ID, "permissions");
 
 	protected final Map<IPermissionNodeAPI<?>, Object> values;
 

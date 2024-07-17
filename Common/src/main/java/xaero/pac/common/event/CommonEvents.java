@@ -54,7 +54,6 @@ import xaero.pac.common.claims.player.IPlayerClaimPosList;
 import xaero.pac.common.claims.player.IPlayerDimensionClaims;
 import xaero.pac.common.claims.tracker.api.IClaimsManagerTrackerRegisterAPI;
 import xaero.pac.common.entity.EntityData;
-import xaero.pac.common.entity.IEntity;
 import xaero.pac.common.mods.create.CreateContraptionHelper;
 import xaero.pac.common.parties.party.IPartyPlayerInfo;
 import xaero.pac.common.parties.party.ally.IPartyAlly;
@@ -132,7 +131,7 @@ public abstract class CommonEvents {
 //			serverData = ServerData.from(lastServerStarted);
 //		IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>
 //				claimsManager = serverData.getServerClaimsManager();
-//		ResourceLocation overworld = new ResourceLocation("overworld");
+//		ResourceLocation overworld = ResourceLocation.parse("overworld");
 //		UUID myUUID = UUID.fromString("380df991-f603-344c-a090-369bad2a924a");
 //		OpenPartiesAndClaims.LOGGER.info("my uuid: " + myUUID);
 //		for (int i = 0; i < 100; i++)
@@ -470,7 +469,7 @@ public abstract class CommonEvents {
 		ServerLevel serverLevel = ServerLevelHelper.getServerLevel(level);
 		if(serverLevel == null)
 			return false;
-		if(ServerCore.isHandlingFrostWalk())
+		if(ServerCore.isHandlingEnchantmentOnBlocks(serverLevel))
 			return false;
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(serverLevel.getServer());
 		if(serverData == null)
@@ -491,7 +490,7 @@ public abstract class CommonEvents {
 		IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData = ServerData.from(serverLevel.getServer());
 		if(serverData == null)
 			return false;
-		if(ServerCore.isHandlingFrostWalk())
+		if(ServerCore.isHandlingEnchantmentOnBlocks(serverLevel))
 			return false;
 		Set<ChunkPos> chunkPositions = new HashSet<>();
 		Iterator<Pair<BlockPos, BlockState>> iterator = blocks.iterator();

@@ -26,7 +26,7 @@ public class ServerDataReloadListenerFabric extends ServerDataReloadListener imp
 
 	@Override
 	public ResourceLocation getFabricId() {
-		return new ResourceLocation(OpenPartiesAndClaims.MOD_ID, "server_data_listener");
+		return ResourceLocation.fromNamespaceAndPath(OpenPartiesAndClaims.MOD_ID, "server_data_listener");
 	}
 
 }

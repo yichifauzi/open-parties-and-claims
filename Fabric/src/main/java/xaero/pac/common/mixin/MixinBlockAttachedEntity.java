@@ -19,7 +19,7 @@
 package xaero.pac.common.mixin;
 
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.decoration.HangingEntity;
+import net.minecraft.world.entity.decoration.BlockAttachedEntity;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,12 +27,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xaero.pac.common.server.core.ServerCore;
 
-@Mixin(HangingEntity.class)
-public class MixinHangingEntity {
+@Mixin(BlockAttachedEntity.class)
+public class MixinBlockAttachedEntity {
 
 	@Inject(at = @At("HEAD"), method = "move", cancellable = true)
 	public void onMove(MoverType moverType, Vec3 vec3, CallbackInfo ci){
-		if(ServerCore.onEntityPushed((HangingEntity) (Object)this, moverType))
+		if(ServerCore.onEntityPushed((BlockAttachedEntity) (Object)this, moverType))
 			ci.cancel();
 	}
 
