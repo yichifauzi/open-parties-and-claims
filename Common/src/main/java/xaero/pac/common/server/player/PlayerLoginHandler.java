@@ -60,7 +60,7 @@ public class PlayerLoginHandler {
 
 		serverData.getForceLoadManager().updateTicketsFor(serverData.getPlayerConfigs(), player.getUUID(), false);
 		
-		serverData.getPlayerPartyAssigner().assign(serverData.getPartyManager(), player, serverData.getPartyMemberInfoUpdater());
+		serverData.getPlayerPartyAssigner().assign(serverData, player, serverData.getPartyMemberInfoUpdater());
 
 		PlayerFullPartySync playerFullPartySync = new PlayerFullPartySync((PartySynchronizer)(Object)serverData.getPartyManager().getPartySynchronizer());
 
@@ -97,7 +97,7 @@ public class PlayerLoginHandler {
 		);
 		playerData.setOftenSyncedPartyMemberInfo(new PartyMemberDynamicInfoSyncable(player.getUUID(), true));
 		
-		serverData.getServerClaimsManager().getPlayerInfo(player.getUUID()).registerActivity();
+		serverData.getServerClaimsManager().getPlayerInfo(player.getUUID()).registerActivity(serverData.getServerInfo());
 	}
 	
 	public void handlePostWorldJoin(ServerPlayer player, IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData) {
