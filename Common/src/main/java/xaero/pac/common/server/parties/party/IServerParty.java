@@ -26,6 +26,8 @@ import xaero.pac.common.parties.party.api.IPartyPlayerInfoAPI;
 import xaero.pac.common.parties.party.member.IPartyMember;
 import xaero.pac.common.parties.party.member.PartyMemberRank;
 import xaero.pac.common.parties.party.member.api.IPartyMemberAPI;
+import xaero.pac.common.server.expiration.ObjectManagerIOExpirableObject;
+import xaero.pac.common.server.info.ServerInfo;
 import xaero.pac.common.server.parties.party.api.IServerPartyAPI;
 
 import javax.annotation.Nonnull;
@@ -37,7 +39,7 @@ public interface IServerParty
 	M extends IPartyMember, 
 	I extends IPartyPlayerInfo,
 	A extends IPartyAlly
-> extends IServerPartyAPI, IParty<M, I, A> {
+> extends IServerPartyAPI, IParty<M, I, A>, ObjectManagerIOExpirableObject {
 	
 	//internal api
 	
@@ -91,5 +93,5 @@ public interface IServerParty
 	default boolean setRank(@Nonnull IPartyMemberAPI member, @Nonnull PartyMemberRank rank) {
 		return setRankTyped((M)member, rank);
 	}
-	
+
 }
