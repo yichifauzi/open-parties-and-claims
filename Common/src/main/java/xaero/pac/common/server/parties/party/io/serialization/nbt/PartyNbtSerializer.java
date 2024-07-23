@@ -51,7 +51,7 @@ public final class PartyNbtSerializer implements SimpleSerializer<CompoundTag, S
 	public CompoundTag serialize(ServerParty party) {
 		CompoundTag result = new CompoundTag();
 		result.put("owner", partyMemberNbtSerializer.serialize(party.getOwner()));
-		result.putLong("confirmedActivity", party.getConfirmedActivity());
+		result.putLong("confirmedActivity", party.getRegisteredActivity());
 		ListTag membersTag = new ListTag();
 		ListTag invitesTag = new ListTag();
 		ListTag alliesTag = new ListTag();
@@ -69,7 +69,7 @@ public final class PartyNbtSerializer implements SimpleSerializer<CompoundTag, S
 	@Override
 	public ServerParty deserialize(String id, PartyManager manager, CompoundTag serializedData) {
 		PartyMember owner = partyMemberNbtSerializer.deserialize(serializedData.getCompound("owner"), true);
-		long confirmedActivity = serializedData.getLong("confirmedActivity");
+		long registeredActivity = serializedData.getLong("confirmedActivity");
 		
 		ListTag membersTag = serializedData.getList("members", Tag.TAG_COMPOUND);
 		ListTag invitesTag = serializedData.getList("invites", Tag.TAG_COMPOUND);
@@ -91,7 +91,7 @@ public final class PartyNbtSerializer implements SimpleSerializer<CompoundTag, S
 			allies.put(ally, new PartyAlly(ally));
 		});
 		ServerParty result = ServerParty.Builder.begin().setManagedBy(manager).setOwner(owner).setId(UUID.fromString(id)).setMemberInfo(members).setInvitedPlayers(invites).setAllyParties(allies).build();
-		result.setConfirmedActivity(confirmedActivity);
+		result.setRegisteredActivity(registeredActivity);
 		return result;
 	}
 	

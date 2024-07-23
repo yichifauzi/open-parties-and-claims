@@ -33,6 +33,7 @@ import xaero.pac.common.server.claims.IServerDimensionClaimsManager;
 import xaero.pac.common.server.claims.IServerRegionClaims;
 import xaero.pac.common.server.claims.player.api.IServerPlayerClaimInfoAPI;
 import xaero.pac.common.server.claims.player.task.PlayerClaimReplaceSpreadoutTask;
+import xaero.pac.common.server.expiration.ObjectManagerIOExpirableObject;
 import xaero.pac.common.server.parties.party.IServerParty;
 import xaero.pac.common.server.player.config.IPlayerConfig;
 
@@ -41,7 +42,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public interface IServerPlayerClaimInfo<DC extends IPlayerDimensionClaims<?>> extends IServerPlayerClaimInfoAPI, IPlayerClaimInfo<DC>	 {
+public interface IServerPlayerClaimInfo<DC extends IPlayerDimensionClaims<?>> extends IServerPlayerClaimInfoAPI, IPlayerClaimInfo<DC>, ObjectManagerIOExpirableObject {
 	
 	//internal api
 	
@@ -71,10 +72,8 @@ public interface IServerPlayerClaimInfo<DC extends IPlayerDimensionClaims<?>> ex
 	}
 
 	public Stream<Entry<ResourceLocation, DC>> getFullStream();
-	
-	public void registerActivity();
 
-	public long getConfirmedActivity();
+	public long getRegisteredActivity();
 
 	public boolean isReplacementInProgress();
 

@@ -31,22 +31,22 @@ import xaero.pac.common.server.claims.IServerDimensionClaimsManager;
 import xaero.pac.common.server.claims.IServerRegionClaims;
 import xaero.pac.common.server.claims.player.IServerPlayerClaimInfo;
 import xaero.pac.common.server.parties.party.IServerParty;
-import xaero.pac.common.server.parties.party.ServerParty;
 import xaero.pac.common.server.parties.party.sync.IPartyMemberDynamicInfoSynchronizer;
 
 public class PlayerLogoutHandler {
 	
-	public void handle(ServerPlayer player, IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> serverData) {
+	public void handle(ServerPlayer player, IServerData<IServerClaimsManager<IPlayerChunkClaim, IServerPlayerClaimInfo<IPlayerDimensionClaims<IPlayerClaimPosList>>, IServerDimensionClaimsManager<IServerRegionClaims>>, IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>>
+			serverData) {
 		serverData.getForceLoadManager().updateTicketsFor(serverData.getPlayerConfigs(), player.getUUID(), true);
 		//PlayerMainCapability playerMainCap = (PlayerMainCapability) player.getCapability(PlayerCapabilityProvider.MAIN_CAP).orElse(null);
 		IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly> playerParty = serverData.getPartyManager().getPartyByMember(player.getUUID());
 		if(playerParty != null) {
-			((ServerParty)(Object)playerParty).registerActivity();
+			playerParty.registerActivity(serverData.getServerInfo());
 			IPartyMemberDynamicInfoSynchronizer<IServerParty<IPartyMember, IPartyPlayerInfo, IPartyAlly>> partyOftenSyncedSync = serverData.getPartyManager().getPartySynchronizer().getOftenSyncedInfoSync();
 			partyOftenSyncedSync.handlePlayerLeave(playerParty, player);
 		}
 		if(serverData.getServerClaimsManager().hasPlayerInfo(player.getUUID())) {
-			serverData.getServerClaimsManager().getPlayerInfo(player.getUUID()).registerActivity();
+			serverData.getServerClaimsManager().getPlayerInfo(player.getUUID()).registerActivity(serverData.getServerInfo());
 		}
 
 		serverData.getServerTickHandler().getLazyPacketSender().clearForPlayer(player);
