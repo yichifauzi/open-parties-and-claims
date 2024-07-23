@@ -41,8 +41,7 @@ public final class ServerParty extends Party implements IServerParty<PartyMember
 
 	private final PartyManager managedBy;
 	private boolean dirty;
-	private long confirmedActivity;
-	private boolean hasBeenActive;
+	private long registeredActivity;
 	private ServerParty nextInChain;
 	private ServerParty prevInChain;
 	private boolean destroyed;
@@ -59,7 +58,7 @@ public final class ServerParty extends Party implements IServerParty<PartyMember
 		this.inviteByUsername = inviteByUsername;
 		this.allyByUsername = allyByUsername;
 		this.usernameByAlly = usernameByAlly;
-		confirmActivity(managedBy.getExpirationHandler().getServerInfo());
+		this.registeredActivity = managedBy.getExpirationHandler().getServerInfo().getTotalUseTime();
 	}
 
 	@Override
@@ -277,26 +276,20 @@ public final class ServerParty extends Party implements IServerParty<PartyMember
 	}
 
 	@Override
-	public void confirmActivity(ServerInfo serverInfo) {
-		confirmedActivity = serverInfo.getTotalUseTime();
-		hasBeenActive = false;
+	public void registerActivity(ServerInfo serverInfo) {
+		if(serverInfo.getTotalUseTime() < registeredActivity)
+			return;
+		registeredActivity = serverInfo.getTotalUseTime();
+		setDirty(true);
 	}
 	
-	public void setConfirmedActivity(long lastActiveTime) {
-		this.confirmedActivity = lastActiveTime;
-	}
-	
-	public boolean hasBeenActive() {
-		return hasBeenActive;
-	}
-	
-	public void registerActivity() {
-		hasBeenActive = true;
+	public void setRegisteredActivity(long registeredActivity) {
+		this.registeredActivity = registeredActivity;
 	}
 	
 	@Override
-	public long getConfirmedActivity() {
-		return confirmedActivity;
+	public long getRegisteredActivity() {
+		return registeredActivity;
 	}
 
 	@Override
