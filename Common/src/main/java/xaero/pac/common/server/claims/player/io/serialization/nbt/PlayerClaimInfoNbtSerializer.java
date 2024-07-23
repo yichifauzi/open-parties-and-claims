@@ -46,7 +46,7 @@ public final class PlayerClaimInfoNbtSerializer implements SimpleSerializer<Comp
 		object.getFullStream().forEach(e -> dimensions.put(e.getKey().toString(), playerDimensionClaimsNbtSerializer.serialize(e.getValue())));
 		nbt.put("dimensions", dimensions);
 		nbt.putString("username", object.getPlayerUsername());
-		nbt.putLong("confirmedActivity", object.getConfirmedActivity());
+		nbt.putLong("confirmedActivity", object.getRegisteredActivity());
 		return nbt;
 	}
 
@@ -57,7 +57,7 @@ public final class PlayerClaimInfoNbtSerializer implements SimpleSerializer<Comp
 		Map<ResourceLocation, PlayerDimensionClaims> claims = new HashMap<>();
 		dimensionsTag.getAllKeys().forEach(key -> claims.put(ResourceLocation.parse(key), playerDimensionClaimsNbtSerializer.deserialize(id, key, dimensionsTag.getCompound(key))));
 		ServerPlayerClaimInfo result = new ServerPlayerClaimInfo(manager.getConfig(id), username, id, claims, manager, new ArrayDeque<>());
-		result.setConfirmedActivity(nbt.getLong("confirmedActivity"));
+		result.setRegisteredActivity(nbt.getLong("confirmedActivity"));
 		return result;
 	}
 	
