@@ -63,14 +63,14 @@ public class PartySnapshotConverter extends SnapshotConverter<PartySnapshot, Str
 			allies.put(ally, new PartyAlly(ally));
 		});
 		ServerParty result = ServerParty.Builder.begin().setManagedBy(manager).setOwner(owner).setId(UUID.fromString(id)).setMemberInfo(members).setInvitedPlayers(invites).setAllyParties(allies).build();
-		result.setConfirmedActivity(data.getConfirmedActivity());
+		result.setRegisteredActivity(data.getRegisteredActivity());
 		return result;
 	}
 
 	@Override
 	public PartySnapshot convert(ServerParty party) {
 		PartySnapshot result = new PartySnapshot(partyMemberSnapshotConverter.convert(party.getOwner()));
-		result.setConfirmedActivity(party.getConfirmedActivity());
+		result.setRegisteredActivity(party.getRegisteredActivity());
 		party.getTypedInvitedPlayersStream().forEach(p -> result.addInvitedPlayer(partyInviteSnapshotConverter.convert(p)));
 		party.getTypedAllyPartiesStream().forEach(a -> result.addAllyParty(a.toString()));
 		party.getTypedMemberInfoStream().filter(mi -> mi != party.getOwner()).forEach(mi -> result.addMember(partyMemberSnapshotConverter.convert((PartyMember) mi)));
